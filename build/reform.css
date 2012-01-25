@@ -1,0 +1,111 @@
+input.checkbox {
+    display: none;
+}
+
+.checkbox-fake {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    border: solid 1px #ccc;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.checkbox-fake.radio,
+.checkbox-fake.radio.checked:before {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.checkbox-fake.checked:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: "";
+    width: 50%;
+    height: 50%;
+    margin: -25% 0 0 -25%;
+    background: #333;
+}
+
+.checkbox-fake.disabled {
+    background-color: #eee;
+}
+
+.checkbox-fake.disabled.checked:before {
+    background-color: #ccc;
+}select.selectbox {
+    display: none;
+}
+
+.selectbox-fake {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 18px;
+    border: solid 1px #ccc;
+    padding: 10px 30px 10px 10px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 18px;
+    vertical-align: middle;
+    
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.selectbox-fake:after {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    content: "";
+    width: 0;
+    height: 0;
+    margin: -4px 0 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+
+    border-top: 8px solid #333;
+}
+
+.selectbox-fake.disabled {
+    background-color: #eee;
+}
+
+.selectbox-options {
+    display: none;
+    position: absolute;
+    width: 240px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: solid 1px #ccc;
+    background: #fff;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.selectbox-item {
+    border-bottom: solid 1px #eee;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.selectbox-item:last-child {
+    border-bottom: none;
+}
+
+.selectbox-item:hover {
+    background: #eee;
+}
+
+.selectbox-item.selected {
+    background: #333;
+    color: #fff;
+}

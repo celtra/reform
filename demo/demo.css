@@ -1,0 +1,70 @@
+body { margin: 30px; font: 14px Tahoma; }
+
+.demo-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    background: url('box.png') no-repeat;
+}
+
+.demo-checkbox.checked:before {
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    background: url('check.png') no-repeat;
+}
+
+label {
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.demo-selectbox {
+    width: auto;
+    height: auto;
+    border: 0;
+    padding: 0;
+    font-size: 12px;
+}
+
+.demo-selectbox:after {
+    position: relative;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    margin: -2px 0 2px 5px;
+    border-width: 4px;
+}
+
+.demo-selectbox-options {
+    width: 180px;
+    max-height: 105px;
+    padding: 5px;
+    font-size: 10px;
+    border: solid 1px #333;
+    color: #333;
+}
+
+.demo-selectbox-options .selectbox-list {
+    border-top: solid 1px #ccc;
+}
+
+.demo-selectbox-options .selectbox-item {
+    border-bottom: solid 1px #ccc;
+    padding: 10px 4px;
+}
+
+.demo-selectbox-options .selectbox-item:last-child {
+    border: default;
+}
+
+.demo-selectbox-options .selectbox-item:hover {
+    background: #ffd;
+}
+
+.demo-selectbox-options .selectbox-item.selected {
+    background: #333;
+    color: #fff;
+}

@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <title>Custom forms with reFORM</title>
+        <link rel="stylesheet" type="text/css" href="../build/reform.css">
+        <link rel="stylesheet" type="text/css" href="demo.css">
+        
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="../build/reform.min.js"></script>
+    </head>
+    <body>
+        
+        <h2>Check boxes</h2>
+        
+        <input class="checkbox" type="checkbox">
+        <input class="checkbox" type="checkbox" checked>
+        <input class="checkbox" type="checkbox" disabled>
+        <input class="checkbox" type="checkbox" checked disabled>
+        
+        <h2>Radio boxes</h2>
+        
+        <input id="radio-1" class="checkbox" type="radio" name="test-radio">
+        <input id="radio-2" class="checkbox" type="radio" name="test-radio" checked>
+        <input id="radio-3" class="checkbox" type="radio" name="test-radio" disabled>
+        <input class="checkbox radio" type="radio" checked disabled>
+        
+        <h2>Select boxes</h2>
+        
+        <select class="selectbox">
+            <option value="1">One</option>
+            <option value="2" selected>Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+            <option value="10">Ten</option>
+        </select>
+        
+        <select class="selectbox" disabled>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+            <option value="10">Ten</option>
+        </select>
+        
+        <select class="selectbox" multiple title="Select something">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+            <option value="10">Ten</option>
+        </select>
+        
+        <h2>Custom style</h2>
+        
+        <input id="demo-checkbox" class="checkbox demo-checkbox" type="checkbox"> <label for="demo-checkbox">Check this</label>
+        
+        <br><br>
+        
+        <select class="selectbox demo-selectbox" options-class="demo-selectbox-options" title="Select this" multiple>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+            <option value="10">Ten</option>
+        </select>
+        
+    </body>
+</html>
