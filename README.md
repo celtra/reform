@@ -6,6 +6,8 @@ Have you spent the last 15 years wishing browsers wouldn't force their style on 
 Instructions
 ------------
 
+All the files you need are in the `build` folder.
+
  1. Download `reform.js` (or `reform.min.js`) and include it in your HTML file.
  2. Optionally, download and include `reform.css` for default style (recommended).
  3. Whenever you want custom form elements, do this:
@@ -75,3 +77,13 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
+Development
+-----------
+
+  - You need Node.js 0.4.12 or up and NPM 1.0.106 or up.
+  - Run `npm install -g` in root to install dev dependencies:
+    - CoffeeScript 1.2.0 or up
+    - Browserify 1.9.2 or up
+    - Uglify.js 1.2.5 or up
+  - Source files are located in `src` and `css` for CoffeeScript and CSS, respectively.
+  - Run `bin/build` to build `reform.js`, `reform.min.js` and `reform.css`.

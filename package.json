@@ -1,0 +1,21 @@
+{
+  "name": "reform",
+  "preferGlobal": "true",
+  "version": "0.1.0",
+  "author": "Rod Petrovic <me@rodpetrovic.com>",
+  "description": "HTML forms the way you want them",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodejitsu/http-server.git"
+  },
+  "devDependencies": {
+    "coffee-script" : ">=1.2.0",
+    "browserify"    : ">=1.9.2",
+    "uglify-js"     : ">=1.2.5"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4.12"
+  }
+}
