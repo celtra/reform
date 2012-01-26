@@ -70,7 +70,7 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
-Dependancies
+Dependencies
 ------------
 
   - jQuery 1.7+
