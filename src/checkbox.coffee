@@ -9,7 +9,8 @@ class CheckBox
         # Fake check box
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
-        @fake.removeClass("checkbox").addClass("checkbox-fake")
+        @orig.hide().attr "class", ""
+        @fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake")
         @fake.addClass "checked"  if @orig.is ":checked"
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass "radio"    if @orig.is ":radio"

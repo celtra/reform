@@ -356,7 +356,8 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       }
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
-      this.fake.removeClass("checkbox").addClass("checkbox-fake");
+      this.orig.hide().attr("class", "");
+      this.fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake");
       if (this.orig.is(":checked")) this.fake.addClass("checked");
       if (this.orig.is(":disabled")) this.fake.addClass("disabled");
       if (this.orig.is(":radio")) this.fake.addClass("radio");
@@ -410,12 +411,13 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.body = $("body");
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
-      this.fake.removeClass("selectbox").addClass("selectbox-fake");
+      this.orig.hide().attr("class", "");
+      this.fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake");
       if (this.orig.is(":disabled")) this.fake.addClass("disabled");
       this.refresh();
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = $("<div/>");
-      this.floater.attr("class", "selectbox-options");
+      this.floater.attr("class", "reform-selectbox-options");
       this.floater.addClass(this.orig.attr("options-class"));
       this.body.append(this.floater);
       this.fake.on("click", function(e) {
@@ -441,12 +443,12 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       var _this = this;
       this.orig.trigger("selectbox.open");
       $list = $("<div/>").appendTo(this.floater);
-      $list.attr("class", "selectbox-list");
+      $list.attr("class", "reform-selectbox-list");
       this.orig.find("option").each(function(i, option) {
         var $item, $option;
         $option = $(option);
         $item = $("<div/>");
-        $item.attr("class", "selectbox-item");
+        $item.attr("class", "reform-selectbox-item");
         if ($option.is(":selected")) $item.addClass("selected");
         $item.attr("value", $option.val());
         $item.text($option.text());
@@ -463,7 +465,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
             $item.siblings().andSelf().removeClass("selected");
             $item.addClass("selected");
           }
-          values = $item.parent().find(".selectbox-item.selected").map(function() {
+          values = $item.parent().find(".reform-selectbox-item.selected").map(function() {
             return $(this).val();
           });
           _this.orig.val(values);
@@ -493,7 +495,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         return $(this).text();
       }).get().join(", ");
       if (title.length === 0) title = this.orig.attr("title");
-      if (title.length === 0) title = "Sumpin";
+      if (title.length === 0) title = "Select";
       this.fake.contents().filter(function() {
         return this.nodeType === Node.TEXT_NODE;
       }).remove();
@@ -512,22 +514,18 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 
 require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var CheckBox, SelectBox, classes;
+  var controls;
 
-  CheckBox = require("./checkbox");
-
-  SelectBox = require("./selectbox");
-
-  classes = {
-    "checkbox": CheckBox,
-    "selectbox": SelectBox
+  controls = {
+    "reform-checkbox": require("./checkbox"),
+    "reform-selectbox": require("./selectbox")
   };
 
   $(document).on("ready", function() {
     var cls, control, node, _results;
     _results = [];
-    for (cls in classes) {
-      control = classes[cls];
+    for (cls in controls) {
+      control = controls[cls];
       _results.push((function() {
         var _i, _len, _ref, _results2;
         _ref = $("." + cls);
@@ -547,8 +545,8 @@ require.define("/reform.coffee", function (require, module, exports, __dirname, 
     node = e.target;
     $node = $(node);
     _results = [];
-    for (cls in classes) {
-      control = classes[cls];
+    for (cls in controls) {
+      control = controls[cls];
       _results.push((!$node.parent().hasClass("" + cls + "-fake") ? $node.hasClass(cls) : void 0) ? new control(node) : void 0);
     }
     return _results;

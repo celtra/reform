@@ -1,8 +1,8 @@
-input.checkbox {
+.reform-checkbox {
     display: none;
 }
 
-.checkbox-fake {
+.reform-checkbox-fake {
     position: relative;
     display: inline-block;
     width: 38px;
@@ -12,14 +12,14 @@ input.checkbox {
     vertical-align: middle;
 }
 
-.checkbox-fake.radio,
-.checkbox-fake.radio.checked:before {
+.reform-checkbox-fake.radio,
+.reform-checkbox-fake.radio.checked:before {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
 }
 
-.checkbox-fake.checked:before {
+.reform-checkbox-fake.checked:before {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -30,10 +30,10 @@ input.checkbox {
     background: #333;
 }
 
-.checkbox-fake.disabled {
+.reform-checkbox-fake.disabled {
     background-color: #eee;
 }
 
-.checkbox-fake.disabled.checked:before {
+.reform-checkbox-fake.disabled.checked:before {
     background-color: #ccc;
 }

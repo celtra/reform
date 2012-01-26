@@ -9,14 +9,15 @@ class SelectBox
         # Fake select box
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
-        @fake.removeClass("selectbox").addClass("selectbox-fake")
+        @orig.hide().attr "class", ""
+        @fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake")
         @fake.addClass "disabled" if @orig.is ":disabled"
         @refresh()
         @orig.after(@fake).appendTo(@fake)
         
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "selectbox-options"
+        @floater.attr "class", "reform-selectbox-options"
         @floater.addClass @orig.attr "options-class"
         @body.append @floater
         
@@ -42,13 +43,13 @@ class SelectBox
         
         # List container
         $list = $("<div/>").appendTo @floater
-        $list.attr "class", "selectbox-list"
+        $list.attr "class", "reform-selectbox-list"
         
         # Filling options
         @orig.find("option").each (i, option) =>
             $option = $ option
             $item = $ "<div/>"
-            $item.attr "class", "selectbox-item"
+            $item.attr "class", "reform-selectbox-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.attr "value", $option.val()
             $item.text $option.text()
@@ -67,7 +68,7 @@ class SelectBox
                     $item.addClass("selected")
                 
                 # Update values
-                values = $item.parent().find(".selectbox-item.selected").map -> $(@).val()
+                values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
                 @orig.val values
                 @refresh()
         
@@ -94,7 +95,7 @@ class SelectBox
     refresh: =>
         title = @orig.find("option:selected").map(-> $(@).text()).get().join ", "
         title = @orig.attr "title" if title.length is 0
-        title = "Sumpin" if title.length is 0
+        title = "Select" if title.length is 0
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
         @fake.append document.createTextNode title
 

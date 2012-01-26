@@ -1,8 +1,8 @@
-select.selectbox {
+.reform-selectbox {
     display: none;
 }
 
-.selectbox-fake {
+.reform-selectbox-fake {
     position: relative;
     display: inline-block;
     width: 200px;
@@ -24,7 +24,7 @@ select.selectbox {
     user-select: none;
 }
 
-.selectbox-fake:after {
+.reform-selectbox-fake:after {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -38,11 +38,11 @@ select.selectbox {
     border-top: 8px solid #333;
 }
 
-.selectbox-fake.disabled {
+.reform-selectbox-fake.disabled {
     background-color: #eee;
 }
 
-.selectbox-options {
+.reform-selectbox-options {
     display: none;
     position: absolute;
     width: 240px;
@@ -53,21 +53,21 @@ select.selectbox {
     box-shadow: 0 0 10px #ccc;
 }
 
-.selectbox-item {
+.reform-selectbox-item {
     border-bottom: solid 1px #eee;
     padding: 10px;
     cursor: pointer;
 }
 
-.selectbox-item:last-child {
+.reform-selectbox-item:last-child {
     border-bottom: none;
 }
 
-.selectbox-item:hover {
+.reform-selectbox-item:hover {
     background: #eee;
 }
 
-.selectbox-item.selected {
+.reform-selectbox-item.selected {
     background: #333;
     color: #fff;
 }

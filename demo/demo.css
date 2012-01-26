@@ -47,24 +47,24 @@ label {
     color: #333;
 }
 
-.demo-selectbox-options .selectbox-list {
+.demo-selectbox-options .reform-selectbox-list {
     border-top: solid 1px #ccc;
 }
 
-.demo-selectbox-options .selectbox-item {
+.demo-selectbox-options .reform-selectbox-item {
     border-bottom: solid 1px #ccc;
     padding: 10px 4px;
 }
 
-.demo-selectbox-options .selectbox-item:last-child {
+.demo-selectbox-options .reform-selectbox-item:last-child {
     border: default;
 }
 
-.demo-selectbox-options .selectbox-item:hover {
+.demo-selectbox-options .reform-selectbox-item:hover {
     background: #ffd;
 }
 
-.demo-selectbox-options .selectbox-item.selected {
+.demo-selectbox-options .reform-selectbox-item.selected {
     background: #333;
     color: #fff;
 }

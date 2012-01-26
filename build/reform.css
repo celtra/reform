@@ -1,8 +1,8 @@
-input.checkbox {
+.reform-checkbox {
     display: none;
 }
 
-.checkbox-fake {
+.reform-checkbox-fake {
     position: relative;
     display: inline-block;
     width: 38px;
@@ -12,14 +12,14 @@ input.checkbox {
     vertical-align: middle;
 }
 
-.checkbox-fake.radio,
-.checkbox-fake.radio.checked:before {
+.reform-checkbox-fake.radio,
+.reform-checkbox-fake.radio.checked:before {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
 }
 
-.checkbox-fake.checked:before {
+.reform-checkbox-fake.checked:before {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -30,17 +30,17 @@ input.checkbox {
     background: #333;
 }
 
-.checkbox-fake.disabled {
+.reform-checkbox-fake.disabled {
     background-color: #eee;
 }
 
-.checkbox-fake.disabled.checked:before {
+.reform-checkbox-fake.disabled.checked:before {
     background-color: #ccc;
-}select.selectbox {
+}.reform-selectbox {
     display: none;
 }
 
-.selectbox-fake {
+.reform-selectbox-fake {
     position: relative;
     display: inline-block;
     width: 200px;
@@ -62,7 +62,7 @@ input.checkbox {
     user-select: none;
 }
 
-.selectbox-fake:after {
+.reform-selectbox-fake:after {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -76,11 +76,11 @@ input.checkbox {
     border-top: 8px solid #333;
 }
 
-.selectbox-fake.disabled {
+.reform-selectbox-fake.disabled {
     background-color: #eee;
 }
 
-.selectbox-options {
+.reform-selectbox-options {
     display: none;
     position: absolute;
     width: 240px;
@@ -91,21 +91,21 @@ input.checkbox {
     box-shadow: 0 0 10px #ccc;
 }
 
-.selectbox-item {
+.reform-selectbox-item {
     border-bottom: solid 1px #eee;
     padding: 10px;
     cursor: pointer;
 }
 
-.selectbox-item:last-child {
+.reform-selectbox-item:last-child {
     border-bottom: none;
 }
 
-.selectbox-item:hover {
+.reform-selectbox-item:hover {
     background: #eee;
 }
 
-.selectbox-item.selected {
+.reform-selectbox-item.selected {
     background: #333;
     color: #fff;
 }
