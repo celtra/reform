@@ -77,11 +77,34 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
+NPM package
+----------
+
+To use Reform as a CommonJS module (e.g. to use some Node.js tool, such as Browserify, to package your app), you should install the NPM module:
+
+    npm install reform
+
+You can then require Reform:
+
+    Reform = require("reform");
+
+To use it in your application, you should instantiate a Reform object:
+
+    reform = new Reform;
+
+You can then either process nodes individually:
+
+    reform.process(document.body);
+
+The easy way is just to "observe" the DOM for any custom controls being inserted:
+
+    reform.observe();
+
 Development
 -----------
 
   - You need Node.js 0.4.12 or up and NPM 1.0.106 or up.
-  - Run `npm install -g` in root to install dev dependencies:
+  - Run `npm install -dev` in root to install dev dependencies:
     - CoffeeScript 1.2.0 or up
     - Browserify 1.9.2 or up
     - Uglify.js 1.2.5 or up
