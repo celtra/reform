@@ -340,10 +340,71 @@ exports.extname = function(path) {
 
 });
 
+require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
+(function() {
+  var CheckBox, Reform, SelectBox;
+
+  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
+
+  CheckBox = require("./checkbox");
+
+  SelectBox = require("./selectbox");
+
+  Reform = (function() {
+
+    function Reform() {}
+
+    Reform.prototype.process = function(node) {
+      var cls, control, n, _ref, _results;
+      _ref = Reform.controls;
+      _results = [];
+      for (cls in _ref) {
+        control = _ref[cls];
+        _results.push((function() {
+          var _i, _len, _ref2, _results2;
+          _ref2 = $(node).parent().find(":not(." + cls + "-fake) > ." + cls);
+          _results2 = [];
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            n = _ref2[_i];
+            _results2.push(new control(n));
+          }
+          return _results2;
+        })());
+      }
+      return _results;
+    };
+
+    Reform.prototype.observe = function() {
+      var _this = this;
+      $(document).on("ready", function() {
+        return _this.process("body");
+      });
+      return $(document).on("DOMNodeInserted", function(e) {
+        return _this.process(e.target);
+      });
+    };
+
+    return Reform;
+
+  })();
+
+  Reform.controls = {
+    "reform-checkbox": CheckBox,
+    "reform-selectbox": SelectBox
+  };
+
+  module.exports = Reform;
+
+}).call(this);
+
+});
+
 require.define("/checkbox.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var CheckBox;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
 
   CheckBox = (function() {
 
@@ -398,6 +459,8 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 (function() {
   var SelectBox;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
 
   SelectBox = (function() {
 
@@ -512,47 +575,17 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 
 });
 
-require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
+require.define("/init.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
-  var controls;
+  var Reform, reform;
 
-  controls = {
-    "reform-checkbox": require("./checkbox"),
-    "reform-selectbox": require("./selectbox")
-  };
+  Reform = require("./reform");
 
-  $(document).on("ready", function() {
-    var cls, control, node, _results;
-    _results = [];
-    for (cls in controls) {
-      control = controls[cls];
-      _results.push((function() {
-        var _i, _len, _ref, _results2;
-        _ref = $("." + cls);
-        _results2 = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          node = _ref[_i];
-          _results2.push(new control(node));
-        }
-        return _results2;
-      })());
-    }
-    return _results;
-  });
+  reform = new Reform;
 
-  $(document).on("DOMNodeInserted", function(e) {
-    var $node, cls, control, node, _results;
-    node = e.target;
-    $node = $(node);
-    _results = [];
-    for (cls in controls) {
-      control = controls[cls];
-      _results.push((!$node.parent().hasClass("" + cls + "-fake") ? $node.hasClass(cls) : void 0) ? new control(node) : void 0);
-    }
-    return _results;
-  });
+  reform.observe();
 
 }).call(this);
 
 });
-require("/reform.coffee");
+require("/init.coffee");

@@ -1,3 +1,5 @@
+$ ?= require "jquery-commonjs"
+
 # Implements custom select boxes
 class SelectBox
     

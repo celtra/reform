@@ -1,5 +1,6 @@
 #!/bin/bash
 
 cat css/*.css > build/reform.css
-browserify -e src/reform.coffee -o build/reform.js
+coffee -o lib src
+browserify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
 uglifyjs -o build/reform.min.js build/reform.js

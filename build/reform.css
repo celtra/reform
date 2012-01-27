@@ -36,7 +36,8 @@
 
 .reform-checkbox-fake.disabled.checked:before {
     background-color: #ccc;
-}.reform-selectbox {
+}
+.reform-selectbox {
     display: none;
 }
 

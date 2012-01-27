@@ -1,12 +1,20 @@
+$        ?= require "jquery-commonjs"
+CheckBox  = require "./checkbox"
+SelectBox = require "./selectbox"
+
+# This class does the magic
+class Reform
+    process: (node) ->
+        (new control n for n in $(node).parent().find ":not(.#{cls}-fake) > .#{cls}") for cls, control of Reform.controls
+    
+    # Process static elements
+    observe: ->
+        $(document).on "ready",               => @process "body"
+        $(document).on "DOMNodeInserted", (e) => @process e.target
+    
 # Posible custom controls
-controls =
-    "reform-checkbox"  : require "./checkbox"
-    "reform-selectbox" : require "./selectbox"
+Reform.controls =
+    "reform-checkbox"  : CheckBox
+    "reform-selectbox" : SelectBox
 
-$(document).on "ready", ->
-    (new control node for node in $ ".#{cls}") for cls, control of controls
-
-$(document).on "DOMNodeInserted", (e) ->
-    node = e.target
-    $node = $ node
-    (new control node if $node.hasClass cls unless $node.parent().hasClass "#{cls}-fake") for cls, control of controls
+module.exports = Reform
