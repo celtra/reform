@@ -484,8 +484,8 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.floater.addClass(this.orig.attr("options-class"));
       this.body.append(this.floater);
       this.fake.on("click", function(e) {
-        e.stopPropagation();
         if (_this.orig.is(":disabled")) return;
+        e.stopPropagation();
         if (_this.floater.is(":empty")) {
           return _this.open();
         } else {
@@ -538,7 +538,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       $(document).one("click", this.close);
       this.floater.show();
       $window = $(window);
-      pos = this.fake.position();
+      pos = this.fake.offset();
       if (pos.top + this.floater.outerHeight() > $window.height()) {
         pos.top = pos.top - this.floater.outerHeight() + this.fake.outerHeight();
       }

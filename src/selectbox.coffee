@@ -25,8 +25,8 @@ class SelectBox
         
         # Click opens the options container
         @fake.on "click", (e) =>
-            e.stopPropagation()
             return if @orig.is ":disabled"
+            e.stopPropagation()
             if @floater.is(":empty") then @open() else @close()
         
         # Prevent text selection
@@ -82,7 +82,7 @@ class SelectBox
         
         # Position the options layer
         $window = $ window
-        pos = @fake.position()
+        pos = @fake.offset()
         if pos.top + @floater.outerHeight() > $window.height()
             pos.top = pos.top - @floater.outerHeight() + @fake.outerHeight()
         if pos.left + @floater.outerWidth() > $window.width()
