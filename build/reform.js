@@ -362,7 +362,7 @@ require.define("/reform.coffee", function (require, module, exports, __dirname, 
         control = _ref[cls];
         _results.push((function() {
           var _i, _len, _ref2, _results2;
-          _ref2 = $(node).parent().find(":not(." + cls + "-fake) > ." + cls);
+          _ref2 = $(node).parent().find("." + cls);
           _results2 = [];
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             n = _ref2[_i];
@@ -412,12 +412,13 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.refresh = __bind(this.refresh, this);
       var _this = this;
       this.orig = $(input);
+      if (this.orig.is(".reformed")) return;
       if (this.orig.is(":radio")) {
         this.siblings = $("[name='" + (this.orig.attr("name")) + "']").not(this.orig);
       }
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
-      this.orig.hide().attr("class", "");
+      this.orig.hide().attr("class", "reformed");
       this.fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake");
       if (this.orig.is(":checked")) this.fake.addClass("checked");
       if (this.orig.is(":disabled")) this.fake.addClass("disabled");
@@ -471,10 +472,11 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.close = __bind(this.close, this);
       this.open = __bind(this.open, this);
       this.orig = $(this.select);
+      if (this.orig.is(".reformed")) return;
       this.body = $("body");
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
-      this.orig.hide().attr("class", "");
+      this.orig.hide().attr("class", "reformed");
       this.fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake");
       if (this.orig.is(":disabled")) this.fake.addClass("disabled");
       this.refresh();

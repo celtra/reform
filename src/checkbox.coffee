@@ -6,12 +6,16 @@ class CheckBox
     # Generating a fake check/radio box from a real one
     constructor: (input) ->
         @orig = $ input
+        
+        # Don't do this twice
+        return if @orig.is ".reformed"
+        
         @siblings = $("[name='#{@orig.attr "name"}']").not(@orig) if @orig.is ":radio"
         
         # Fake check box
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
-        @orig.hide().attr "class", ""
+        @orig.hide().attr "class", "reformed"
         @fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake")
         @fake.addClass "checked"  if @orig.is ":checked"
         @fake.addClass "disabled" if @orig.is ":disabled"

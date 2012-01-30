@@ -5,7 +5,7 @@ SelectBox = require "./selectbox"
 # This class does the magic
 class Reform
     process: (node) ->
-        (new control n for n in $(node).parent().find ":not(.#{cls}-fake) > .#{cls}") for cls, control of Reform.controls
+        (new control n for n in $(node).parent().find ".#{cls}") for cls, control of Reform.controls
     
     # Process static elements
     observe: ->

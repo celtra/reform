@@ -6,12 +6,16 @@ class SelectBox
     # Generating a fake select box from a real one
     constructor: (@select) ->
         @orig = $ @select
+        
+        # Don't do this twice
+        return if @orig.is ".reformed"
+        
         @body = $ "body"
         
         # Fake select box
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
-        @orig.hide().attr "class", ""
+        @orig.hide().attr "class", "reformed"
         @fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake")
         @fake.addClass "disabled" if @orig.is ":disabled"
         @refresh()
