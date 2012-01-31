@@ -100,8 +100,8 @@ class SelectBox
     # Set the title of the fake select box
     refresh: =>
         title = @orig.find("option:selected").map(-> $(@).text()).get().join ", "
-        title = @orig.attr "title" if title.length is 0
-        title = "Select" if title.length is 0
+        title = @orig.attr "title" unless title
+        title = "Select" unless title
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
         @fake.append document.createTextNode title
 
