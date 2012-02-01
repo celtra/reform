@@ -16,11 +16,11 @@ class CheckBox
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
         @orig.hide().attr "class", "reformed"
-        @fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake")
+        @fake.removeClass("reform-checkbox").addClass "reform-checkbox-fake"
         @fake.addClass "checked"  if @orig.is ":checked"
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass "radio"    if @orig.is ":radio"
-        @orig.after(@fake).appendTo(@fake)
+        @orig.after(@fake).appendTo @fake
         
         # When the fake check box is clicked, just pass it to the original
         @fake.on "click", => @orig.trigger "click"

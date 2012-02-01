@@ -16,10 +16,10 @@ class SelectBox
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
         @orig.hide().attr "class", "reformed"
-        @fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake")
+        @fake.removeClass("reform-selectbox").addClass "reform-selectbox-fake"
         @fake.addClass "disabled" if @orig.is ":disabled"
         @refresh()
-        @orig.after(@fake).appendTo(@fake)
+        @orig.after(@fake).appendTo @fake
         
         # Options container
         @floater = $ "<div/>"
@@ -40,7 +40,7 @@ class SelectBox
         @orig.on "change", @refresh
         
         # Close any other open options containers
-        @body.on "selectbox.open", (e) => @close() unless e.target == @select
+        @body.on "selectbox.open", (e) => @close() unless e.target is @select
     
     # Generates and opens the options container
     open: =>
@@ -70,8 +70,8 @@ class SelectBox
                     $item.toggleClass "selected"
                     e.stopPropagation()
                 else
-                    $item.siblings().andSelf().removeClass("selected")
-                    $item.addClass("selected")
+                    $item.siblings().andSelf().removeClass "selected"
+                    $item.addClass "selected"
                 
                 # Update values
                 values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
