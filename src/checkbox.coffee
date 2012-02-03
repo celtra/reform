@@ -22,8 +22,18 @@ class CheckBox
         @fake.addClass "radio"    if @orig.is ":radio"
         @orig.after(@fake).appendTo @fake
         
-        # When the fake check box is clicked, just pass it to the original
-        @fake.on "click", => @orig.trigger "click"
+        # When the fake check box is clicked, fake a click on the original
+        
+        @fake.on "click", (e, skip) =>
+            return if skip
+            e.stopPropagation()
+            # Trigger a click on the original (this one won't bubble)
+            @orig.trigger "click"
+            # Bubble a fake event
+            fe = $.Event "click"
+            fe.target = @orig[0]
+            fe.currentTarget = @fake[0]
+            @fake.trigger fe, yes
         
         # Original is clicked
         @orig.on "click", (e) =>
