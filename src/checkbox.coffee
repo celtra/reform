@@ -31,8 +31,8 @@ class CheckBox
             @orig.trigger "click"
             # Bubble a fake event
             fe = $.Event "click"
-            fe.target = @orig[0]
-            fe.currentTarget = @fake[0]
+            fe.target = @orig.get 0
+            fe.currentTarget = @fake.get 0
             @fake.trigger fe, yes
         
         # Original is clicked
@@ -45,7 +45,7 @@ class CheckBox
         @fake.on "mousedown", (e) -> e.preventDefault()
         
         # Replicate changes from the original check box to the fake one
-        @orig.on "change DOMAttrModified", @refresh
+        @orig.on "change DOMSubtreeModified", => setTimeout @refresh, 0
     
     # Replicate the original's state to the fake one
     refresh: =>

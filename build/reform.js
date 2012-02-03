@@ -340,26 +340,9 @@ exports.extname = function(path) {
 
 });
 
-require.define("/element.coffee", function (require, module, exports, __dirname, __filename) {
-
-  Element.prototype._setAttribute = Element.prototype.setAttribute;
-
-  Element.prototype.setAttribute = function(name, val) {
-    var e, prev;
-    e = document.createEvent("MutationEvents");
-    prev = this.getAttribute(name);
-    this._setAttribute(name, val);
-    e.initMutationEvent("DOMAttrModified", true, true, null, prev, val, name, 2);
-    return this.dispatchEvent(e);
-  };
-
-});
-
 require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var CheckBox, Reform, SelectBox;
-
-  require("./element");
 
   if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
 
@@ -447,8 +430,8 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
         e.stopPropagation();
         _this.orig.trigger("click");
         fe = $.Event("click");
-        fe.target = _this.orig[0];
-        fe.currentTarget = _this.fake[0];
+        fe.target = _this.orig.get(0);
+        fe.currentTarget = _this.fake.get(0);
         return _this.fake.trigger(fe, true);
       });
       this.orig.on("click", function(e) {
@@ -462,7 +445,9 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change DOMAttrModified", this.refresh);
+      this.orig.on("change DOMSubtreeModified", function() {
+        return setTimeout(_this.refresh, 0);
+      });
     }
 
     CheckBox.prototype.refresh = function() {
@@ -604,8 +589,6 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 require.define("/init.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Reform, reform;
-
-  require("./element");
 
   Reform = require("./reform");
 
