@@ -340,9 +340,26 @@ exports.extname = function(path) {
 
 });
 
+require.define("/element.coffee", function (require, module, exports, __dirname, __filename) {
+
+  Element.prototype._setAttribute = Element.prototype.setAttribute;
+
+  Element.prototype.setAttribute = function(name, val) {
+    var e, prev;
+    e = document.createEvent("MutationEvents");
+    prev = this.getAttribute(name);
+    this._setAttribute(name, val);
+    e.initMutationEvent("DOMAttrModified", true, true, null, prev, val, name, 2);
+    return this.dispatchEvent(e);
+  };
+
+});
+
 require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
 (function() {
   var CheckBox, Reform, SelectBox;
+
+  require("./element");
 
   if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
 
@@ -445,7 +462,7 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change", this.refresh);
+      this.orig.on("change DOMAttrModified", this.refresh);
     }
 
     CheckBox.prototype.refresh = function() {
@@ -587,6 +604,8 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 require.define("/init.coffee", function (require, module, exports, __dirname, __filename) {
     (function() {
   var Reform, reform;
+
+  require("./element");
 
   Reform = require("./reform");
 

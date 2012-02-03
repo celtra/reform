@@ -1,3 +1,5 @@
+require "./element"
+
 $        ?= require "jquery-commonjs"
 CheckBox  = require "./checkbox"
 SelectBox = require "./selectbox"
