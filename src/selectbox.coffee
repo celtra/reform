@@ -24,6 +24,7 @@ class SelectBox
         # Options container
         @floater = $ "<div/>"
         @floater.attr "class", "reform-selectbox-options"
+        @floater.css "min-width", @fake.outerWidth()
         @floater.addClass @orig.attr "options-class"
         @body.append @floater
         

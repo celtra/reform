@@ -84,7 +84,6 @@
 .reform-selectbox-options {
     display: none;
     position: absolute;
-    width: 240px;
     max-height: 200px;
     overflow-y: auto;
     border: solid 1px #ccc;

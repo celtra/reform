@@ -492,6 +492,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = $("<div/>");
       this.floater.attr("class", "reform-selectbox-options");
+      this.floater.css("min-width", this.fake.outerWidth());
       this.floater.addClass(this.orig.attr("options-class"));
       this.body.append(this.floater);
       this.fake.on("click", function(e) {
