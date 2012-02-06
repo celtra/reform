@@ -542,7 +542,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
           values = $item.parent().find(".reform-selectbox-item.selected").map(function() {
             return $(this).val();
           });
-          _this.orig.val(values);
+          _this.orig.val(values).trigger("change");
           return _this.refresh();
         });
       });

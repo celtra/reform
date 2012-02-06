@@ -75,7 +75,7 @@ class SelectBox
                 
                 # Update values
                 values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
-                @orig.val values
+                @orig.val(values).trigger "change"
                 @refresh()
         
         # Click closes the options layer
