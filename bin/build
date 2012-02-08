@@ -1,7 +1,18 @@
 #!/bin/bash
 
 cat css/*.css > build/reform.css
+echo "Merged CSS"
+
 coffee -o lib src
+echo "Compiled lib"
+
 browserify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
-coffee -j build/test.js -c test/*.coffee
+echo "Compiled standalone"
+
 uglifyjs -o build/reform.min.js build/reform.js
+echo "Minified standalone"
+
+coffee -j build/test.js -c test/*.coffee
+echo "Compiled tests"
+
+echo "All done :)"
