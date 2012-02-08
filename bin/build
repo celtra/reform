@@ -3,4 +3,5 @@
 cat css/*.css > build/reform.css
 coffee -o lib src
 browserify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
+coffee -j build/test.js -c test/*.coffee
 uglifyjs -o build/reform.min.js build/reform.js
