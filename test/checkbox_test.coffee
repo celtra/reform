@@ -1,26 +1,26 @@
 CheckBox = require "/checkbox.coffee"
 
-module "checkbox"
+module "CheckBox"
 
 # Preparation
 $orig = null
 $fake = null
-prepare = (attrs = "") ->
+setup = (attrs = "") ->
     $orig = $ "<input type=\"checkbox\" class=\"reform-checkbox\" #{attrs}>"
-    $orig.appendTo "body"
+    $orig.appendTo "#qunit-fixture"
     new CheckBox $orig.get(0)
     $fake = $orig.parent()
 
 test "The fake wraps the original", 1, ->
-    prepare()
+    setup()
     ok $fake.is(".reform-checkbox-fake"), "Parent should be the fake"
 
 test "Fake gets the 'disabled' class when disabled", 1, ->
-    prepare "disabled"
+    setup "disabled"
     ok $fake.is(".disabled"), "Fake should have class 'disabled'"
 
 asyncTest "Fake gets the 'checked' class when checked", 1, ->
-    prepare()
+    setup()
     $fake.trigger "click"
     setTimeout (->
         ok $fake.is(".checked"), "Fake should have class 'checked'"
@@ -28,7 +28,7 @@ asyncTest "Fake gets the 'checked' class when checked", 1, ->
     ), 0
 
 asyncTest "States must match before and after the fake is clicked", 2, ->
-    prepare()
+    setup()
     match = ->
         ok $fake.is(".checked") is $orig.is(":checked"), "States should be the same"
         start()
@@ -37,7 +37,7 @@ asyncTest "States must match before and after the fake is clicked", 2, ->
     setTimeout match, 0
 
 asyncTest "Clicking the fake triggers click on the original", 1, ->
-    prepare()
+    setup()
     outcome = (clicked) ->
         clearTimeout t
         ok clicked, "Original should be clicked"
