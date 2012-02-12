@@ -27,9 +27,9 @@
     return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
   });
 
-  asyncTest("Fake gets the 'checked' class when checked", 1, function() {
+  asyncTest("Fake gets the 'checked' class", 1, function() {
     setup();
-    $fake.trigger("click");
+    $orig.attr("checked", true).trigger("change");
     return setTimeout((function() {
       ok($fake.is(".checked"), "Fake should have class 'checked'");
       return start();
@@ -44,21 +44,8 @@
       return start();
     };
     match();
-    $fake.trigger("click");
+    $orig.attr("checked", true).trigger("change");
     return setTimeout(match, 0);
-  });
-
-  asyncTest("Clicking the fake triggers click on the original", 1, function() {
-    var outcome, t;
-    setup();
-    outcome = function(clicked) {
-      clearTimeout(t);
-      ok(clicked, "Original should be clicked");
-      return start();
-    };
-    $orig.on("click", outcome);
-    t = setTimeout(outcome, 10);
-    return $fake.trigger("click");
   });
 
 }).call(this);

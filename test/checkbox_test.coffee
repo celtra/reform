@@ -19,9 +19,10 @@ test "Fake gets the 'disabled' class when disabled", 1, ->
     setup "disabled"
     ok $fake.is(".disabled"), "Fake should have class 'disabled'"
 
-asyncTest "Fake gets the 'checked' class when checked", 1, ->
+
+asyncTest "Fake gets the 'checked' class", 1, ->
     setup()
-    $fake.trigger "click"
+    $orig.attr("checked", yes).trigger "change"
     setTimeout (->
         ok $fake.is(".checked"), "Fake should have class 'checked'"
         start()
@@ -33,15 +34,5 @@ asyncTest "States must match before and after the fake is clicked", 2, ->
         ok $fake.is(".checked") is $orig.is(":checked"), "States should be the same"
         start()
     match()
-    $fake.trigger "click"
+    $orig.attr("checked", yes).trigger "change"
     setTimeout match, 0
-
-asyncTest "Clicking the fake triggers click on the original", 1, ->
-    setup()
-    outcome = (clicked) ->
-        clearTimeout t
-        ok clicked, "Original should be clicked"
-        start()
-    $orig.on "click", outcome
-    t = setTimeout outcome, 10
-    $fake.trigger "click"

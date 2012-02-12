@@ -12,6 +12,10 @@
     vertical-align: middle;
 }
 
+.reform-checkbox-fake:focus {
+    background: red;
+}
+
 .reform-checkbox-fake.radio,
 .reform-checkbox-fake.radio.checked:before {
     -webkit-border-radius: 50%;
