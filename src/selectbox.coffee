@@ -38,7 +38,7 @@ class SelectBox
         @fake.on "mousedown", (e) -> e.preventDefault()
         
         # Replicate changes from the original select box to the fake one
-        @orig.on "change", @refresh
+        @orig.on "change DOMSubtreeModified", @refresh
         
         # Close any other open options containers
         @body.on "selectbox.open", (e) => @close() unless e.target is @select

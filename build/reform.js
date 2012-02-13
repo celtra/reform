@@ -430,9 +430,6 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.orig.on("change DOMSubtreeModified", function() {
         return setTimeout(_this.refresh, 0);
       });
-      this.orig.on("change", function() {
-        return console.log($(this).is(":checked"));
-      });
     }
 
     CheckBox.prototype.refresh = function() {
@@ -496,7 +493,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change", this.refresh);
+      this.orig.on("change DOMSubtreeModified", this.refresh);
       this.body.on("selectbox.open", function(e) {
         if (e.target !== _this.select) return _this.close();
       });
