@@ -28,8 +28,6 @@ class CheckBox
         
         # Replicate changes from the original check box to the fake one
         @orig.on "change DOMSubtreeModified", => setTimeout @refresh, 0
-        
-        @orig.on "change", -> console.log $(@).is ":checked"
     
     # Replicate the original's state to the fake one
     refresh: =>
