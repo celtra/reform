@@ -38,7 +38,7 @@ class SelectBox
         @fake.on "mousedown", (e) -> e.preventDefault()
         
         # Replicate changes from the original select box to the fake one
-        @orig.on "change DOMSubtreeModified", @refresh
+        @orig.on "change DOMNodeInserted DOMNodeRemoved", @refresh
         
         # Close any other open options containers
         @body.on "selectbox.open", (e) => @close() unless e.target is @select
@@ -77,7 +77,6 @@ class SelectBox
                 # Update values
                 values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
                 @orig.val(values).trigger "change"
-                @refresh()
         
         # Click closes the options layer
         $(document).one "click", @close
