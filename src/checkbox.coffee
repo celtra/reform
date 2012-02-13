@@ -27,7 +27,7 @@ class CheckBox
         @fake.on "mousedown", (e) -> e.preventDefault()
         
         # Replicate changes from the original check box to the fake one
-        @orig.on "change DOMAttrModified", => setTimeout @refresh, 0
+        @orig.on "change DOMSubtreeModified", => setTimeout @refresh, 0
     
     # Replicate the original's state to the fake one
     refresh: =>

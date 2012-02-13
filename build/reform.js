@@ -427,7 +427,7 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change DOMAttrModified", function() {
+      this.orig.on("change DOMSubtreeModified", function() {
         return setTimeout(_this.refresh, 0);
       });
     }
