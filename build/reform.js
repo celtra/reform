@@ -494,7 +494,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         return e.preventDefault();
       });
       this.orig.on("change DOMNodeInserted DOMNodeRemoved", this.refresh);
-      this.body.on("selectbox.open", function(e) {
+      this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) return _this.close();
       });
     }
@@ -502,7 +502,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
     SelectBox.prototype.open = function() {
       var $list, $window, pos;
       var _this = this;
-      this.orig.trigger("selectbox.open");
+      this.orig.trigger("reform.open");
       $list = $("<div/>").appendTo(this.floater);
       $list.attr("class", "reform-selectbox-list");
       this.orig.find("option").each(function(i, option) {

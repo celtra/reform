@@ -41,12 +41,12 @@ class SelectBox
         @orig.on "change DOMNodeInserted DOMNodeRemoved", @refresh
         
         # Close any other open options containers
-        @body.on "selectbox.open", (e) => @close() unless e.target is @select
+        @body.on "reform.open", (e) => @close() unless e.target is @select
     
     # Generates and opens the options container
     open: =>
         # Let everyone know we're open
-        @orig.trigger "selectbox.open"
+        @orig.trigger "reform.open"
         
         # List container
         $list = $("<div/>").appendTo @floater
