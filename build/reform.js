@@ -434,6 +434,7 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
 
     CheckBox.prototype.refresh = function() {
       var _ref;
+      this.fake.toggleClass("disabled", this.orig.is(":disabled"));
       this.fake.removeClass("checked");
       if (this.orig.is(":checked")) this.fake.addClass("checked");
       return (_ref = this.siblings) != null ? _ref.each(function() {
@@ -493,7 +494,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change DOMNodeInserted DOMNodeRemoved", this.refresh);
+      this.orig.on("change DOMSubtreeModified", this.refresh);
       this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) return _this.close();
       });
@@ -551,7 +552,10 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
 
     SelectBox.prototype.refresh = function() {
       var title;
-      title = this.orig.find("option:selected").map(function() {
+      this.fake.toggleClass("disabled", this.orig.is(":disabled"));
+      title = this.orig.find("option").filter(function() {
+        return this.selected;
+      }).map(function() {
         return $(this).text();
       }).get().join(", ");
       if (!title) title = this.orig.attr("title");

@@ -31,6 +31,7 @@ class CheckBox
     
     # Replicate the original's state to the fake one
     refresh: =>
+        @fake.toggleClass "disabled", @orig.is ":disabled"
         @fake.removeClass "checked"
         @fake.addClass "checked" if @orig.is ":checked"
         @siblings?.each -> $(@).parent().removeClass "checked"

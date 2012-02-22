@@ -38,7 +38,7 @@ class SelectBox
         @fake.on "mousedown", (e) -> e.preventDefault()
         
         # Replicate changes from the original select box to the fake one
-        @orig.on "change DOMNodeInserted DOMNodeRemoved", @refresh
+        @orig.on "change DOMSubtreeModified", @refresh
         
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -99,7 +99,8 @@ class SelectBox
     
     # Set the title of the fake select box
     refresh: =>
-        title = @orig.find("option:selected").map(-> $(@).text()).get().join ", "
+        @fake.toggleClass "disabled", @orig.is ":disabled"
+        title = @orig.find("option").filter(-> @selected).map(-> $(@).text()).get().join ", "
         title = @orig.attr "title" unless title
         title = "Select" unless title
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
