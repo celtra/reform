@@ -477,15 +477,11 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       if (this.orig.is(":disabled")) this.fake.addClass("disabled");
       this.refresh();
       this.orig.after(this.fake).appendTo(this.fake);
-      this.floater = $("<div/>");
-      this.floater.attr("class", "reform-selectbox-options");
-      this.floater.css("min-width", this.fake.outerWidth());
-      this.floater.addClass(this.orig.attr("options-class"));
-      this.body.append(this.floater);
+      this.floater = null;
       this.fake.on("click", function(e) {
         if (_this.orig.is(":disabled")) return;
         e.stopPropagation();
-        if (_this.floater.is(":empty")) {
+        if (_this.floater === null) {
           return _this.open();
         } else {
           return _this.close();
@@ -498,12 +494,18 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) return _this.close();
       });
+      $('.reform-selectbox-options').remove();
     }
 
     SelectBox.prototype.open = function() {
       var $list, $window, pos;
       var _this = this;
       this.orig.trigger("reform.open");
+      this.floater = $("<div/>");
+      this.floater.attr("class", "reform-selectbox-options");
+      this.floater.css("min-width", this.fake.outerWidth());
+      this.floater.addClass(this.orig.attr("options-class"));
+      this.body.append(this.floater);
       $list = $("<div/>").appendTo(this.floater);
       $list.attr("class", "reform-selectbox-list");
       this.orig.find("option").each(function(i, option) {
@@ -533,7 +535,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
           return _this.orig.val(values).trigger("change");
         });
       });
-      $(document).one("click", this.close);
+      this.body.one("click", this.close);
       this.floater.show();
       $window = $(window);
       pos = this.fake.offset();
@@ -547,7 +549,9 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
     };
 
     SelectBox.prototype.close = function() {
-      return this.floater.hide().empty();
+      var _ref;
+      if ((_ref = this.floater) != null) _ref.remove();
+      return this.floater = null;
     };
 
     SelectBox.prototype.refresh = function() {

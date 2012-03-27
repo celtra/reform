@@ -20,19 +20,15 @@ class SelectBox
         @fake.addClass "disabled" if @orig.is ":disabled"
         @refresh()
         @orig.after(@fake).appendTo @fake
-        
-        # Options container
-        @floater = $ "<div/>"
-        @floater.attr "class", "reform-selectbox-options"
-        @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass @orig.attr "options-class"
-        @body.append @floater
+
+        # This is where options container will be
+        @floater = null
         
         # Click opens the options container
         @fake.on "click", (e) =>
             return if @orig.is ":disabled"
             e.stopPropagation()
-            if @floater.is(":empty") then @open() else @close()
+            if @floater is null then @open() else @close()
         
         # Prevent text selection
         @fake.on "mousedown", (e) -> e.preventDefault()
@@ -42,11 +38,21 @@ class SelectBox
         
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
+
+        # Clean up orphaned options containers
+        $('.reform-selectbox-options').remove()
     
     # Generates and opens the options container
     open: =>
         # Let everyone know we're open
         @orig.trigger "reform.open"
+
+        # Options container
+        @floater = $ "<div/>"
+        @floater.attr "class", "reform-selectbox-options"
+        @floater.css "min-width", @fake.outerWidth()
+        @floater.addClass @orig.attr "options-class"
+        @body.append @floater
         
         # List container
         $list = $("<div/>").appendTo @floater
@@ -79,7 +85,7 @@ class SelectBox
                 @orig.val(values).trigger "change"
         
         # Click closes the options layer
-        $(document).one "click", @close
+        @body.one "click", @close
         
         # Show the options layer
         @floater.show()
@@ -95,7 +101,8 @@ class SelectBox
     
     # Closes the options container
     close: =>
-        @floater.hide().empty()
+        @floater?.remove()
+        @floater = null
     
     # Set the title of the fake select box
     refresh: =>
