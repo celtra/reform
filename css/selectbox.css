@@ -70,3 +70,11 @@
     background: #333;
     color: #fff;
 }
+
+.reform-selectbox-item.disabled {
+    color: #ccc;
+}
+
+.reform-selectbox-item.disabled:hover {
+    background: inherit;
+}

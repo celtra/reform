@@ -514,6 +514,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         $item = $("<div/>");
         $item.attr("class", "reform-selectbox-item");
         if ($option.is(":selected")) $item.addClass("selected");
+        if ($option.is(":disabled")) $item.addClass("disabled");
         $item.attr("value", $option.val());
         $item.text($option.text());
         $item.appendTo($list);
@@ -522,6 +523,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         });
         return $item.on("click", function(e) {
           var values;
+          if ($item.is('.disabled')) return;
           if (_this.orig.is("[multiple]")) {
             $item.toggleClass("selected");
             e.stopPropagation();

@@ -64,6 +64,7 @@ class SelectBox
             $item = $ "<div/>"
             $item.attr "class", "reform-selectbox-item"
             $item.addClass "selected" if $option.is ":selected"
+            $item.addClass "disabled" if $option.is ":disabled"
             $item.attr "value", $option.val()
             $item.text $option.text()
             $item.appendTo $list
@@ -73,6 +74,8 @@ class SelectBox
             
             # Option selection
             $item.on "click", (e) =>
+                return if $item.is '.disabled'
+                
                 if @orig.is "[multiple]"
                     $item.toggleClass "selected"
                     e.stopPropagation()
