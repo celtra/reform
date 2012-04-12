@@ -504,7 +504,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.floater = $("<div/>");
       this.floater.attr("class", "reform-selectbox-options");
       this.floater.css("min-width", this.fake.outerWidth());
-      this.floater.addClass(this.orig.attr("options-class"));
+      this.floater.addClass(this.orig.data("options-class"));
       this.body.append(this.floater);
       $list = $("<div/>").appendTo(this.floater);
       $list.attr("class", "reform-selectbox-list");
@@ -557,11 +557,13 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
     };
 
     SelectBox.prototype.refresh = function() {
-      var title;
+      var plural, selected, title;
       this.fake.toggleClass("disabled", this.orig.is(":disabled"));
-      title = this.orig.find("option").filter(function() {
+      selected = this.orig.find("option").filter(function() {
         return this.selected;
-      }).map(function() {
+      });
+      plural = this.orig.data("plural");
+      title = (plural != null) && selected.length > 1 ? "" + selected.length + " " + plural : selected.map(function() {
         return $(this).text();
       }).get().join(", ");
       if (!title) title = this.orig.attr("title");

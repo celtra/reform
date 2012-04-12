@@ -45,7 +45,7 @@ Select box
 
 Original:
 
-    <select class="reform-selectbox my-class" title="Pick a number" options-class="my-options">
+    <select class="reform-selectbox my-class" title="Pick a number" data-options-class="my-options">
       <option value="1">One</option>
       <option value="2">Two</option>
     </select>
@@ -53,7 +53,7 @@ Original:
 will become:
 
     <div class="reform-selectbox-fake my-class">
-      <select style="display: none" title="Pick a number" options-class="my-options">
+      <select style="display: none" title="Pick a number" data-options-class="my-options">
         <option value="1">One</option>
         <option value="2">Two</option>
       </select>
@@ -75,7 +75,7 @@ Once the fake element is clicked, the options container is populated and shown:
       </div>
     </div>
 
-The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `options-class` on the original element, the value of that attribute will be set as a class on the options container div.
+The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
 NPM package
 ----------

@@ -51,7 +51,7 @@ class SelectBox
         @floater = $ "<div/>"
         @floater.attr "class", "reform-selectbox-options"
         @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass @orig.attr "options-class"
+        @floater.addClass @orig.data "options-class"
         @body.append @floater
         
         # List container
@@ -110,7 +110,9 @@ class SelectBox
     # Set the title of the fake select box
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
-        title = @orig.find("option").filter(-> @selected).map(-> $(@).text()).get().join ", "
+        selected = @orig.find("option").filter(-> @selected)
+        plural = @orig.data "plural"
+        title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ", "
         title = @orig.attr "title" unless title
         title = "Select" unless title
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
