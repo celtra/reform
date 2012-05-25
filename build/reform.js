@@ -427,7 +427,7 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change DOMSubtreeModified", function() {
+      this.orig.on("reform.sync change DOMSubtreeModified", function() {
         return setTimeout(_this.refresh, 0);
       });
     }
@@ -490,7 +490,7 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
       });
-      this.orig.on("change DOMSubtreeModified", this.refresh);
+      this.orig.on("reform.sync change DOMSubtreeModified", this.refresh);
       this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) return _this.close();
       });
