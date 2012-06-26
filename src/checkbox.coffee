@@ -1,4 +1,4 @@
-$ ?= require "jquery-commonjs"
+window.$ ?= require "jquery-commonjs"
 
 # Implements custom check boxes and radio buttons
 class CheckBox

@@ -1,4 +1,4 @@
-$        ?= require "jquery-commonjs"
+window.$        ?= require "jquery-commonjs"
 CheckBox  = require "./checkbox"
 SelectBox = require "./selectbox"
 

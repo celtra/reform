@@ -1,4 +1,4 @@
-$ ?= require "jquery-commonjs"
+window.$ ?= require "jquery-commonjs"
 
 # Implements custom select boxes
 class SelectBox
@@ -65,6 +65,7 @@ class SelectBox
             $item.attr "class", "reform-selectbox-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.addClass "disabled" if $option.is ":disabled"
+            $item.attr "title", $option.attr("title")
             $item.attr "value", $option.val()
             $item.text $option.text()
             $item.appendTo $list

@@ -1,4 +1,4 @@
-var require = function (file, cwd) {
+(function(){var require = function (file, cwd) {
     var resolved = require.resolve(file, cwd || '/');
     var mod = require.modules[resolved];
     if (!mod) throw new Error(
@@ -26,7 +26,8 @@ require.resolve = (function () {
         
         if (require._core[x]) return x;
         var path = require.modules.path();
-        var y = cwd || '.';
+        cwd = path.resolve('/', cwd);
+        var y = cwd || '/';
         
         if (x.match(/^(?:\.\.?\/|\/)/)) {
             var m = loadAsFileSync(path.resolve(y, x))
@@ -40,6 +41,7 @@ require.resolve = (function () {
         throw new Error("Cannot find module '" + x + "'");
         
         function loadAsFileSync (x) {
+            x = path.normalize(x);
             if (require.modules[x]) {
                 return x;
             }
@@ -52,7 +54,7 @@ require.resolve = (function () {
         
         function loadAsDirectorySync (x) {
             x = x.replace(/\/+$/, '');
-            var pkgfile = x + '/package.json';
+            var pkgfile = path.normalize(x + '/package.json');
             if (require.modules[pkgfile]) {
                 var pkg = require.modules[pkgfile]();
                 var b = pkg.browserify;
@@ -133,77 +135,48 @@ require.alias = function (from, to) {
     }
 };
 
-require.define = function (filename, fn) {
-    var dirname = require._core[filename]
-        ? ''
-        : require.modules.path().dirname(filename)
-    ;
+(function () {
+    var process = {};
     
-    var require_ = function (file) {
-        return require(file, dirname)
-    };
-    require_.resolve = function (name) {
-        return require.resolve(name, dirname);
-    };
-    require_.modules = require.modules;
-    require_.define = require.define;
-    var module_ = { exports : {} };
-    
-    require.modules[filename] = function () {
-        require.modules[filename]._cached = module_.exports;
-        fn.call(
-            module_.exports,
-            require_,
-            module_,
-            module_.exports,
-            dirname,
-            filename
-        );
-        require.modules[filename]._cached = module_.exports;
-        return module_.exports;
-    };
-};
-
-if (typeof process === 'undefined') process = {};
-
-if (!process.nextTick) process.nextTick = (function () {
-    var queue = [];
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-    
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-    }
-    
-    return function (fn) {
-        if (canPost) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
+    require.define = function (filename, fn) {
+        if (require.modules.__browserify_process) {
+            process = require.modules.__browserify_process();
         }
-        else setTimeout(fn, 0);
+        
+        var dirname = require._core[filename]
+            ? ''
+            : require.modules.path().dirname(filename)
+        ;
+        
+        var require_ = function (file) {
+            return require(file, dirname)
+        };
+        require_.resolve = function (name) {
+            return require.resolve(name, dirname);
+        };
+        require_.modules = require.modules;
+        require_.define = require.define;
+        var module_ = { exports : {} };
+        
+        require.modules[filename] = function () {
+            require.modules[filename]._cached = module_.exports;
+            fn.call(
+                module_.exports,
+                require_,
+                module_,
+                module_.exports,
+                dirname,
+                filename,
+                process
+            );
+            require.modules[filename]._cached = module_.exports;
+            return module_.exports;
+        };
     };
 })();
 
-if (!process.title) process.title = 'browser';
 
-if (!process.binding) process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
-};
-
-if (!process.cwd) process.cwd = function () { return '.' };
-
-require.define("path", function (require, module, exports, __dirname, __filename) {
-function filter (xs, fn) {
+require.define("path",function(require,module,exports,__dirname,__filename,process){function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
         if (fn(xs[i], i, xs)) res.push(xs[i]);
@@ -337,14 +310,64 @@ exports.basename = function(path, ext) {
 exports.extname = function(path) {
   return splitPathRe.exec(path)[3] || '';
 };
-
 });
 
-require.define("/reform.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var CheckBox, Reform, SelectBox;
+require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process){var process = module.exports = {};
 
-  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
+process.nextTick = (function () {
+    var queue = [];
+    var canPost = typeof window !== 'undefined'
+        && window.postMessage && window.addEventListener
+    ;
+    
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'browserify-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+    }
+    
+    return function (fn) {
+        if (canPost) {
+            queue.push(fn);
+            window.postMessage('browserify-tick', '*');
+        }
+        else setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    if (name === 'evals') return (require)('vm')
+    else throw new Error('No such module. (Possibly not yet loaded)')
+};
+
+(function () {
+    var cwd = '/';
+    var path;
+    process.cwd = function () { return cwd };
+    process.chdir = function (dir) {
+        if (!path) path = require('path');
+        cwd = path.resolve(dir, cwd);
+    };
+})();
+});
+
+require.define("/reform.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
+  var CheckBox, Reform, SelectBox, _ref;
+
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
 
   CheckBox = require("./checkbox");
 
@@ -355,20 +378,20 @@ require.define("/reform.coffee", function (require, module, exports, __dirname, 
     function Reform() {}
 
     Reform.prototype.process = function(node) {
-      var cls, control, n, _ref, _results;
-      _ref = Reform.controls;
+      var cls, control, n, _ref1, _results;
+      _ref1 = Reform.controls;
       _results = [];
-      for (cls in _ref) {
-        control = _ref[cls];
+      for (cls in _ref1) {
+        control = _ref1[cls];
         _results.push((function() {
-          var _i, _len, _ref2, _results2;
+          var _i, _len, _ref2, _results1;
           _ref2 = $(node).parent().find("." + cls);
-          _results2 = [];
+          _results1 = [];
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             n = _ref2[_i];
-            _results2.push(new control(n));
+            _results1.push(new control(n));
           }
-          return _results2;
+          return _results1;
         })());
       }
       return _results;
@@ -396,23 +419,26 @@ require.define("/reform.coffee", function (require, module, exports, __dirname, 
   module.exports = Reform;
 
 }).call(this);
-
 });
 
-require.define("/checkbox.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var CheckBox;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+require.define("/checkbox.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
+  var CheckBox, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
 
   CheckBox = (function() {
 
     function CheckBox(input) {
       this.refresh = __bind(this.refresh, this);
+
       var _this = this;
       this.orig = $(input);
-      if (this.orig.is(".reformed")) return;
+      if (this.orig.is(".reformed")) {
+        return;
+      }
       if (this.orig.is(":radio")) {
         this.siblings = $("[name='" + (this.orig.attr("name")) + "']").not(this.orig);
       }
@@ -420,9 +446,15 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
       this.fake.attr("class", this.orig.attr("class"));
       this.orig.hide().attr("class", "reformed");
       this.fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake");
-      if (this.orig.is(":checked")) this.fake.addClass("checked");
-      if (this.orig.is(":disabled")) this.fake.addClass("disabled");
-      if (this.orig.is(":radio")) this.fake.addClass("radio");
+      if (this.orig.is(":checked")) {
+        this.fake.addClass("checked");
+      }
+      if (this.orig.is(":disabled")) {
+        this.fake.addClass("disabled");
+      }
+      if (this.orig.is(":radio")) {
+        this.fake.addClass("radio");
+      }
       this.orig.after(this.fake).appendTo(this.fake);
       this.fake.on("mousedown", function(e) {
         return e.preventDefault();
@@ -433,11 +465,13 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
     }
 
     CheckBox.prototype.refresh = function() {
-      var _ref;
+      var _ref1;
       this.fake.toggleClass("disabled", this.orig.is(":disabled"));
       this.fake.removeClass("checked");
-      if (this.orig.is(":checked")) this.fake.addClass("checked");
-      return (_ref = this.siblings) != null ? _ref.each(function() {
+      if (this.orig.is(":checked")) {
+        this.fake.addClass("checked");
+      }
+      return (_ref1 = this.siblings) != null ? _ref1.each(function() {
         return $(this).parent().removeClass("checked");
       }) : void 0;
     };
@@ -449,15 +483,15 @@ require.define("/checkbox.coffee", function (require, module, exports, __dirname
   module.exports = CheckBox;
 
 }).call(this);
-
 });
 
-require.define("/selectbox.coffee", function (require, module, exports, __dirname, __filename) {
-(function() {
-  var SelectBox;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+require.define("/selectbox.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
+  var SelectBox, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  if (typeof $ === "undefined" || $ === null) $ = require("jquery-commonjs");
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
 
   SelectBox = (function() {
 
@@ -465,21 +499,30 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       var _this = this;
       this.select = select;
       this.refresh = __bind(this.refresh, this);
+
       this.close = __bind(this.close, this);
+
       this.open = __bind(this.open, this);
+
       this.orig = $(this.select);
-      if (this.orig.is(".reformed")) return;
+      if (this.orig.is(".reformed")) {
+        return;
+      }
       this.body = $("body");
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
       this.orig.hide().attr("class", "reformed");
       this.fake.removeClass("reform-selectbox").addClass("reform-selectbox-fake");
-      if (this.orig.is(":disabled")) this.fake.addClass("disabled");
+      if (this.orig.is(":disabled")) {
+        this.fake.addClass("disabled");
+      }
       this.refresh();
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = null;
       this.fake.on("click", function(e) {
-        if (_this.orig.is(":disabled")) return;
+        if (_this.orig.is(":disabled")) {
+          return;
+        }
         e.stopPropagation();
         if (_this.floater === null) {
           return _this.open();
@@ -492,14 +535,16 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       });
       this.orig.on("reform.sync change DOMSubtreeModified", this.refresh);
       this.body.on("reform.open", function(e) {
-        if (e.target !== _this.select) return _this.close();
+        if (e.target !== _this.select) {
+          return _this.close();
+        }
       });
       $('.reform-selectbox-options').remove();
     }
 
     SelectBox.prototype.open = function() {
-      var $list, $window, pos;
-      var _this = this;
+      var $list, $window, pos,
+        _this = this;
       this.orig.trigger("reform.open");
       this.floater = $("<div/>");
       this.floater.attr("class", "reform-selectbox-options");
@@ -513,8 +558,13 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         $option = $(option);
         $item = $("<div/>");
         $item.attr("class", "reform-selectbox-item");
-        if ($option.is(":selected")) $item.addClass("selected");
-        if ($option.is(":disabled")) $item.addClass("disabled");
+        if ($option.is(":selected")) {
+          $item.addClass("selected");
+        }
+        if ($option.is(":disabled")) {
+          $item.addClass("disabled");
+        }
+        $item.attr("title", $option.attr("title"));
         $item.attr("value", $option.val());
         $item.text($option.text());
         $item.appendTo($list);
@@ -523,7 +573,9 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
         });
         return $item.on("click", function(e) {
           var values;
-          if ($item.is('.disabled')) return;
+          if ($item.is('.disabled')) {
+            return;
+          }
           if (_this.orig.is("[multiple]")) {
             $item.toggleClass("selected");
             e.stopPropagation();
@@ -551,8 +603,10 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
     };
 
     SelectBox.prototype.close = function() {
-      var _ref;
-      if ((_ref = this.floater) != null) _ref.remove();
+      var _ref1;
+      if ((_ref1 = this.floater) != null) {
+        _ref1.remove();
+      }
       return this.floater = null;
     };
 
@@ -566,8 +620,12 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
       title = (plural != null) && selected.length > 1 ? "" + selected.length + " " + plural : selected.map(function() {
         return $(this).text();
       }).get().join(", ");
-      if (!title) title = this.orig.attr("title");
-      if (!title) title = "Select";
+      if (!title) {
+        title = this.orig.attr("title");
+      }
+      if (!title) {
+        title = "Select";
+      }
       this.fake.contents().filter(function() {
         return this.nodeType === Node.TEXT_NODE;
       }).remove();
@@ -581,11 +639,9 @@ require.define("/selectbox.coffee", function (require, module, exports, __dirnam
   module.exports = SelectBox;
 
 }).call(this);
-
 });
 
-require.define("/init.coffee", function (require, module, exports, __dirname, __filename) {
-    (function() {
+require.define("/init.coffee",function(require,module,exports,__dirname,__filename,process){(function() {
   var Reform, reform;
 
   Reform = require("./reform");
@@ -595,6 +651,6 @@ require.define("/init.coffee", function (require, module, exports, __dirname, __
   reform.observe();
 
 }).call(this);
-
 });
 require("/init.coffee");
+})();
