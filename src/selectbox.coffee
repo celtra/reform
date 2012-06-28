@@ -115,7 +115,7 @@ class SelectBox
         plural = @orig.data "plural"
         title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ", "
         title = @orig.attr "title" unless title
-        title = "Select" unless title
+        title = "Select" unless title?
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
         @fake.append document.createTextNode title
 
