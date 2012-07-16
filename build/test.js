@@ -509,9 +509,13 @@ require.define("/test/selectbox_test.coffee",function(require,module,exports,__d
       new SelectBox($orig.get(0));
       return $fake = $orig.parent();
     };
-    return test("The fake wraps the original", 1, function() {
+    test("The fake wraps the original", 1, function() {
       setup();
       return ok($fake.is(".reform-selectbox-fake"), "Parent should be the fake");
+    });
+    return test("Fake gets the 'disabled' class when disabled", 1, function() {
+      setup([], "disabled");
+      return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
     });
   };
 

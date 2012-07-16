@@ -17,3 +17,7 @@ module.exports = ->
     test "The fake wraps the original", 1, ->
         setup()
         ok $fake.is(".reform-selectbox-fake"), "Parent should be the fake"
+
+    test "Fake gets the 'disabled' class when disabled", 1, ->
+        setup [], "disabled"
+        ok $fake.is(".disabled"), "Fake should have class 'disabled'"
