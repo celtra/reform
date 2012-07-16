@@ -109,4 +109,5 @@ Development
     - Browserify 1.9.2 or up
     - Uglify.js 1.2.5 or up
   - Source files are located in `src` and `css` for CoffeeScript and CSS, respectively.
-  - Run `bin/build` to build `reform.js`, `reform.min.js` and `reform.css`.
+  - Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
+  - Run `bin/build` to build `reform.js`, `reform.min.js` and `reform.css`
