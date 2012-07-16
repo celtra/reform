@@ -12,7 +12,7 @@ echo "Compiled standalone"
 uglifyjs -o build/reform.min.js build/reform.js
 echo "Minified standalone"
 
-coffee -j build/test.js -c test/*.coffee
+browserify -e test/test.coffee -o build/test.js -i "jquery-commonjs"
 echo "Compiled tests"
 
 echo "All done :)"

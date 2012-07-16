@@ -4,14 +4,12 @@
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
-    var cached = require.cache[resolved];
-    var res = cached? cached.exports : mod();
+    var res = mod._cached ? mod._cached : mod();
     return res;
 }
 
 require.paths = [];
 require.modules = {};
-require.cache = {};
 require.extensions = [".js",".coffee"];
 
 require._core = {
@@ -121,7 +119,7 @@ require.alias = function (from, to) {
     
     var keys = (Object.keys || function (obj) {
         var res = [];
-        for (var key in obj) res.push(key);
+        for (var key in obj) res.push(key)
         return res;
     })(require.modules);
     
@@ -151,18 +149,17 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
-            return require(file, dirname);
+            return require(file, dirname)
         };
         require_.resolve = function (name) {
             return require.resolve(name, dirname);
         };
         require_.modules = require.modules;
         require_.define = require.define;
-        require_.cache = require.cache;
         var module_ = { exports : {} };
         
         require.modules[filename] = function () {
-            require.cache[filename] = module_;
+            require.modules[filename]._cached = module_.exports;
             fn.call(
                 module_.exports,
                 require_,
@@ -172,6 +169,7 @@ require.alias = function (from, to) {
                 filename,
                 process
             );
+            require.modules[filename]._cached = module_.exports;
             return module_.exports;
         };
     };
