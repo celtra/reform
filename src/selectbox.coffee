@@ -42,18 +42,13 @@ class SelectBox
         # Clean up orphaned options containers
         $('.reform-selectbox-options').remove()
     
-    # Generates and opens the options container
-    open: =>
-        # Let everyone know we're open
-        @orig.trigger "reform.open"
-
-        # Options container
-        @floater = $ "<div/>"
-        @floater.attr "class", "reform-selectbox-options"
-        @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass @orig.data "options-class"
-        @body.append @floater
+    # Fill options
+    options: =>
+        return unless @floater?
         
+        # Empty the options container
+        @floater.empty()
+
         # List container
         $list = $("<div/>").appendTo @floater
         $list.attr "class", "reform-selectbox-list"
@@ -87,6 +82,20 @@ class SelectBox
                 # Update values
                 values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
                 @orig.val(values).trigger "change"
+
+    # Generates and opens the options container
+    open: =>
+        # Let everyone know we're open
+        @orig.trigger "reform.open"
+
+        # Options container
+        @floater = $ "<div/>"
+        @floater.attr "class", "reform-selectbox-options"
+        @floater.css "min-width", @fake.outerWidth()
+        @floater.addClass @orig.data "options-class"
+        @body.append @floater
+        
+        @options()
         
         # Click closes the options layer
         @body.one "click", @close
@@ -118,5 +127,6 @@ class SelectBox
         title = "Select" unless title?
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
         @fake.append document.createTextNode title
+        @options()
 
 module.exports = SelectBox

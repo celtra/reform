@@ -504,6 +504,8 @@ require.define("/selectbox.coffee",function(require,module,exports,__dirname,__f
 
       this.open = __bind(this.open, this);
 
+      this.options = __bind(this.options, this);
+
       this.orig = $(this.select);
       if (this.orig.is(".reformed")) {
         return;
@@ -542,18 +544,16 @@ require.define("/selectbox.coffee",function(require,module,exports,__dirname,__f
       $('.reform-selectbox-options').remove();
     }
 
-    SelectBox.prototype.open = function() {
-      var $list, $window, pos,
+    SelectBox.prototype.options = function() {
+      var $list,
         _this = this;
-      this.orig.trigger("reform.open");
-      this.floater = $("<div/>");
-      this.floater.attr("class", "reform-selectbox-options");
-      this.floater.css("min-width", this.fake.outerWidth());
-      this.floater.addClass(this.orig.data("options-class"));
-      this.body.append(this.floater);
+      if (this.floater == null) {
+        return;
+      }
+      this.floater.empty();
       $list = $("<div/>").appendTo(this.floater);
       $list.attr("class", "reform-selectbox-list");
-      this.orig.find("option").each(function(i, option) {
+      return this.orig.find("option").each(function(i, option) {
         var $item, $option;
         $option = $(option);
         $item = $("<div/>");
@@ -589,6 +589,17 @@ require.define("/selectbox.coffee",function(require,module,exports,__dirname,__f
           return _this.orig.val(values).trigger("change");
         });
       });
+    };
+
+    SelectBox.prototype.open = function() {
+      var $window, pos;
+      this.orig.trigger("reform.open");
+      this.floater = $("<div/>");
+      this.floater.attr("class", "reform-selectbox-options");
+      this.floater.css("min-width", this.fake.outerWidth());
+      this.floater.addClass(this.orig.data("options-class"));
+      this.body.append(this.floater);
+      this.options();
       this.body.one("click", this.close);
       this.floater.show();
       $window = $(window);
@@ -629,7 +640,8 @@ require.define("/selectbox.coffee",function(require,module,exports,__dirname,__f
       this.fake.contents().filter(function() {
         return this.nodeType === Node.TEXT_NODE;
       }).remove();
-      return this.fake.append(document.createTextNode(title));
+      this.fake.append(document.createTextNode(title));
+      return this.options();
     };
 
     return SelectBox;
