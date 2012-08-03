@@ -120,13 +120,21 @@ class SelectBox
     # Set the title of the fake select box
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
-        selected = @orig.find("option").filter(-> @selected)
-        plural = @orig.data "plural"
-        title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ", "
-        title = @orig.attr "title" unless title
-        title = "Select" unless title?
+
+        # data-title overrides other automatically generated titles
+        title = @orig.data('title')
+
+        # Automatically choose a title
+        unless title
+            selected = @orig.find("option").filter(-> @selected and $(@).data("count-option") isnt "no")
+            plural = @orig.data "plural"
+            title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ", "
+            title = @orig.attr "title" unless title
+            title = "Select" unless title?
+
         @fake.contents().filter(-> @nodeType is Node.TEXT_NODE).remove()
         @fake.append document.createTextNode title
+        
         @options()
 
 module.exports = SelectBox

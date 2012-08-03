@@ -1,5 +1,9 @@
 body { margin: 30px; font: 14px Tahoma; }
 
+.reform-selectbox-fake {
+    margin-bottom: 5px;
+}
+
 .demo-checkbox {
     width: 20px;
     height: 20px;

@@ -22,7 +22,7 @@
         
         <div>
             <input id="radio-1" class="reform-checkbox" type="radio" name="test-radio">
-            <input id="radio-2" class="reform-checkbox" type="radio" name="test-radio" checked>
+            <input id="radio-2" class="reform-checkbox" type="radio" name="test-radio" checked="checked">
             <input id="radio-3" class="reform-checkbox" type="radio" name="test-radio" disabled>
             <input class="reform-checkbox radio" type="radio" checked disabled>
         </div>
@@ -55,8 +55,8 @@
                 <option value="9">Nine</option>
                 <option value="10">Ten</option>
             </select>
-        
-            <select class="reform-selectbox" multiple data-plural="numbers" title="Select something">
+
+            <select class="reform-selectbox" multiple data-title="This is title. This.">
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
@@ -68,8 +68,22 @@
                 <option value="9">Nine</option>
                 <option value="10">Ten</option>
             </select>
+        
+            <select class="reform-selectbox" multiple data-plural="numbers" title="Second doesn't count">
+                <option value="1">One</option>
+                <option value="2" data-count-option="no">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
             
             <select class="reform-selectbox" title="I feel empty inside"></select>
+            
             <select class="reform-selectbox" title=""></select>
         </div>
         
