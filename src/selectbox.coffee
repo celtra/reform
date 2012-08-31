@@ -100,12 +100,14 @@ class SelectBox
         # Click closes the options layer
         @body.one "click", @close
         
+        # get position of fake
+        pos = @fake.offset()
+        
         # Show the options layer
         @floater.show()
         
         # Position the options layer
         $window = $ window
-        pos = @fake.offset()
         if pos.top + @floater.outerHeight() > $window.height()
             pos.top = pos.top - @floater.outerHeight() + @fake.outerHeight()
         if pos.left + @floater.outerWidth() > $window.width()

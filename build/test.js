@@ -4,12 +4,14 @@
     if (!mod) throw new Error(
         'Failed to resolve module ' + file + ', tried ' + resolved
     );
-    var res = mod._cached ? mod._cached : mod();
+    var cached = require.cache[resolved];
+    var res = cached? cached.exports : mod();
     return res;
 }
 
 require.paths = [];
 require.modules = {};
+require.cache = {};
 require.extensions = [".js",".coffee"];
 
 require._core = {
@@ -119,7 +121,7 @@ require.alias = function (from, to) {
     
     var keys = (Object.keys || function (obj) {
         var res = [];
-        for (var key in obj) res.push(key)
+        for (var key in obj) res.push(key);
         return res;
     })(require.modules);
     
@@ -149,17 +151,18 @@ require.alias = function (from, to) {
         ;
         
         var require_ = function (file) {
-            return require(file, dirname)
+            return require(file, dirname);
         };
         require_.resolve = function (name) {
             return require.resolve(name, dirname);
         };
         require_.modules = require.modules;
         require_.define = require.define;
+        require_.cache = require.cache;
         var module_ = { exports : {} };
         
         require.modules[filename] = function () {
-            require.modules[filename]._cached = module_.exports;
+            require.cache[filename] = module_;
             fn.call(
                 module_.exports,
                 require_,
@@ -169,7 +172,6 @@ require.alias = function (from, to) {
                 filename,
                 process
             );
-            require.modules[filename]._cached = module_.exports;
             return module_.exports;
         };
     };
@@ -638,9 +640,9 @@ require.define("/src/selectbox.coffee",function(require,module,exports,__dirname
       this.body.append(this.floater);
       this.options();
       this.body.one("click", this.close);
+      pos = this.fake.offset();
       this.floater.show();
       $window = $(window);
-      pos = this.fake.offset();
       if (pos.top + this.floater.outerHeight() > $window.height()) {
         pos.top = pos.top - this.floater.outerHeight() + this.fake.outerHeight();
       }
