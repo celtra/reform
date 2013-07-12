@@ -1,6 +1,6 @@
 window.$ ?= require "jquery-commonjs"
-CheckBox  = require "./checkbox"
-SelectBox = require "./selectbox"
+CheckBox  = require "./checkbox.coffee"
+SelectBox = require "./selectbox.coffee"
 
 # This class does the magic
 class Reform
