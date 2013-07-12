@@ -37,5 +37,6 @@ module.exports = ->
             ok $fake.is(".checked") is $orig.is(":checked"), "States should be the same"
             start()
         match()
+        stop()
         $orig.attr("checked", yes).trigger "change"
         setTimeout match, 0
