@@ -269,6 +269,7 @@ module.exports = function() {
       return start();
     };
     match();
+    stop();
     $orig.attr("checked", true).trigger("change");
     return setTimeout(match, 0);
   });
