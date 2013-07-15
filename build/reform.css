@@ -1,3 +1,68 @@
+.reform-autocompletebox-fake {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 18px;
+    border: solid 1px #ccc;
+    padding: 10px 30px 10px 10px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 18px;
+    vertical-align: middle;
+    
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+
+
+.reform-autocompletebox-fake.disabled {
+    background-color: #eee;
+}
+
+.reform-autocompletebox-options {
+    display: none;
+    position: absolute;
+    max-height: none;
+    /*max-height: 200px;*/
+    overflow-y: auto;
+    border: solid 1px #ccc;
+    background: #fff;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.reform-autocompletebox-item {
+    border-bottom: solid 1px #eee;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.reform-autocompletebox-item:last-child {
+    border-bottom: none;
+}
+
+.reform-autocompletebox-hover {
+    background: #eee;
+}
+
+.reform-autocompletebox-item.selected {
+    background: #333;
+    color: #fff;
+}
+
+.reform-autocompletebox-item.disabled {
+    color: #ccc;
+}
+
+.reform-autocompletebox-item.disabled:hover {
+    background: inherit;
+}
 .reform-checkbox {
     display: none;
 }

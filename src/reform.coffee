@@ -1,6 +1,7 @@
-window.$ ?= require "jquery-commonjs"
-CheckBox  = require "./checkbox.coffee"
-SelectBox = require "./selectbox.coffee"
+window.$ 	   ?= require "jquery-commonjs"
+CheckBox  		= require "./checkbox.coffee"
+SelectBox 		= require "./selectbox.coffee"
+AutocompleteBox = require "./autocompletebox.coffee"
 
 # This class does the magic
 class Reform
@@ -14,7 +15,8 @@ class Reform
     
 # Posible custom controls
 Reform.controls =
-    "reform-checkbox"  : CheckBox
-    "reform-selectbox" : SelectBox
+    "reform-checkbox"  			: CheckBox
+    "reform-selectbox" 			: SelectBox
+    "reform-autocompletebox" 	: AutocompleteBox
 
 module.exports = Reform
