@@ -1,5 +1,5 @@
 ;(function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
-var AutocompleteBox,
+var AutocompleteBox, Cache,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 if (window.$ == null) {
@@ -7,48 +7,66 @@ if (window.$ == null) {
 }
 
 AutocompleteBox = (function() {
+  var cache;
+
+  AutocompleteBox.prototype.options = {
+    data: [
+      {
+        title: "one",
+        value: "1"
+      }, {
+        title: "two",
+        value: "2"
+      }, {
+        title: "three",
+        value: "3"
+      }, {
+        title: "four",
+        value: "4"
+      }, {
+        title: "fourty",
+        value: "40"
+      }
+    ],
+    selected: 0,
+    minType: 2,
+    formatter: null,
+    callback: null,
+    noRecord: 'No records.',
+    matchCase: false,
+    cacheLength: 100,
+    url: 'http://localhost:1111/demo/locations.json',
+    dataType: 'json',
+    max: 1000
+  };
+
+  AutocompleteBox.prototype.KEY = {
+    UP: 38,
+    DOWN: 40,
+    DEL: 46,
+    RETURN: 13,
+    ESC: 27,
+    PAGEUP: 33,
+    PAGEDOWN: 34
+  };
+
+  cache = null;
+
   function AutocompleteBox(select, options) {
     var _this = this;
     this.select = select;
-    this.options = options;
+    this.onChange = __bind(this.onChange, this);
+    this.parse = __bind(this.parse, this);
+    this.request = __bind(this.request, this);
     this.refresh = __bind(this.refresh, this);
     this.close = __bind(this.close, this);
     this.open = __bind(this.open, this);
     this.selectCurrent = __bind(this.selectCurrent, this);
     this.setHover = __bind(this.setHover, this);
     this.fillOptions = __bind(this.fillOptions, this);
+    this.cache = new Cache(options);
+    this["default"] = $.extend(this["default"], options);
     this.orig = $(this.select);
-    this.options = {
-      data: [
-        {
-          title: "one",
-          value: "1"
-        }, {
-          title: "two",
-          value: "2"
-        }, {
-          title: "three",
-          value: "3"
-        }, {
-          title: "four",
-          value: "4"
-        }
-      ],
-      selected: 0,
-      minType: 2,
-      formatter: null,
-      callback: null,
-      cache: null
-    };
-    this.KEY = {
-      UP: 38,
-      DOWN: 40,
-      DEL: 46,
-      RETURN: 13,
-      ESC: 27,
-      PAGEUP: 33,
-      PAGEDOWN: 34
-    };
     if (this.orig.is(".reformed")) {
       return;
     }
@@ -66,16 +84,15 @@ AutocompleteBox = (function() {
     this.refresh();
     this.orig.after(this.fake).appendTo(this.fake);
     this.floater = null;
-    this.input.on("keydown", function(e) {
+    this.input.on("keydown.autocomplete", function(e) {
       if (_this.orig.is(":disabled")) {
         return;
       }
       e.stopPropagation();
+      if (e.keyCode === _this.KEY.UP) {
+        e.preventDefault();
+      }
       return setTimeout(function() {
-        if (_this.options.minType >= _this.input.val().length) {
-          _this.close();
-          return;
-        }
         _this.currentSelection = _this.input.val();
         switch (e.keyCode) {
           case _this.KEY.DOWN:
@@ -83,22 +100,23 @@ AutocompleteBox = (function() {
           case _this.KEY.UP:
             return _this.setHover(_this.options.selected - 1);
           case _this.KEY.RETURN:
-            return _this.selectCurrent();
+            return _this.onChange(function() {
+              return _this.selectCurrent();
+            });
           case _this.KEY.ESC:
             return _this.close();
           default:
             _this.options.selected = 0;
-            if (_this.floater === null) {
-              _this.open();
-              return _this.refresh();
-            } else {
-              return _this.refresh();
-            }
+            return _this.onChange(function() {
+              if (_this.floater === null) {
+                _this.open();
+                return _this.refresh();
+              } else {
+                return _this.refresh();
+              }
+            });
         }
       }, 0);
-    });
-    this.input.on("blur", function(e) {
-      return _this.close();
     });
     this.body.on("reform.open", function(e) {
       if (e.target !== _this.select) {
@@ -195,12 +213,6 @@ AutocompleteBox = (function() {
     pos = this.fake.offset();
     this.floater.show();
     $window = $(window);
-    if (pos.top + this.floater.outerHeight() > $window.height()) {
-      pos.top = pos.top - this.floater.outerHeight() + this.fake.outerHeight();
-    }
-    if (pos.left + this.floater.outerWidth() > $window.width()) {
-      pos.left = pos.left - this.floater.outerWidth() + this.fake.outerWidth();
-    }
     pos.top += this.fake.outerHeight();
     return this.floater.css(pos);
   };
@@ -218,7 +230,163 @@ AutocompleteBox = (function() {
     return this.fillOptions();
   };
 
+  AutocompleteBox.prototype.request = function(term, success, failure) {
+    var data, extraParams, parsed,
+      _this = this;
+    if (!this.options.matchCase) {
+      term = term.toLowerCase();
+    }
+    data = this.cache.load(term);
+    if (data) {
+      if (data.length) {
+        return success(term, data);
+      } else {
+        parsed = options.parse && options.parse(options.noRecord) || parse(options.noRecord);
+        return success(term, parsed);
+      }
+    } else if (this.options.url != null) {
+      extraParams = {
+        timestamp: new Date()
+      };
+      if (this.options.extraParams != null) {
+        $.each(this.options.extraParams, function(key, param) {
+          return extraParams[key] = (typeof param === "function" ? param() : param);
+        });
+      }
+      return $.ajax({
+        dataType: this.options.dataType,
+        url: this.options.url,
+        data: $.extend({
+          q: term,
+          limit: this.options.max
+        }, extraParams),
+        success: function(data) {
+          parsed = (_this.options.parse != null) && _this.options.parse(data) || _this.parse(data);
+          $.each(_this.options.data, function(item) {
+            return _this.cache.add(item.value, item.title);
+          });
+          return success(term, parsed);
+        },
+        error: function(data) {
+          return failure(data, term);
+        }
+      });
+    } else {
+      return failure('Set options.url', term);
+    }
+  };
+
+  AutocompleteBox.prototype.parse = function(data) {
+    return this.options.data = data;
+  };
+
+  AutocompleteBox.prototype.onChange = function(callback) {
+    var failureCallback, successCallback,
+      _this = this;
+    if (this.options.minType >= this.input.val().length) {
+      this.close();
+      return;
+    }
+    successCallback = function(data) {
+      _this.refresh();
+      return callback();
+    };
+    failureCallback = function(data) {};
+    if (this.options.url != null) {
+      return this.request(this.currentSelection, successCallback, failureCallback);
+    } else {
+      this.refresh();
+      return callback();
+    }
+  };
+
   return AutocompleteBox;
+
+})();
+
+Cache = (function() {
+  var data, length, options;
+
+  data = {};
+
+  length = 0;
+
+  options = {};
+
+  function Cache(options) {
+    this.options = $.extend(this.options, options);
+  }
+
+  Cache.prototype.matchSubset = function(s, sub) {
+    var i;
+    if (!this.options.matchCase) {
+      s = s.toLowerCase();
+    }
+    i = s.indexOf(sub);
+    if (this.options.matchContains === "word") {
+      i = s.toLowerCase().search("\\b" + sub.toLowerCase());
+    }
+    if (i === -1) {
+      return false;
+    }
+    return i === 0 || this.options.matchContains;
+  };
+
+  Cache.prototype.add = function(q, value) {
+    if (length > this.options.cacheLength) {
+      flush();
+    }
+    if (!data[q]) {
+      length++;
+    }
+    return data[q] = value;
+  };
+
+  Cache.prototype.flush = function() {
+    data = {};
+    return length = 0;
+  };
+
+  Cache.prototype.load = function(q) {
+    var c, csub, i, k;
+    if (!this.options.cacheLength || !length) {
+      return null;
+    }
+    if (!this.options.url && this.options.matchContains) {
+      csub = [];
+      for (k in data) {
+        if (k.length > 0) {
+          c = data[k];
+          $.each(c, function(i, x) {
+            if (matchSubset(x.value, q)) {
+              return csub.push(x);
+            }
+          });
+        }
+      }
+      return csub;
+    } else if (data[q]) {
+      return data[q];
+    } else if (this.options.matchSubset) {
+      i = q.length - 1;
+      while (i >= this.options.minChars) {
+        c = data[q.substr(0, i)];
+        if (c) {
+          csub = [];
+          $.each(c, function(i, x) {
+            if (matchSubset(x.value, q)) {
+              return csub[csub.length] = x;
+            }
+          });
+          return csub;
+        }
+        i--;
+      }
+    }
+    return null;
+  };
+
+  return Cache;
 
 })();
 

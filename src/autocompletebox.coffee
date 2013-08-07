@@ -4,47 +4,67 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom select boxes
 class AutocompleteBox
 
+    options: {
+        data: [
+            {
+                title: "one",
+                value: "1"
+            },
+            {
+                title: "two",
+                value: "2"
+            }, 
+            {
+                title: "three",
+                value: "3"
+            },                
+            {
+                title: "four",
+                value: "4"
+            },
+            {
+                title: "fourty",
+                value: "40"
+            }
+        ],
+        selected: 0,
+        minType: 2,
+
+        formatter: null,
+        callback: null,
+
+        noRecord: 'No records.'
+        matchCase: false,
+
+        # cache
+        cacheLength: 100,
+
+        # request
+        url: 'http://localhost:1111/demo/locations.json',
+        dataType: 'json',
+        max: 1000
+    }
+
+    KEY: {
+        UP: 38,
+        DOWN: 40,
+        DEL: 46,
+        RETURN: 13,
+        ESC: 27,
+        PAGEUP: 33,
+        PAGEDOWN: 34,
+    }
+
+    cache = null
+
     # Generating a fake select box from a real one
-    constructor: (@select, @options) ->
+    constructor: (@select, options) ->
+
+        @cache = new Cache(options)
+
+        @default = $.extend(@default, options)
+
         @orig = $ @select
-
-        @options = {
-            data: [
-                {
-                    title: "one",
-                    value: "1"
-                },
-                {
-                    title: "two",
-                    value: "2"
-                }, 
-                {
-                    title: "three",
-                    value: "3"
-                },                
-                {
-                    title: "four",
-                    value: "4"
-                }
-            ],
-            selected: 0,
-            minType: 2,
-
-            formatter: null,
-            callback: null,
-            cache: null
-        }
-
-        @KEY = {
-            UP: 38,
-            DOWN: 40,
-            DEL: 46,
-            RETURN: 13,
-            ESC: 27,
-            PAGEUP: 33,
-            PAGEDOWN: 34,
-        };
-        
         # Don't do this twice
         return if @orig.is ".reformed"
 
@@ -67,16 +87,17 @@ class AutocompleteBox
         # This is where options container will be
         @floater = null
         
-        @input.on "keydown", (e) =>
+        @input.on "keydown.autocomplete", (e) =>
             return if @orig.is ":disabled"
             e.stopPropagation()
             
+            # key up goes to begining of input
+            if e.keyCode == @KEY.UP
+                e.preventDefault()
+
             setTimeout () =>
 
-                if @options.minType >= @input.val().length
-                    @close()
-                    return                
-
+                # get current value
                 @currentSelection = @input.val()
 
                 switch e.keyCode
@@ -85,20 +106,22 @@ class AutocompleteBox
                     when @KEY.UP
                         @setHover(@options.selected - 1)
                     when @KEY.RETURN
-                        @selectCurrent()
+                        @onChange () =>
+                            @selectCurrent()
                     when @KEY.ESC
                         @close()
                     else
                         @options.selected = 0
-                        if @floater is null 
-                            @open()
-                            @refresh()
-                        else
-                            @refresh()
+                        @onChange () =>
+                            if @floater is null 
+                                @open()
+                                @refresh()
+                            else
+                                @refresh()
             , 0
                 
-        @input.on "blur", (e) =>
-            @close()
+        #@input.on "blur", (e) =>
+        #    @close()
         
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -197,10 +220,6 @@ class AutocompleteBox
         
         # Position the options layer
         $window = $ window
-        if pos.top + @floater.outerHeight() > $window.height()
-            pos.top = pos.top - @floater.outerHeight() + @fake.outerHeight()
-        if pos.left + @floater.outerWidth() > $window.width()
-            pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
         pos.top += @fake.outerHeight()
 
@@ -214,5 +233,137 @@ class AutocompleteBox
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
         @fillOptions()
+
+    request: (term, success, failure) =>
+        
+        if not @options.matchCase
+            term = term.toLowerCase()
+
+        data = @cache.load(term);
+
+        if data
+            if data.length
+                success term, data
+            else
+                parsed = options.parse && options.parse(options.noRecord) || parse(options.noRecord)
+                success term, parsed
+        else if @options.url?
+            extraParams = {
+                timestamp: new Date()
+            }
+
+            if @options.extraParams?
+                $.each @options.extraParams, (key, param) ->
+                    extraParams[key] = (if typeof param is "function" then param() else param)
+
+            $.ajax({
+                dataType: @options.dataType,
+                url: @options.url,
+                data: $.extend({
+                    q: term,
+                    limit: @options.max
+                }, extraParams),
+                success: (data) => # 200 OK
+                    parsed = @options.parse? && @options.parse(data) || @parse(data)
+                    
+                    $.each @options.data, (item) =>
+                        @cache.add(item.value, item.title)
+
+                    success(term, parsed)
+                error: (data) -> # 500
+                    #console.log data
+                    failure data, term
+            });
+        else
+            failure 'Set options.url', term
+
+    parse: (data) =>
+        @options.data = data
+
+    onChange: (callback) =>
+        if @options.minType >= @input.val().length
+            @close()
+            return
+
+        successCallback = (data) =>
+            @refresh()
+            callback()
+
+        failureCallback = (data) =>
+
+        if @options.url?
+            @request @currentSelection, successCallback, failureCallback
+        else
+            @refresh()
+            callback()
+
+class Cache
+
+    data = {}
+    length = 0
+
+    options = {}
+
+    constructor: (options) ->
+        @options = $.extend @options, options
+
+    matchSubset: (s, sub) ->
+        s = s.toLowerCase()  unless @options.matchCase
+        i = s.indexOf(sub)
+        i = s.toLowerCase().search("\\b" + sub.toLowerCase())  if @options.matchContains is "word"
+        return false  if i is -1
+        i is 0 or @options.matchContains
+
+    add: (q, value) ->
+        flush() if length > @options.cacheLength
+        length++  unless data[q]
+        data[q] = value
+
+    flush: ->
+        data = {}
+        length = 0
+
+    load: (q) ->
+        return null  if not @options.cacheLength or not length
+        
+        #
+        #            * if dealing w/local data and matchContains than we must make sure
+        #            * to loop through all the data collections looking for matches
+        #            
+        if not @options.url and @options.matchContains
+          
+          # track all matches
+          csub = []
+          
+          # loop through all the data grids for matches
+          for k of data
+            
+            # don't search through the stMatchSets[""] (minChars: 0) cache
+            # this prevents duplicates
+            if k.length > 0
+              c = data[k]
+              $.each c, (i, x) ->
+                
+                # if we've got a match, add it to the array
+                csub.push x  if matchSubset(x.value, q)
+
+          return csub
+        
+        # if the exact item exists, use it
+        else if data[q]
+          return data[q]
+        else if @options.matchSubset
+          i = q.length - 1
+
+          while i >= @options.minChars
+            c = data[q.substr(0, i)]
+            if c
+              csub = []
+              $.each c, (i, x) ->
+                csub[csub.length] = x  if matchSubset(x.value, q)
+
+              return csub
+            i--
+        null
 
 module.exports = AutocompleteBox
