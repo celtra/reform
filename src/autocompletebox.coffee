@@ -5,28 +5,13 @@ window.$ ?= require "jquery-commonjs"
 class AutocompleteBox
 
     options: {
-        data: [
-            {
-                title: "one",
-                value: "1"
-            },
-            {
-                title: "two",
-                value: "2"
-            }, 
-            {
-                title: "three",
-                value: "3"
-            },                
-            {
-                title: "four",
-                value: "4"
-            },
-            {
-                title: "fourty",
-                value: "40"
-            }
-        ],
+        # add your data or supply url
+        data: [],
+        # request
+        url: 'http://localhost:1111/demo/locations.json',
+        dataType: 'json',
+        max: 1000
+
         selected: 0,
         minType: 2,
 
@@ -35,14 +20,6 @@ class AutocompleteBox
 
         noRecord: 'No records.'
         matchCase: false,
-
-        # cache
-        cacheLength: 100,
-
-        # request
-        url: 'http://localhost:1111/demo/locations.json',
-        dataType: 'json',
-        max: 1000
     }
 
     KEY: {
@@ -122,7 +99,7 @@ class AutocompleteBox
                 
         #@input.on "blur", (e) =>
         #    @close()
-        
+
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
     
@@ -150,7 +127,7 @@ class AutocompleteBox
                 $item.appendTo $list
                 
                 # Prevent text selection
-                $item.on "mousedown", (e) -> e.preventDefault()
+                $item.on "mousedown", (e) ->  e.preventDefault()
                 
                 # Option selection
                 $item.on "click", (e) =>
@@ -210,7 +187,10 @@ class AutocompleteBox
         @body.append @floater
 
         # Click closes the options layer
-        @body.one "click", @close
+        @body.on "click.autocomplete", (e) =>
+            if not $(e.target).hasClass('reform-autocompletebox-input')
+                @body.off "click.autocomplete"
+                @close()
         
         # get position of fake
         pos = @fake.offset()
@@ -234,6 +214,7 @@ class AutocompleteBox
         @fake.toggleClass "disabled", @orig.is ":disabled"
         @fillOptions()
 
+    # query the server
     request: (term, success, failure) =>
         
         if not @options.matchCase
@@ -264,21 +245,29 @@ class AutocompleteBox
                     limit: @options.max
                 }, extraParams),
                 success: (data) => # 200 OK
-                    parsed = @options.parse? && @options.parse(data) || @parse(data)
-                    
-                    $.each @options.data, (item) =>
-                        @cache.add(item.value, item.title)
+                    parsed = @options.parse?(data) || @parse(data)
 
-                    success(term, parsed)
+                    # fill data
+                    @options.data = parsed
+
+                    @cache.add term, parsed
+                    success parsed, term
                 error: (data) -> # 500
-                    #console.log data
                     failure data, term
             });
         else
             failure 'Set options.url', term
 
     parse: (data) =>
-        @options.data = data
+        parsed = []
+
+        $.each data, (num, item) =>
+            parsed.push({
+                    value: item.value
+                    title: @options.formatResult and @options.formatResult(item) or item.title
+                })
+
+        parsed
 
     onChange: (callback) =>
         if @options.minType >= @input.val().length
@@ -299,10 +288,15 @@ class AutocompleteBox
 
 class Cache
 
-    data = {}
-    length = 0
+    data: {}
+    length: 0
 
-    options = {}
+    options: {
+        cacheLength: 100
+        matchCase: true
+        matchContains: false       
+    }
+
 
     constructor: (options) ->
         @options = $.extend @options, options
@@ -315,17 +309,16 @@ class Cache
         i is 0 or @options.matchContains
 
     add: (q, value) ->
-        flush() if length > @options.cacheLength
-        length++  unless data[q]
-        data[q] = value
+        flush() if @length > @options.cacheLength
+        @length++  unless @data[q]
+        @data[q] = value
 
     flush: ->
-        data = {}
-        length = 0
+        @data = {}
+        @length = 0
 
     load: (q) ->
-        return null  if not @options.cacheLength or not length
-        
+        return null if not @options.cacheLength or not @length
         #
         #            * if dealing w/local data and matchContains than we must make sure
         #            * to loop through all the data collections looking for matches
@@ -336,7 +329,7 @@ class Cache
           csub = []
           
           # loop through all the data grids for matches
-          for k of data
+          for k of @data
             
             # don't search through the stMatchSets[""] (minChars: 0) cache
             # this prevents duplicates
@@ -350,13 +343,13 @@ class Cache
           return csub
         
         # if the exact item exists, use it
-        else if data[q]
-          return data[q]
+        else if @data[q]
+          return @data[q]
         else if @options.matchSubset
           i = q.length - 1
 
           while i >= @options.minChars
-            c = data[q.substr(0, i)]
+            c = @data[q.substr(0, i)]
             if c
               csub = []
               $.each c, (i, x) ->

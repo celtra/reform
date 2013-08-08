@@ -10,34 +10,16 @@ AutocompleteBox = (function() {
   var cache;
 
   AutocompleteBox.prototype.options = {
-    data: [
-      {
-        title: "one",
-        value: "1"
-      }, {
-        title: "two",
-        value: "2"
-      }, {
-        title: "three",
-        value: "3"
-      }, {
-        title: "four",
-        value: "4"
-      }, {
-        title: "fourty",
-        value: "40"
-      }
-    ],
+    data: [],
+    url: 'http://localhost:1111/demo/locations.json',
+    dataType: 'json',
+    max: 1000,
     selected: 0,
     minType: 2,
     formatter: null,
     callback: null,
     noRecord: 'No records.',
-    matchCase: false,
-    cacheLength: 100,
-    url: 'http://localhost:1111/demo/locations.json',
-    dataType: 'json',
-    max: 1000
+    matchCase: false
   };
 
   AutocompleteBox.prototype.KEY = {
@@ -202,14 +184,20 @@ AutocompleteBox = (function() {
   };
 
   AutocompleteBox.prototype.open = function() {
-    var $window, pos;
+    var $window, pos,
+      _this = this;
     this.orig.trigger("reform.open");
     this.floater = $("<div/>");
     this.floater.attr("class", "reform-autocompletebox-options");
     this.floater.css("min-width", this.fake.outerWidth() - 10 - 2);
     this.floater.addClass(this.orig.data("options-class"));
     this.body.append(this.floater);
-    this.body.one("click", this.close);
+    this.body.on("click.autocomplete", function(e) {
+      if (!$(e.target).hasClass('reform-autocompletebox-input')) {
+        _this.body.off("click.autocomplete");
+        return _this.close();
+      }
+    });
     pos = this.fake.offset();
     this.floater.show();
     $window = $(window);
@@ -261,11 +249,11 @@ AutocompleteBox = (function() {
           limit: this.options.max
         }, extraParams),
         success: function(data) {
-          parsed = (_this.options.parse != null) && _this.options.parse(data) || _this.parse(data);
-          $.each(_this.options.data, function(item) {
-            return _this.cache.add(item.value, item.title);
-          });
-          return success(term, parsed);
+          var _base;
+          parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data) : void 0) || _this.parse(data);
+          _this.options.data = parsed;
+          _this.cache.add(term, parsed);
+          return success(parsed, term);
         },
         error: function(data) {
           return failure(data, term);
@@ -277,7 +265,16 @@ AutocompleteBox = (function() {
   };
 
   AutocompleteBox.prototype.parse = function(data) {
-    return this.options.data = data;
+    var parsed,
+      _this = this;
+    parsed = [];
+    $.each(data, function(num, item) {
+      return parsed.push({
+        value: item.value,
+        title: _this.options.formatResult && _this.options.formatResult(item) || item.title
+      });
+    });
+    return parsed;
   };
 
   AutocompleteBox.prototype.onChange = function(callback) {
@@ -305,13 +302,15 @@ AutocompleteBox = (function() {
 })();
 
 Cache = (function() {
-  var data, length, options;
+  Cache.prototype.data = {};
 
-  data = {};
+  Cache.prototype.length = 0;
 
-  length = 0;
-
-  options = {};
+  Cache.prototype.options = {
+    cacheLength: 100,
+    matchCase: true,
+    matchContains: false
+  };
 
   function Cache(options) {
     this.options = $.extend(this.options, options);
@@ -333,28 +332,28 @@ Cache = (function() {
   };
 
   Cache.prototype.add = function(q, value) {
-    if (length > this.options.cacheLength) {
+    if (this.length > this.options.cacheLength) {
       flush();
     }
-    if (!data[q]) {
-      length++;
+    if (!this.data[q]) {
+      this.length++;
     }
-    return data[q] = value;
+    return this.data[q] = value;
   };
 
   Cache.prototype.flush = function() {
-    data = {};
-    return length = 0;
+    this.data = {};
+    return this.length = 0;
   };
 
   Cache.prototype.load = function(q) {
     var c, csub, i, k;
-    if (!this.options.cacheLength || !length) {
+    if (!this.options.cacheLength || !this.length) {
       return null;
     }
     if (!this.options.url && this.options.matchContains) {
       csub = [];
-      for (k in data) {
+      for (k in this.data) {
         if (k.length > 0) {
           c = data[k];
           $.each(c, function(i, x) {
@@ -365,12 +364,12 @@ Cache = (function() {
         }
       }
       return csub;
-    } else if (data[q]) {
-      return data[q];
+    } else if (this.data[q]) {
+      return this.data[q];
     } else if (this.options.matchSubset) {
       i = q.length - 1;
       while (i >= this.options.minChars) {
-        c = data[q.substr(0, i)];
+        c = this.data[q.substr(0, i)];
         if (c) {
           csub = [];
           $.each(c, function(i, x) {
@@ -462,6 +461,8 @@ reform = new Reform;
 
 reform.observe();
 
+window.Reform = reform;
+
 
 },{"./reform.coffee":4}],4:[function(require,module,exports){
 (function(){var AutocompleteBox, CheckBox, Reform, SelectBox;
@@ -509,14 +510,15 @@ Reform = (function() {
     });
   };
 
+  Reform.prototype.AutocompleteBox = AutocompleteBox;
+
   return Reform;
 
 })();
 
 Reform.controls = {
   "reform-checkbox": CheckBox,
-  "reform-selectbox": SelectBox,
-  "reform-autocompletebox": AutocompleteBox
+  "reform-selectbox": SelectBox
 };
 
 module.exports = Reform;

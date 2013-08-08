@@ -13,10 +13,11 @@ class Reform
         $(document).on "ready",               => @process "body"
         $(document).on "DOMNodeInserted", (e) => @process e.target
     
+    AutocompleteBox: AutocompleteBox
+
 # Posible custom controls
 Reform.controls =
     "reform-checkbox"  			: CheckBox
     "reform-selectbox" 			: SelectBox
-    "reform-autocompletebox" 	: AutocompleteBox
 
 module.exports = Reform
