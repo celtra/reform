@@ -20,6 +20,8 @@ class AutocompleteBox
 
         noRecord: 'No records.'
         matchCase: false,
+
+        colorTitle: true
     }
 
     KEY: {
@@ -123,7 +125,7 @@ class AutocompleteBox
                 $item.attr "class", "reform-autocompletebox-item"
                 $item.attr "title", item.title
                 $item.attr "value", item.value
-                $item.text item.title
+                $item.html item.title
                 $item.appendTo $list
                 
                 # Prevent text selection
@@ -212,7 +214,32 @@ class AutocompleteBox
     
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
+
         @fillOptions()
+
+        if @floater? and @options.colorTitle
+            @colorTitles()
+
+    colorTitles: =>
+
+        colorTitle = (title) =>
+            coloredTitle = ""
+            pos = title.indexOf(@currentSelection)
+            if pos != -1
+                coloredTitle += title.substr(0, pos)
+                coloredTitle += "<strong>"
+                coloredTitle += title.substr(pos, @currentSelection.length)
+                coloredTitle += "</strong>"
+                coloredTitle += title.substr(pos + @currentSelection.length, title.length)
+
+            return coloredTitle
+
+        @floater.find(".reform-autocompletebox-item").each (num, item) ->
+            $item = $(item);
+            title = $item.html()
+            title = colorTitle(title)
+            $item.html title
+
 
     # query the server
     request: (term, success, failure) =>
@@ -245,7 +272,7 @@ class AutocompleteBox
                     limit: @options.max
                 }, extraParams),
                 success: (data) => # 200 OK
-                    parsed = @options.parse?(data) || @parse(data)
+                    parsed = @options.parse?(data, term) || @parse(data, term)
 
                     # fill data
                     @options.data = parsed
@@ -258,7 +285,7 @@ class AutocompleteBox
         else
             failure 'Set options.url', term
 
-    parse: (data) =>
+    parse: (data, term) =>
         parsed = []
 
         $.each data, (num, item) =>

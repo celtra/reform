@@ -19,7 +19,8 @@ AutocompleteBox = (function() {
     formatter: null,
     callback: null,
     noRecord: 'No records.',
-    matchCase: false
+    matchCase: false,
+    colorTitle: true
   };
 
   AutocompleteBox.prototype.KEY = {
@@ -40,6 +41,7 @@ AutocompleteBox = (function() {
     this.onChange = __bind(this.onChange, this);
     this.parse = __bind(this.parse, this);
     this.request = __bind(this.request, this);
+    this.colorTitles = __bind(this.colorTitles, this);
     this.refresh = __bind(this.refresh, this);
     this.close = __bind(this.close, this);
     this.open = __bind(this.open, this);
@@ -125,7 +127,7 @@ AutocompleteBox = (function() {
         $item.attr("class", "reform-autocompletebox-item");
         $item.attr("title", item.title);
         $item.attr("value", item.value);
-        $item.text(item.title);
+        $item.html(item.title);
         $item.appendTo($list);
         $item.on("mousedown", function(e) {
           return e.preventDefault();
@@ -215,7 +217,35 @@ AutocompleteBox = (function() {
 
   AutocompleteBox.prototype.refresh = function() {
     this.fake.toggleClass("disabled", this.orig.is(":disabled"));
-    return this.fillOptions();
+    this.fillOptions();
+    if ((this.floater != null) && this.options.colorTitle) {
+      return this.colorTitles();
+    }
+  };
+
+  AutocompleteBox.prototype.colorTitles = function() {
+    var colorTitle,
+      _this = this;
+    colorTitle = function(title) {
+      var coloredTitle, pos;
+      coloredTitle = "";
+      pos = title.indexOf(_this.currentSelection);
+      if (pos !== -1) {
+        coloredTitle += title.substr(0, pos);
+        coloredTitle += "<strong>";
+        coloredTitle += title.substr(pos, _this.currentSelection.length);
+        coloredTitle += "</strong>";
+        coloredTitle += title.substr(pos + _this.currentSelection.length, title.length);
+      }
+      return coloredTitle;
+    };
+    return this.floater.find(".reform-autocompletebox-item").each(function(num, item) {
+      var $item, title;
+      $item = $(item);
+      title = $item.html();
+      title = colorTitle(title);
+      return $item.html(title);
+    });
   };
 
   AutocompleteBox.prototype.request = function(term, success, failure) {
@@ -250,7 +280,7 @@ AutocompleteBox = (function() {
         }, extraParams),
         success: function(data) {
           var _base;
-          parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data) : void 0) || _this.parse(data);
+          parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data, term) : void 0) || _this.parse(data, term);
           _this.options.data = parsed;
           _this.cache.add(term, parsed);
           return success(parsed, term);
@@ -264,7 +294,7 @@ AutocompleteBox = (function() {
     }
   };
 
-  AutocompleteBox.prototype.parse = function(data) {
+  AutocompleteBox.prototype.parse = function(data, term) {
     var parsed,
       _this = this;
     parsed = [];
