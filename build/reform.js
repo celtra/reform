@@ -16,11 +16,10 @@ AutocompleteBox = (function() {
     max: 1000,
     selected: 0,
     minType: 2,
-    formatter: null,
-    callback: null,
-    noRecord: 'No records.',
-    matchCase: false,
-    colorTitle: true
+    delayType: 300,
+    matchCase: true,
+    colorTitle: true,
+    matchAll: false
   };
 
   AutocompleteBox.prototype.KEY = {
@@ -36,7 +35,8 @@ AutocompleteBox = (function() {
   cache = null;
 
   function AutocompleteBox(select, options) {
-    var _this = this;
+    var delay,
+      _this = this;
     this.select = select;
     this.onChange = __bind(this.onChange, this);
     this.parse = __bind(this.parse, this);
@@ -68,7 +68,15 @@ AutocompleteBox = (function() {
     this.refresh();
     this.orig.after(this.fake).appendTo(this.fake);
     this.floater = null;
-    this.input.on("keydown.autocomplete", function(e) {
+    delay = (function() {
+      var timer;
+      timer = 0;
+      return function(callback, ms) {
+        clearTimeout(timer);
+        return timer = setTimeout(callback, ms);
+      };
+    })();
+    this.input.on("keyup.autocomplete", function(e) {
       if (_this.orig.is(":disabled")) {
         return;
       }
@@ -76,19 +84,31 @@ AutocompleteBox = (function() {
       if (e.keyCode === _this.KEY.UP) {
         e.preventDefault();
       }
-      return setTimeout(function() {
+      switch (e.keyCode) {
+        case _this.KEY.DOWN:
+          if (_this.floater === null) {
+            _this.onChange(function() {
+              _this.open();
+              return _this.refresh();
+            });
+          } else {
+            _this.setHover(_this.options.selected + 1);
+          }
+          return;
+        case _this.KEY.UP:
+          _this.setHover(_this.options.selected - 1);
+          return;
+        case _this.KEY.ESC:
+          _this.close();
+          return;
+      }
+      return delay(function() {
         _this.currentSelection = _this.input.val();
         switch (e.keyCode) {
-          case _this.KEY.DOWN:
-            return _this.setHover(_this.options.selected + 1);
-          case _this.KEY.UP:
-            return _this.setHover(_this.options.selected - 1);
           case _this.KEY.RETURN:
             return _this.onChange(function() {
               return _this.selectCurrent();
             });
-          case _this.KEY.ESC:
-            return _this.close();
           default:
             _this.options.selected = 0;
             return _this.onChange(function() {
@@ -100,7 +120,10 @@ AutocompleteBox = (function() {
               }
             });
         }
-      }, 0);
+      }, _this.options.delayType);
+    });
+    this.input.on("blur", function(e) {
+      return _this.close();
     });
     this.body.on("reform.open", function(e) {
       if (e.target !== _this.select) {
@@ -110,7 +133,7 @@ AutocompleteBox = (function() {
   }
 
   AutocompleteBox.prototype.fillOptions = function() {
-    var $list, isAny,
+    var $list, isAny, num,
       _this = this;
     if (this.floater == null) {
       return;
@@ -119,9 +142,13 @@ AutocompleteBox = (function() {
     $list = $("<div/>").appendTo(this.floater);
     $list.attr("class", "reform-autocompletebox-list");
     isAny = false;
+    num = 0;
     $.each(this.options.data, function(i, item) {
       var $item;
-      if (item.title.indexOf(_this.currentSelection) !== -1) {
+      if (_this.options.max <= num) {
+        return false;
+      }
+      if (_this.options.matchAll || item.title.indexOf(_this.currentSelection) !== -1) {
         isAny = true;
         $item = $("<div/>");
         $item.attr("class", "reform-autocompletebox-item");
@@ -138,7 +165,7 @@ AutocompleteBox = (function() {
           }
           return _this.selectCurrent();
         });
-        return $item.on("mouseenter", function(e) {
+        $item.on("mouseenter", function(e) {
           var elem;
           if ($item.is('.disabled')) {
             return;
@@ -146,6 +173,7 @@ AutocompleteBox = (function() {
           elem = e.target;
           return _this.setHover($(elem).index() + 1);
         });
+        return num++;
       }
     });
     if (!isAny) {
@@ -229,13 +257,19 @@ AutocompleteBox = (function() {
     colorTitle = function(title) {
       var coloredTitle, pos;
       coloredTitle = "";
-      pos = title.indexOf(_this.currentSelection);
+      if (_this.options.matchCase) {
+        pos = title.indexOf(_this.currentSelection);
+      } else {
+        pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
+      }
       if (pos !== -1) {
         coloredTitle += title.substr(0, pos);
         coloredTitle += "<strong>";
         coloredTitle += title.substr(pos, _this.currentSelection.length);
         coloredTitle += "</strong>";
         coloredTitle += title.substr(pos + _this.currentSelection.length, title.length);
+      } else {
+        coloredTitle = title;
       }
       return coloredTitle;
     };
@@ -249,7 +283,7 @@ AutocompleteBox = (function() {
   };
 
   AutocompleteBox.prototype.request = function(term, success, failure) {
-    var data, extraParams, parsed,
+    var data, extraParams,
       _this = this;
     if (!this.options.matchCase) {
       term = term.toLowerCase();
@@ -257,10 +291,7 @@ AutocompleteBox = (function() {
     data = this.cache.load(term);
     if (data) {
       if (data.length) {
-        return success(term, data);
-      } else {
-        parsed = options.parse && options.parse(options.noRecord) || parse(options.noRecord);
-        return success(term, parsed);
+        return success(data, term);
       }
     } else if (this.options.url != null) {
       extraParams = {
@@ -279,7 +310,7 @@ AutocompleteBox = (function() {
           limit: this.options.max
         }, extraParams),
         success: function(data) {
-          var _base;
+          var parsed, _base;
           parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data, term) : void 0) || _this.parse(data, term);
           _this.options.data = parsed;
           _this.cache.add(term, parsed);
@@ -422,7 +453,7 @@ Cache = (function() {
 module.exports = AutocompleteBox;
 
 
-},{"jquery-commonjs":6}],2:[function(require,module,exports){
+},{"jquery-commonjs":7}],2:[function(require,module,exports){
 var CheckBox,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -482,7 +513,79 @@ CheckBox = (function() {
 module.exports = CheckBox;
 
 
-},{"jquery-commonjs":6}],3:[function(require,module,exports){
+},{"jquery-commonjs":7}],3:[function(require,module,exports){
+var AutocompleteBox, GeoAutocompleteBox,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+if (window.$ == null) {
+  window.$ = require("jquery-commonjs");
+}
+
+AutocompleteBox = require("./autocompletebox.coffee");
+
+GeoAutocompleteBox = (function(_super) {
+  __extends(GeoAutocompleteBox, _super);
+
+  function GeoAutocompleteBox(selector, options) {
+    this.parse = __bind(this.parse, this);
+    this.request = __bind(this.request, this);
+    this.options.matchAll = true;
+    GeoAutocompleteBox.__super__.constructor.call(this, selector, options);
+  }
+
+  GeoAutocompleteBox.prototype.request = function(term, success, failure) {
+    var data, geocoder, options, parsed,
+      _this = this;
+    if (!this.options.matchCase) {
+      term = term.toLowerCase();
+    }
+    data = this.cache.load(term);
+    if (data) {
+      parsed = this.options.parse && this.options.parse(options.data) || this.parse(options.data);
+      return success(term, parsed);
+    } else if (this.options.url != null) {
+      geocoder = new google.maps.Geocoder();
+      options = {
+        'address': term
+      };
+      return geocoder.geocode(options, function(results, status) {
+        var _base;
+        if (status === google.maps.GeocoderStatus.OK) {
+          parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(results, term) : void 0) || _this.parse(results, term);
+          _this.options.data = parsed;
+          return success(parsed, term);
+        } else {
+          return failure(status, results);
+        }
+      });
+    } else {
+      return failure('Set options.url', term);
+    }
+  };
+
+  GeoAutocompleteBox.prototype.parse = function(data, term) {
+    var parsed,
+      _this = this;
+    parsed = [];
+    $.each(data, function(num, item) {
+      return parsed.push({
+        value: item.geometry.location.lat() + "|" + item.geometry.location.lng(),
+        title: item.formatted_address
+      });
+    });
+    return parsed;
+  };
+
+  return GeoAutocompleteBox;
+
+})(AutocompleteBox);
+
+module.exports = GeoAutocompleteBox;
+
+
+},{"./autocompletebox.coffee":1,"jquery-commonjs":7}],4:[function(require,module,exports){
 var Reform, reform;
 
 Reform = require("./reform.coffee");
@@ -494,8 +597,8 @@ reform.observe();
 window.Reform = reform;
 
 
-},{"./reform.coffee":4}],4:[function(require,module,exports){
-(function(){var AutocompleteBox, CheckBox, Reform, SelectBox;
+},{"./reform.coffee":5}],5:[function(require,module,exports){
+(function(){var AutocompleteBox, CheckBox, GeoAutocompleteBox, Reform, SelectBox;
 
 if (window.$ == null) {
   window.$ = require("jquery-commonjs");
@@ -506,6 +609,8 @@ CheckBox = require("./checkbox.coffee");
 SelectBox = require("./selectbox.coffee");
 
 AutocompleteBox = require("./autocompletebox.coffee");
+
+GeoAutocompleteBox = require("./geoautocompletebox.coffee");
 
 Reform = (function() {
   function Reform() {}
@@ -542,6 +647,8 @@ Reform = (function() {
 
   Reform.prototype.AutocompleteBox = AutocompleteBox;
 
+  Reform.prototype.GeoAutocompleteBox = GeoAutocompleteBox;
+
   return Reform;
 
 })();
@@ -555,7 +662,7 @@ module.exports = Reform;
 
 
 })()
-},{"./autocompletebox.coffee":1,"./checkbox.coffee":2,"./selectbox.coffee":5,"jquery-commonjs":6}],5:[function(require,module,exports){
+},{"./autocompletebox.coffee":1,"./checkbox.coffee":2,"./geoautocompletebox.coffee":3,"./selectbox.coffee":6,"jquery-commonjs":7}],6:[function(require,module,exports){
 var SelectBox,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -719,7 +826,7 @@ SelectBox = (function() {
 module.exports = SelectBox;
 
 
-},{"jquery-commonjs":6}],6:[function(require,module,exports){
+},{"jquery-commonjs":7}],7:[function(require,module,exports){
 
-},{}]},{},[3])
+},{}]},{},[4])
 ;

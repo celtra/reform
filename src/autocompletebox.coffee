@@ -4,26 +4,28 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom select boxes
 class AutocompleteBox
 
+    # some defaults
     options: {
         # add your data or supply url
         data: [],
         # request
         url: 'http://localhost:1111/demo/locations.json',
         dataType: 'json',
-        max: 1000
+        max: 1000,
 
         selected: 0,
         minType: 2,
+        delayType: 300,
 
-        formatter: null,
-        callback: null,
+        matchCase: true,
 
-        noRecord: 'No records.'
-        matchCase: false,
-
-        colorTitle: true
+        # wrap term in floater list in <strong>
+        colorTitle: true,
+        # will not filter dropdown data if true
+        matchAll: false
     }
 
+    # key mappings
     KEY: {
         UP: 38,
         DOWN: 40,
@@ -66,7 +68,15 @@ class AutocompleteBox
         # This is where options container will be
         @floater = null
         
-        @input.on "keydown.autocomplete", (e) =>
+        # artificial delay so we don't overrun the server
+        delay = ( ->
+            timer = 0
+            (callback, ms) ->
+                clearTimeout timer
+                timer = setTimeout(callback, ms)
+        )()
+
+        @input.on "keyup.autocomplete", (e) =>
             return if @orig.is ":disabled"
             e.stopPropagation()
             
@@ -74,21 +84,31 @@ class AutocompleteBox
             if e.keyCode == @KEY.UP
                 e.preventDefault()
 
-            setTimeout () =>
+            # no delay key actions
+            switch e.keyCode
+                when @KEY.DOWN
+                    if @floater is null
+                        @onChange () =>
+                            @open()
+                            @refresh()
+                    else
+                        @setHover(@options.selected + 1)
+                    return
+                when @KEY.UP
+                    @setHover(@options.selected - 1)
+                    return
+                when @KEY.ESC
+                    @close()
+                    return                    
 
+            delay () =>
                 # get current value
                 @currentSelection = @input.val()
 
                 switch e.keyCode
-                    when @KEY.DOWN
-                        @setHover(@options.selected + 1)
-                    when @KEY.UP
-                        @setHover(@options.selected - 1)
                     when @KEY.RETURN
                         @onChange () =>
                             @selectCurrent()
-                    when @KEY.ESC
-                        @close()
                     else
                         @options.selected = 0
                         @onChange () =>
@@ -97,10 +117,10 @@ class AutocompleteBox
                                 @refresh()
                             else
                                 @refresh()
-            , 0
+            , @options.delayType
                 
-        #@input.on "blur", (e) =>
-        #    @close()
+        @input.on "blur", (e) =>
+            @close()
 
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -117,9 +137,13 @@ class AutocompleteBox
         $list.attr "class", "reform-autocompletebox-list"
 
         isAny = false;
+        num = 0
         # Filling options
         $.each @options.data, (i, item) =>
-            if item.title.indexOf(@currentSelection) != -1
+            if @options.max <= num
+                return false
+
+            if @options.matchAll || item.title.indexOf(@currentSelection) != -1
                 isAny = true
                 $item = $ "<div/>"
                 $item.attr "class", "reform-autocompletebox-item"
@@ -140,6 +164,8 @@ class AutocompleteBox
                     return if $item.is '.disabled'
                     elem = e.target
                     @setHover($(elem).index() + 1)
+
+                num++
 
         if !isAny
             @close()
@@ -224,13 +250,19 @@ class AutocompleteBox
 
         colorTitle = (title) =>
             coloredTitle = ""
-            pos = title.indexOf(@currentSelection)
+            if @options.matchCase
+                pos = title.indexOf(@currentSelection)
+            else 
+                pos = title.toLowerCase().indexOf(@currentSelection.toLowerCase())
+
             if pos != -1
                 coloredTitle += title.substr(0, pos)
                 coloredTitle += "<strong>"
                 coloredTitle += title.substr(pos, @currentSelection.length)
                 coloredTitle += "</strong>"
                 coloredTitle += title.substr(pos + @currentSelection.length, title.length)
+            else
+                coloredTitle = title
 
             return coloredTitle
 
@@ -251,10 +283,7 @@ class AutocompleteBox
 
         if data
             if data.length
-                success term, data
-            else
-                parsed = options.parse && options.parse(options.noRecord) || parse(options.noRecord)
-                success term, parsed
+                success data, term
         else if @options.url?
             extraParams = {
                 timestamp: new Date()
