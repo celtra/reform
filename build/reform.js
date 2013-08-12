@@ -11,11 +11,10 @@ AutocompleteBox = (function() {
 
   AutocompleteBox.prototype.options = {
     data: [],
-    url: 'http://localhost:1111/demo/locations.json',
     dataType: 'json',
     max: 1000,
     selected: 0,
-    minType: 2,
+    minChars: 2,
     delayType: 300,
     matchCase: true,
     colorTitle: true,
@@ -48,8 +47,8 @@ AutocompleteBox = (function() {
     this.selectCurrent = __bind(this.selectCurrent, this);
     this.setHover = __bind(this.setHover, this);
     this.fillOptions = __bind(this.fillOptions, this);
-    this.cache = new Cache(options);
-    this["default"] = $.extend(this["default"], options);
+    $.extend(true, this.options, options);
+    this.cache = new Cache(this.options);
     this.orig = $(this.select);
     if (this.orig.is(".reformed")) {
       return;
@@ -88,6 +87,7 @@ AutocompleteBox = (function() {
         case _this.KEY.DOWN:
           if (_this.floater === null) {
             _this.onChange(function() {
+              _this.options.selected = 0;
               _this.open();
               return _this.refresh();
             });
@@ -121,9 +121,6 @@ AutocompleteBox = (function() {
             });
         }
       }, _this.options.delayType);
-    });
-    this.input.on("blur", function(e) {
-      return _this.close();
     });
     this.body.on("reform.open", function(e) {
       if (e.target !== _this.select) {
@@ -247,6 +244,7 @@ AutocompleteBox = (function() {
     this.fake.toggleClass("disabled", this.orig.is(":disabled"));
     this.fillOptions();
     if ((this.floater != null) && this.options.colorTitle) {
+      console.log("coloring");
       return this.colorTitles();
     }
   };
@@ -257,11 +255,7 @@ AutocompleteBox = (function() {
     colorTitle = function(title) {
       var coloredTitle, pos;
       coloredTitle = "";
-      if (_this.options.matchCase) {
-        pos = title.indexOf(_this.currentSelection);
-      } else {
-        pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
-      }
+      pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
       if (pos !== -1) {
         coloredTitle += title.substr(0, pos);
         coloredTitle += "<strong>";
@@ -278,6 +272,7 @@ AutocompleteBox = (function() {
       $item = $(item);
       title = $item.html();
       title = colorTitle(title);
+      console.log(title);
       return $item.html(title);
     });
   };
@@ -341,7 +336,7 @@ AutocompleteBox = (function() {
   AutocompleteBox.prototype.onChange = function(callback) {
     var failureCallback, successCallback,
       _this = this;
-    if (this.options.minType >= this.input.val().length) {
+    if (this.options.minChars >= this.input.val().length) {
       this.close();
       return;
     }
@@ -369,12 +364,13 @@ Cache = (function() {
 
   Cache.prototype.options = {
     cacheLength: 100,
-    matchCase: true,
-    matchContains: false
+    matchContains: false,
+    matchSubset: true
   };
 
   function Cache(options) {
-    this.options = $.extend(this.options, options);
+    this.load = __bind(this.load, this);
+    $.extend(true, this.options, options);
   }
 
   Cache.prototype.matchSubset = function(s, sub) {
@@ -408,7 +404,7 @@ Cache = (function() {
   };
 
   Cache.prototype.load = function(q) {
-    var c, csub, i, k;
+    var c, csub, i, k, self;
     if (!this.options.cacheLength || !this.length) {
       return null;
     }
@@ -418,7 +414,7 @@ Cache = (function() {
         if (k.length > 0) {
           c = data[k];
           $.each(c, function(i, x) {
-            if (matchSubset(x.value, q)) {
+            if (this.matchSubset(x.title, q)) {
               return csub.push(x);
             }
           });
@@ -433,8 +429,9 @@ Cache = (function() {
         c = this.data[q.substr(0, i)];
         if (c) {
           csub = [];
+          self = this;
           $.each(c, function(i, x) {
-            if (matchSubset(x.value, q)) {
+            if (self.matchSubset(x.title, q)) {
               return csub[csub.length] = x;
             }
           });
@@ -531,8 +528,16 @@ GeoAutocompleteBox = (function(_super) {
   function GeoAutocompleteBox(selector, options) {
     this.parse = __bind(this.parse, this);
     this.request = __bind(this.request, this);
-    this.options.matchAll = true;
-    GeoAutocompleteBox.__super__.constructor.call(this, selector, options);
+    var extOptions;
+    this.overrides = {
+      matchAll: true,
+      matchContains: false,
+      matchSubset: false,
+      url: '/custom'
+    };
+    extOptions = {};
+    $.extend(extOptions, this.overrides);
+    GeoAutocompleteBox.__super__.constructor.call(this, selector, extOptions);
   }
 
   GeoAutocompleteBox.prototype.request = function(term, success, failure) {

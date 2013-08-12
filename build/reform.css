@@ -20,8 +20,6 @@
     user-select: none;
 }
 
-
-
 .reform-autocompletebox-fake.disabled {
     background-color: #eee;
 }
@@ -61,6 +59,10 @@
 }
 
 .reform-autocompletebox-item.disabled:hover {
+    background: inherit;
+}
+
+.reform-autocompletebox-item strong{
     background: inherit;
 }
 .reform-checkbox {

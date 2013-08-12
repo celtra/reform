@@ -7,9 +7,17 @@ class GeoAutocompleteBox extends AutocompleteBox
 
     constructor: (selector, options) ->
         # some overrides
-        @options.matchAll = true
+        @overrides = {
+            matchAll: true
+            matchContains: false
+            matchSubset: false
+            url: '/custom'
+        }
 
-        super selector, options
+        extOptions = {}
+        $.extend extOptions, @overrides
+
+        super selector, extOptions
 
     # query the server
     request: (term, success, failure) =>

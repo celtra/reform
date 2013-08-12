@@ -9,12 +9,11 @@ class AutocompleteBox
         # add your data or supply url
         data: [],
         # request
-        url: 'http://localhost:1111/demo/locations.json',
         dataType: 'json',
         max: 1000,
 
         selected: 0,
-        minType: 2,
+        minChars: 2,
         delayType: 300,
 
         matchCase: true,
@@ -41,9 +40,9 @@ class AutocompleteBox
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
 
-        @cache = new Cache(options)
+        $.extend(true, @options, options)
 
-        @default = $.extend(@default, options)
+        @cache = new Cache(@options)
 
         @orig = $ @select
         # Don't do this twice
@@ -89,6 +88,7 @@ class AutocompleteBox
                 when @KEY.DOWN
                     if @floater is null
                         @onChange () =>
+                            @options.selected = 0
                             @open()
                             @refresh()
                     else
@@ -119,8 +119,8 @@ class AutocompleteBox
                                 @refresh()
             , @options.delayType
                 
-        @input.on "blur", (e) =>
-            @close()
+        #@input.on "blur", (e) =>
+        #    @close()
 
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -244,16 +244,14 @@ class AutocompleteBox
         @fillOptions()
 
         if @floater? and @options.colorTitle
+            console.log "coloring"
             @colorTitles()
 
     colorTitles: =>
 
         colorTitle = (title) =>
             coloredTitle = ""
-            if @options.matchCase
-                pos = title.indexOf(@currentSelection)
-            else 
-                pos = title.toLowerCase().indexOf(@currentSelection.toLowerCase())
+            pos = title.toLowerCase().indexOf(@currentSelection.toLowerCase())
 
             if pos != -1
                 coloredTitle += title.substr(0, pos)
@@ -265,13 +263,13 @@ class AutocompleteBox
                 coloredTitle = title
 
             return coloredTitle
-
+            
         @floater.find(".reform-autocompletebox-item").each (num, item) ->
             $item = $(item);
             title = $item.html()
             title = colorTitle(title)
+            console.log title
             $item.html title
-
 
     # query the server
     request: (term, success, failure) =>
@@ -326,7 +324,7 @@ class AutocompleteBox
         parsed
 
     onChange: (callback) =>
-        if @options.minType >= @input.val().length
+        if @options.minChars >= @input.val().length
             @close()
             return
 
@@ -349,13 +347,13 @@ class Cache
 
     options: {
         cacheLength: 100
-        matchCase: true
-        matchContains: false       
+        matchContains: false
+        matchSubset: true
     }
 
-
     constructor: (options) ->
-        @options = $.extend @options, options
+
+        $.extend(true, @options, options)
 
     matchSubset: (s, sub) ->
         s = s.toLowerCase()  unless @options.matchCase
@@ -373,7 +371,7 @@ class Cache
         @data = {}
         @length = 0
 
-    load: (q) ->
+    load: (q) =>
         return null if not @options.cacheLength or not @length
         #
         #            * if dealing w/local data and matchContains than we must make sure
@@ -394,7 +392,7 @@ class Cache
               $.each c, (i, x) ->
                 
                 # if we've got a match, add it to the array
-                csub.push x  if matchSubset(x.value, q)
+                csub.push x  if @matchSubset(x.title, q)
 
           return csub
         
@@ -408,8 +406,10 @@ class Cache
             c = @data[q.substr(0, i)]
             if c
               csub = []
+
+              self = @
               $.each c, (i, x) ->
-                csub[csub.length] = x  if matchSubset(x.value, q)
+                csub[csub.length] = x if self.matchSubset(x.title, q)
 
               return csub
             i--
