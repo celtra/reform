@@ -6,13 +6,13 @@ echo "Merged CSS"
 coffee -o lib src
 echo "Compiled lib"
 
-browserify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
+browserify -t coffeeify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
 echo "Compiled standalone"
 
 uglifyjs -o build/reform.min.js build/reform.js
 echo "Minified standalone"
 
-browserify -e test/test.coffee -o build/test.js -i "jquery-commonjs"
+browserify -t coffeeify -e test/test.coffee -o build/test.js -i "jquery-commonjs"
 echo "Compiled tests"
 
 echo "All done :)"

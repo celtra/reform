@@ -5,7 +5,45 @@
         <link rel="stylesheet" type="text/css" href="demo.css">
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="../build/reform.min.js"></script>
+        <script type="text/javascript" src="../build/reform.js"></script>
+        <script>
+            // autocomplete setup
+            $(document).ready(function() {
+                var data = [
+                                    {
+                                        "title": "one",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "title": "two",
+                                        "value": "2"
+                                    }, 
+                                    {
+                                        "title": "three",
+                                        "value": "3"
+                                    },                
+                                    {
+                                        "title": "four",
+                                        "value": "4"
+                                    },
+                                    {
+                                        "title": "fourty",
+                                        "value": "40"
+                                    },
+                                    {
+                                        "title": "fourteen",
+                                        "value": "14"
+                                    }
+                        ];
+                var options = {};
+                options.data = data;
+
+                // demo url json test, must run server
+                // options.url = 'http://localhost:1111/demo/locations.json';
+
+                var autocomplete = new Reform.AutocompleteBox('.reform-autocompletebox', options);
+            });
+        </script>
     </head>
     <body>
         
@@ -108,5 +146,11 @@
             <option value="10">Ten</option>
         </select>
         
+        <br><br>
+
+        <h2>Autocomplete</h2>
+
+        <input id="demo-autocomplete" class="reform-autocompletebox demo-selectbox" data-options-class="demo-selectbox-options" title="Costum this" type="texinput">
+
     </body>
 </html>
