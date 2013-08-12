@@ -7,6 +7,7 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../build/reform.js"></script>
         <script>
+            // autocomplete setup
             $(document).ready(function() {
                 var data = [
                                     {
@@ -38,7 +39,7 @@
                 options.data = data;
 
                 // demo url json test, must run server
-                // options.url: 'http://localhost:1111/demo/locations.json
+                // options.url = 'http://localhost:1111/demo/locations.json';
 
                 var autocomplete = new Reform.AutocompleteBox('.reform-autocompletebox', options);
             });

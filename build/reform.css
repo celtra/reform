@@ -20,7 +20,7 @@
     user-select: none;
 }
 
-.reform-autocompletebox-fake.disabled {
+.reform-autocompletebox-fake.disabled .reform-autocompletebox-input{
     background-color: #eee;
 }
 
@@ -53,17 +53,12 @@
     background: #333;
     color: #fff;
 }
-
-.reform-autocompletebox-item.disabled {
-    color: #ccc;
-}
-
-.reform-autocompletebox-item.disabled:hover {
-    background: inherit;
-}
-
 .reform-autocompletebox-item strong{
     background: inherit;
+}
+
+.reform-autocompletebox-input.placeholder {
+    color: #aaa;
 }
 .reform-checkbox {
     display: none;

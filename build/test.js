@@ -11,14 +11,16 @@ AutocompleteBox = (function() {
 
   AutocompleteBox.prototype.options = {
     data: [],
+    url: null,
     dataType: 'json',
     max: 1000,
     selected: 0,
     minChars: 2,
-    delayType: 300,
-    matchCase: true,
+    delay: 300,
+    matchCase: false,
     colorTitle: true,
-    matchAll: false
+    matchAll: false,
+    placeholder: "Input search string..."
   };
 
   AutocompleteBox.prototype.KEY = {
@@ -54,6 +56,9 @@ AutocompleteBox = (function() {
       return;
     }
     this.body = $("body");
+    if (this.options.url == null) {
+      this.options.delay = 0;
+    }
     this.fake = $("<div/>");
     this.fake.attr("class", this.orig.attr("class"));
     this.orig.hide().attr("class", "reformed");
@@ -62,7 +67,8 @@ AutocompleteBox = (function() {
       this.fake.addClass("disabled");
     }
     this.input = $("<input/>");
-    this.input.addClass("reform-autocompletebox-input");
+    this.input.addClass("reform-autocompletebox-input placeholder");
+    this.input.val(this.options.placeholder);
     this.fake.append(this.input);
     this.refresh();
     this.orig.after(this.fake).appendTo(this.fake);
@@ -75,6 +81,12 @@ AutocompleteBox = (function() {
         return timer = setTimeout(callback, ms);
       };
     })();
+    this.input.on("focus", function(e) {
+      if (_this.input.val() === _this.options.placeholder) {
+        _this.input.val('');
+        return _this.input.removeClass('placeholder');
+      }
+    });
     this.input.on("keyup.autocomplete", function(e) {
       if (_this.orig.is(":disabled")) {
         return;
@@ -120,7 +132,10 @@ AutocompleteBox = (function() {
               }
             });
         }
-      }, _this.options.delayType);
+      }, _this.options.delay);
+    });
+    this.input.on("blur", function(e) {
+      return _this.close();
     });
     this.body.on("reform.open", function(e) {
       if (e.target !== _this.select) {
@@ -141,37 +156,43 @@ AutocompleteBox = (function() {
     isAny = false;
     num = 0;
     $.each(this.options.data, function(i, item) {
-      var $item;
+      var $item, currentSelection, title;
       if (_this.options.max <= num) {
         return false;
       }
-      if (_this.options.matchAll || item.title.indexOf(_this.currentSelection) !== -1) {
-        isAny = true;
-        $item = $("<div/>");
-        $item.attr("class", "reform-autocompletebox-item");
-        $item.attr("title", item.title);
-        $item.attr("value", item.value);
-        $item.html(item.title);
-        $item.appendTo($list);
-        $item.on("mousedown", function(e) {
-          return e.preventDefault();
-        });
-        $item.on("click", function(e) {
-          if ($item.is('.disabled')) {
-            return;
-          }
-          return _this.selectCurrent();
-        });
-        $item.on("mouseenter", function(e) {
-          var elem;
-          if ($item.is('.disabled')) {
-            return;
-          }
-          elem = e.target;
-          return _this.setHover($(elem).index() + 1);
-        });
-        return num++;
+      if (!_this.options.matchAll) {
+        title = item.title;
+        currentSelection = _this.currentSelection;
+        if (!_this.options.matchCase) {
+          title = title.toLowerCase();
+          currentSelection = currentSelection.toLowerCase();
+        }
+        if (title.indexOf(currentSelection) === -1) {
+          return;
+        }
       }
+      isAny = true;
+      $item = $("<div/>");
+      $item.attr("class", "reform-autocompletebox-item");
+      $item.attr("title", item.title);
+      $item.attr("value", item.value);
+      $item.html(item.title);
+      $item.appendTo($list);
+      $item.on("mousedown", function(e) {
+        return e.preventDefault();
+      });
+      $item.on("click", function(e) {
+        if ($item.is('.disabled')) {
+          return;
+        }
+        return _this.selectCurrent();
+      });
+      $item.on("mouseenter", function(e) {
+        var elem;
+        elem = e.target;
+        return _this.setHover($(elem).index() + 1);
+      });
+      return num++;
     });
     if (!isAny) {
       return this.close();
@@ -244,7 +265,6 @@ AutocompleteBox = (function() {
     this.fake.toggleClass("disabled", this.orig.is(":disabled"));
     this.fillOptions();
     if ((this.floater != null) && this.options.colorTitle) {
-      console.log("coloring");
       return this.colorTitles();
     }
   };
@@ -272,7 +292,6 @@ AutocompleteBox = (function() {
       $item = $(item);
       title = $item.html();
       title = colorTitle(title);
-      console.log(title);
       return $item.html(title);
     });
   };
@@ -302,6 +321,7 @@ AutocompleteBox = (function() {
         url: this.options.url,
         data: $.extend({
           q: term,
+          matchCase: this.options.matchCase,
           limit: this.options.max
         }, extraParams),
         success: function(data) {
@@ -336,7 +356,7 @@ AutocompleteBox = (function() {
   AutocompleteBox.prototype.onChange = function(callback) {
     var failureCallback, successCallback,
       _this = this;
-    if (this.options.minChars >= this.input.val().length) {
+    if (this.options.minChars >= this.currentSelection.length) {
       this.close();
       return;
     }

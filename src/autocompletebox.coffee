@@ -1,27 +1,29 @@
 
 window.$ ?= require "jquery-commonjs"
 
-# Implements custom select boxes
+# Implements custom autocomplete box
 class AutocompleteBox
 
     # some defaults
     options: {
         # add your data or supply url
         data: [],
-        # request
+        url: null,
+        # request options
         dataType: 'json',
         max: 1000,
 
         selected: 0,
         minChars: 2,
-        delayType: 300,
+        delay: 300,
 
-        matchCase: true,
+        matchCase: false,
 
         # wrap term in floater list in <strong>
         colorTitle: true,
         # will not filter dropdown data if true
         matchAll: false
+        placeholder: "Input search string..."
     }
 
     # key mappings
@@ -50,6 +52,9 @@ class AutocompleteBox
 
         @body = $ "body"
         
+        # clear delay if data is local
+        @options.delay = 0 if not @options.url?
+
         # Fake autocomplete box
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
@@ -58,7 +63,8 @@ class AutocompleteBox
         @fake.addClass "disabled" if @orig.is ":disabled"
 
         @input = $ "<input/>"
-        @input.addClass "reform-autocompletebox-input"
+        @input.addClass "reform-autocompletebox-input placeholder"
+        @input.val(@options.placeholder)
         @fake.append @input
 
         @refresh()
@@ -67,13 +73,18 @@ class AutocompleteBox
         # This is where options container will be
         @floater = null
         
-        # artificial delay so we don't overrun the server
+        # artificial delay for server requests we don't overrun the server
         delay = ( ->
             timer = 0
             (callback, ms) ->
                 clearTimeout timer
                 timer = setTimeout(callback, ms)
         )()
+
+        @input.on "focus", (e) =>
+            if @input.val() == @options.placeholder
+                @input.val('')
+                @input.removeClass('placeholder')
 
         @input.on "keyup.autocomplete", (e) =>
             return if @orig.is ":disabled"
@@ -101,7 +112,9 @@ class AutocompleteBox
                     @close()
                     return                    
 
+            # only read key when key not pressed for certain amout of time
             delay () =>
+
                 # get current value
                 @currentSelection = @input.val()
 
@@ -117,10 +130,11 @@ class AutocompleteBox
                                 @refresh()
                             else
                                 @refresh()
-            , @options.delayType
-                
-        #@input.on "blur", (e) =>
-        #    @close()
+
+            , @options.delay
+
+        @input.on "blur", (e) =>
+            @close()
 
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -143,29 +157,38 @@ class AutocompleteBox
             if @options.max <= num
                 return false
 
-            if @options.matchAll || item.title.indexOf(@currentSelection) != -1
-                isAny = true
-                $item = $ "<div/>"
-                $item.attr "class", "reform-autocompletebox-item"
-                $item.attr "title", item.title
-                $item.attr "value", item.value
-                $item.html item.title
-                $item.appendTo $list
+            # can match all, usefull for custom requests
+            if not @options.matchAll    
                 
-                # Prevent text selection
-                $item.on "mousedown", (e) ->  e.preventDefault()
-                
-                # Option selection
-                $item.on "click", (e) =>
-                    return if $item.is '.disabled'
-                    @selectCurrent()
+                title = item.title
+                currentSelection = @currentSelection
+                if not @options.matchCase
+                    title = title.toLowerCase()
+                    currentSelection = currentSelection.toLowerCase()
+                if title.indexOf(currentSelection) == -1
+                    return
 
-                $item.on "mouseenter", (e) =>
-                    return if $item.is '.disabled'
-                    elem = e.target
-                    @setHover($(elem).index() + 1)
+            isAny = true
+            $item = $ "<div/>"
+            $item.attr "class", "reform-autocompletebox-item"
+            $item.attr "title", item.title
+            $item.attr "value", item.value
+            $item.html item.title
+            $item.appendTo $list
+            
+            # Prevent text selection
+            $item.on "mousedown", (e) ->  e.preventDefault()
+            
+            # Option selection
+            $item.on "click", (e) =>
+                return if $item.is '.disabled'
+                @selectCurrent()
 
-                num++
+            $item.on "mouseenter", (e) =>
+                elem = e.target
+                @setHover($(elem).index() + 1)
+
+            num++
 
         if !isAny
             @close()
@@ -244,7 +267,6 @@ class AutocompleteBox
         @fillOptions()
 
         if @floater? and @options.colorTitle
-            console.log "coloring"
             @colorTitles()
 
     colorTitles: =>
@@ -263,12 +285,11 @@ class AutocompleteBox
                 coloredTitle = title
 
             return coloredTitle
-            
+
         @floater.find(".reform-autocompletebox-item").each (num, item) ->
             $item = $(item);
             title = $item.html()
             title = colorTitle(title)
-            console.log title
             $item.html title
 
     # query the server
@@ -296,6 +317,7 @@ class AutocompleteBox
                 url: @options.url,
                 data: $.extend({
                     q: term,
+                    matchCase: @options.matchCase
                     limit: @options.max
                 }, extraParams),
                 success: (data) => # 200 OK
@@ -324,7 +346,7 @@ class AutocompleteBox
         parsed
 
     onChange: (callback) =>
-        if @options.minChars >= @input.val().length
+        if @options.minChars >= @currentSelection.length
             @close()
             return
 
