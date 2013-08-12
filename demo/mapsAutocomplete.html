@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Geo autocomplete with Reform</title>
+        <link rel="stylesheet" type="text/css" href="../build/reform.css">
+        <link rel="stylesheet" type="text/css" href="demo.css">
+        
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCobVik6xLVkJ5r2NQAWX6zcjxppo6fcao"></script> 
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="../build/reform.js"></script>
+        <script>
+            $(document).ready(function() {
+                var geoAutocomplete = new Reform.GeoAutocompleteBox('.reform-autocompletebox');
+            });
+        </script>
+    </head>
+    <body>
+
+        <h2>Autocomplete demo page</h2>
+
+        <input id="demo-autocomplete" class="reform-autocompletebox demo-selectbox" data-options-class="demo-selectbox-options" title="Costum this" type="texinput">
+
+    </body>
+</html>

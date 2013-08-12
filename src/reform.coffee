@@ -1,6 +1,8 @@
-window.$ ?= require "jquery-commonjs"
-CheckBox  = require "./checkbox"
-SelectBox = require "./selectbox"
+window.$ 	   		?= require "jquery-commonjs"
+CheckBox  			= require "./checkbox.coffee"
+SelectBox 			= require "./selectbox.coffee"
+AutocompleteBox 	= require "./autocompletebox.coffee"
+GeoAutocompleteBox 	= require "./geoautocompletebox.coffee"
 
 # This class does the magic
 class Reform
@@ -12,9 +14,12 @@ class Reform
         $(document).on "ready",               => @process "body"
         $(document).on "DOMNodeInserted", (e) => @process e.target
     
+    AutocompleteBox: AutocompleteBox
+    GeoAutocompleteBox: GeoAutocompleteBox
+
 # Posible custom controls
 Reform.controls =
-    "reform-checkbox"  : CheckBox
-    "reform-selectbox" : SelectBox
+    "reform-checkbox"  			: CheckBox
+    "reform-selectbox" 			: SelectBox
 
 module.exports = Reform

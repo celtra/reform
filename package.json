@@ -1,6 +1,6 @@
 {
     "name"                : "reform",
-    "version"             : "0.1.5",
+    "version"             : "0.1.6",
     "author"              : "Rod Petrovic <me@rodpetrovic.com>",
     "description"         : "HTML forms the way you want them",
     "contributors"        : [],
@@ -13,6 +13,7 @@
     "devDependencies"     : {
         "coffee-script"   : ">=1.2.0",
         "browserify"      : ">=1.9.2",
+        "coffeeify"       : ">=0.5.1",
         "uglify-js"       : ">=1.2.5"
     },
     "license"             : "MIT",
