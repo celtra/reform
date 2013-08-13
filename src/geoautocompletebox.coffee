@@ -1,6 +1,6 @@
 
 window.$ ?= require "jquery-commonjs"
-AutocompleteBox = require "./autocompletebox.coffee"
+AutocompleteBox = require "./autocompletebox"
 
 # Implements custom select boxes
 class GeoAutocompleteBox extends AutocompleteBox

@@ -1,5 +1,5 @@
 window.$ ?= require "jquery-commonjs"
-CheckBox = require "../src/checkbox.coffee"
+CheckBox = require "../lib/checkbox"
 
 module.exports = ->
     

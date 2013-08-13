@@ -1,5 +1,5 @@
 window.$ ?= require "jquery-commonjs"
-AutocompleteBox = require "../src/autocompletebox.coffee"
+AutocompleteBox = require "../lib/autocompletebox"
 
 module.exports = ->
     
