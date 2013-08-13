@@ -22,7 +22,14 @@
       matchCase: false,
       colorTitle: true,
       matchAll: false,
-      placeholder: "Input search string..."
+      placeholder: "Input search string...",
+      autocompleteClass: 'reform-autocompletebox',
+      itemClass: 'reform-autocompletebox-item',
+      hoverClass: 'reform-autocompletebox-hover',
+      listClass: 'reform-autocompletebox-list',
+      optionsClass: 'reform-autocompletebox-options',
+      fakeClass: 'reform-autocompletebox-fake',
+      inputClass: 'reform-autocompletebox-input'
     };
 
     AutocompleteBox.prototype.KEY = {
@@ -38,7 +45,7 @@
     cache = null;
 
     function AutocompleteBox(select, options) {
-      var delay,
+      var delay, outsideOptions,
         _this = this;
       this.select = select;
       this.onChange = __bind(this.onChange, this);
@@ -61,9 +68,11 @@
 
       this.fillOptions = __bind(this.fillOptions, this);
 
-      $.extend(true, this.options, options);
-      this.cache = new Cache(this.options);
       this.orig = $(this.select);
+      outsideOptions = this.orig.data();
+      $.extend(this.options, options);
+      $.extend(this.options, outsideOptions);
+      this.cache = new Cache(this.options);
       if (this.orig.is(".reformed")) {
         return;
       }
@@ -74,12 +83,12 @@
       this.fake = $("<div/>");
       this.fake.attr("class", this.orig.attr("class"));
       this.orig.hide().attr("class", "reformed");
-      this.fake.removeClass("reform-autocompletebox").addClass("reform-autocompletebox-fake");
+      this.fake.removeClass(this.options.autocompleteClass).addClass(this.options.fakeClass);
       if (this.orig.is(":disabled")) {
         this.fake.addClass("disabled");
       }
       this.input = $("<input/>");
-      this.input.addClass("reform-autocompletebox-input placeholder");
+      this.input.addClass(this.options.inputClass + " placeholder");
       this.input.val(this.options.placeholder);
       this.fake.append(this.input);
       this.refresh();
@@ -146,9 +155,6 @@
           }
         }, _this.options.delay);
       });
-      this.input.on("blur", function(e) {
-        return _this.close();
-      });
       this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) {
           return _this.close();
@@ -164,7 +170,7 @@
       }
       this.floater.empty();
       $list = $("<div/>").appendTo(this.floater);
-      $list.attr("class", "reform-autocompletebox-list");
+      $list.attr("class", this.options.listClass);
       isAny = false;
       num = 0;
       $.each(this.options.data, function(i, item) {
@@ -185,7 +191,7 @@
         }
         isAny = true;
         $item = $("<div/>");
-        $item.attr("class", "reform-autocompletebox-item");
+        $item.attr("class", _this.options.itemClass);
         $item.attr("title", item.title);
         $item.attr("value", item.value);
         $item.html(item.title);
@@ -216,7 +222,7 @@
       if (!(this.floater != null)) {
         return;
       }
-      $list = this.floater.find('.reform-autocompletebox-list');
+      $list = this.floater.find('.' + this.options.listClass);
       if (newSelected < 1) {
         return;
       }
@@ -224,8 +230,8 @@
         return;
       }
       this.options.selected = newSelected;
-      $list.children().removeClass("reform-autocompletebox-hover");
-      return $list.find(':nth-child(' + this.options.selected + ')').addClass("reform-autocompletebox-hover");
+      $list.children().removeClass(this.options.hoverClass);
+      return $list.find(':nth-child(' + this.options.selected + ')').addClass(this.options.hoverClass);
     };
 
     AutocompleteBox.prototype.selectCurrent = function() {
@@ -233,7 +239,7 @@
       if (!(this.floater != null) || this.options.selected === 0) {
         return;
       }
-      $selected = this.floater.find('.reform-autocompletebox-list').find(':nth-child(' + this.options.selected + ')');
+      $selected = this.floater.find('.' + listClass).find(':nth-child(' + this.options.selected + ')');
       $selected.addClass('selected');
       value = $selected.attr("value");
       title = $selected.attr("title");
@@ -248,12 +254,12 @@
         _this = this;
       this.orig.trigger("reform.open");
       this.floater = $("<div/>");
-      this.floater.attr("class", "reform-autocompletebox-options");
-      this.floater.css("min-width", this.fake.outerWidth() - 10 - 2);
+      this.floater.attr("class", this.options.optionsClass);
+      this.floater.css("min-width", this.fake.outerWidth() - 2);
       this.floater.addClass(this.orig.data("options-class"));
       this.body.append(this.floater);
       this.body.on("click.autocomplete", function(e) {
-        if (!$(e.target).hasClass('reform-autocompletebox-input')) {
+        if (!$(e.target).hasClass(_this.options.inputClass)) {
           _this.body.off("click.autocomplete");
           return _this.close();
         }
@@ -299,7 +305,7 @@
         }
         return coloredTitle;
       };
-      return this.floater.find(".reform-autocompletebox-item").each(function(num, item) {
+      return this.floater.find("." + this.options.itemClass).each(function(num, item) {
         var $item, title;
         $item = $(item);
         title = $item.html();
@@ -403,7 +409,7 @@
 
     function Cache(options) {
       this.load = __bind(this.load, this);
-      $.extend(true, this.options, options);
+      $.extend(this.options, options);
     }
 
     Cache.prototype.matchSubset = function(s, sub) {
@@ -577,7 +583,14 @@
         matchAll: true,
         matchContains: false,
         matchSubset: false,
-        url: '/custom'
+        url: '/custom',
+        autocompleteClass: 'reform-geoautocompletebox',
+        itemClass: 'reform-geoautocompletebox-item',
+        hoverClass: 'reform-geoautocompletebox-hover',
+        listClass: 'reform-geoautocompletebox-list',
+        optionsClass: 'reform-geoautocompletebox-options',
+        fakeClass: 'reform-geoautocompletebox-fake',
+        inputClass: 'reform-geoautocompletebox-input'
       };
       extOptions = {};
       $.extend(extOptions, this.overrides);
@@ -701,17 +714,14 @@
       });
     };
 
-    Reform.prototype.AutocompleteBox = AutocompleteBox;
-
-    Reform.prototype.GeoAutocompleteBox = GeoAutocompleteBox;
-
     return Reform;
 
   })();
 
   Reform.controls = {
     "reform-checkbox": CheckBox,
-    "reform-selectbox": SelectBox
+    "reform-selectbox": SelectBox,
+    "reform-geoautocompletebox": GeoAutocompleteBox
   };
 
   module.exports = Reform;

@@ -12,6 +12,14 @@ class GeoAutocompleteBox extends AutocompleteBox
             matchContains: false
             matchSubset: false
             url: '/custom'
+
+            autocompleteClass:  'reform-geoautocompletebox'
+            itemClass:          'reform-geoautocompletebox-item'
+            hoverClass:         'reform-geoautocompletebox-hover'
+            listClass:          'reform-geoautocompletebox-list'
+            optionsClass:       'reform-geoautocompletebox-options'
+            fakeClass:          'reform-geoautocompletebox-fake'
+            inputClass:         'reform-geoautocompletebox-input'
         }
 
         extOptions = {}
