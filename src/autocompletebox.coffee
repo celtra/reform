@@ -7,23 +7,32 @@ class AutocompleteBox
     # some defaults
     options: {
         # add your data or supply url
-        data: [],
-        url: null,
+        data: []
+        url: null
         # request options
-        dataType: 'json',
-        max: 1000,
+        dataType: 'json'
+        max: 1000
 
-        selected: 0,
-        minChars: 2,
-        delay: 300,
+        selected: 0
+        minChars: 2
+        delay: 300
 
-        matchCase: false,
+        matchCase: false
 
         # wrap term in floater list in <strong>
-        colorTitle: true,
+        colorTitle: true
         # will not filter dropdown data if true
         matchAll: false
         placeholder: "Input search string..."
+
+        # custom classes
+        autocompleteClass:  'reform-autocompletebox'
+        itemClass:          'reform-autocompletebox-item'
+        hoverClass:         'reform-autocompletebox-hover'
+        listClass:          'reform-autocompletebox-list'
+        optionsClass:       'reform-autocompletebox-options'
+        fakeClass:          'reform-autocompletebox-fake'
+        inputClass:         'reform-autocompletebox-input'
     }
 
     # key mappings
@@ -42,11 +51,14 @@ class AutocompleteBox
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
 
-        $.extend(true, @options, options)
+        @orig = $ @select
+        outsideOptions = @orig.data()
+
+        $.extend(@options, options)
+        $.extend(@options, outsideOptions)
 
         @cache = new Cache(@options)
 
-        @orig = $ @select
         # Don't do this twice
         return if @orig.is ".reformed"
 
@@ -59,11 +71,11 @@ class AutocompleteBox
         @fake = $ "<div/>"
         @fake.attr "class", @orig.attr "class"
         @orig.hide().attr "class", "reformed"
-        @fake.removeClass("reform-autocompletebox").addClass "reform-autocompletebox-fake"
+        @fake.removeClass(@options.autocompleteClass).addClass @options.fakeClass
         @fake.addClass "disabled" if @orig.is ":disabled"
 
         @input = $ "<input/>"
-        @input.addClass "reform-autocompletebox-input placeholder"
+        @input.addClass @options.inputClass + " placeholder"
         @input.val(@options.placeholder)
         @fake.append @input
 
@@ -133,8 +145,8 @@ class AutocompleteBox
 
             , @options.delay
 
-        @input.on "blur", (e) =>
-            @close()
+        #@input.on "blur", (e) =>
+        #    @close()
 
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
@@ -148,7 +160,7 @@ class AutocompleteBox
 
         # List container
         $list = $("<div/>").appendTo @floater
-        $list.attr "class", "reform-autocompletebox-list"
+        $list.attr "class", @options.listClass
 
         isAny = false;
         num = 0
@@ -170,7 +182,7 @@ class AutocompleteBox
 
             isAny = true
             $item = $ "<div/>"
-            $item.attr "class", "reform-autocompletebox-item"
+            $item.attr "class", @options.itemClass
             $item.attr "title", item.title
             $item.attr "value", item.value
             $item.html item.title
@@ -196,7 +208,7 @@ class AutocompleteBox
     setHover: (newSelected) =>
         return if !@floater?
 
-        $list = @floater.find('.reform-autocompletebox-list')
+        $list = @floater.find('.' + @options.listClass)
 
         if newSelected < 1
             return
@@ -204,13 +216,13 @@ class AutocompleteBox
             return
 
         @options.selected = newSelected
-        $list.children().removeClass "reform-autocompletebox-hover"
-        $list.find(':nth-child('+@options.selected+')').addClass "reform-autocompletebox-hover"
+        $list.children().removeClass @options.hoverClass
+        $list.find(':nth-child('+@options.selected+')').addClass @options.hoverClass
 
     selectCurrent: =>
         return if !@floater? or @options.selected == 0
 
-        $selected = @floater.find('.reform-autocompletebox-list').find(':nth-child('+@options.selected+')')
+        $selected = @floater.find('.' + listClass).find(':nth-child('+@options.selected+')')
 
         $selected.addClass('selected')
 
@@ -231,15 +243,15 @@ class AutocompleteBox
 
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "reform-autocompletebox-options"
+        @floater.attr "class", @options.optionsClass
 
-        @floater.css "min-width", @fake.outerWidth() - 10 - 2
+        @floater.css "min-width", @fake.outerWidth() - 2
         @floater.addClass @orig.data "options-class"
         @body.append @floater
 
         # Click closes the options layer
         @body.on "click.autocomplete", (e) =>
-            if not $(e.target).hasClass('reform-autocompletebox-input')
+            if not $(e.target).hasClass(@options.inputClass)
                 @body.off "click.autocomplete"
                 @close()
         
@@ -286,7 +298,7 @@ class AutocompleteBox
 
             return coloredTitle
 
-        @floater.find(".reform-autocompletebox-item").each (num, item) ->
+        @floater.find("." + @options.itemClass).each (num, item) ->
             $item = $(item);
             title = $item.html()
             title = colorTitle(title)
@@ -375,7 +387,7 @@ class Cache
 
     constructor: (options) ->
 
-        $.extend(true, @options, options)
+        $.extend(@options, options)
 
     matchSubset: (s, sub) ->
         s = s.toLowerCase()  unless @options.matchCase
