@@ -6,16 +6,16 @@ echo "Merged CSS"
 coffee -o lib src
 echo "Compiled lib"
 
-# quick fix, browserify now demands extension so we have to remove it 
-perl -pi -e 's/.coffee//g' lib/*.js
-
-browserify -t coffeeify -e src/init.coffee -o build/reform.js -i "jquery-commonjs"
+browserify -e lib/init.js -o build/reform.js -i "jquery-commonjs"
 echo "Compiled standalone"
 
 uglifyjs -o build/reform.min.js build/reform.js
 echo "Minified standalone"
 
-browserify -t coffeeify -e test/test.coffee -o build/test.js -i "jquery-commonjs"
+coffee -o lib_test test
+echo "Compiled test libs"
+
+browserify -e lib_test/test.js -o build/test.js -i "jquery-commonjs"
 echo "Compiled tests"
 
 echo "All done :)"

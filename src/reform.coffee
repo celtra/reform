@@ -1,8 +1,8 @@
 window.$ 	   		?= require "jquery-commonjs"
-CheckBox  			= require "./checkbox.coffee"
-SelectBox 			= require "./selectbox.coffee"
-AutocompleteBox 	= require "./autocompletebox.coffee"
-GeoAutocompleteBox 	= require "./geoautocompletebox.coffee"
+CheckBox  			= require "./checkbox"
+SelectBox 			= require "./selectbox"
+AutocompleteBox 	= require "./autocompletebox"
+GeoAutocompleteBox 	= require "./geoautocompletebox"
 
 # This class does the magic
 class Reform

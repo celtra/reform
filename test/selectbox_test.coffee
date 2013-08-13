@@ -1,5 +1,5 @@
 window.$ ?= require "jquery-commonjs"
-SelectBox = require "../src/selectbox.coffee"
+SelectBox = require "../lib/selectbox"
 
 module.exports = ->
     
