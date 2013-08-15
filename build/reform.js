@@ -239,7 +239,7 @@
       if (!(this.floater != null) || this.options.selected === 0) {
         return;
       }
-      $selected = this.floater.find('.' + listClass).find(':nth-child(' + this.options.selected + ')');
+      $selected = this.floater.find('.' + this.options.listClass).find(':nth-child(' + this.options.selected + ')');
       $selected.addClass('selected');
       value = $selected.attr("value");
       title = $selected.attr("title");
@@ -721,7 +721,8 @@
   Reform.controls = {
     "reform-checkbox": CheckBox,
     "reform-selectbox": SelectBox,
-    "reform-geoautocompletebox": GeoAutocompleteBox
+    "reform-geoautocompletebox": GeoAutocompleteBox,
+    "reform-autocompletebox": AutocompleteBox
   };
 
   module.exports = Reform;

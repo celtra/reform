@@ -222,7 +222,7 @@ class AutocompleteBox
     selectCurrent: =>
         return if !@floater? or @options.selected == 0
 
-        $selected = @floater.find('.' + listClass).find(':nth-child('+@options.selected+')')
+        $selected = @floater.find('.' + @options.listClass).find(':nth-child('+@options.selected+')')
 
         $selected.addClass('selected')
 
