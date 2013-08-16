@@ -11,27 +11,6 @@
   AutocompleteBox = (function() {
     var cache;
 
-    AutocompleteBox.prototype.options = {
-      data: [],
-      url: null,
-      dataType: 'json',
-      max: 1000,
-      selected: 0,
-      minChars: 2,
-      delay: 300,
-      matchCase: false,
-      colorTitle: true,
-      matchAll: false,
-      placeholder: "Input search string...",
-      autocompleteClass: 'reform-autocompletebox',
-      itemClass: 'reform-autocompletebox-item',
-      hoverClass: 'reform-autocompletebox-hover',
-      listClass: 'reform-autocompletebox-list',
-      optionsClass: 'reform-autocompletebox-options',
-      fakeClass: 'reform-autocompletebox-fake',
-      inputClass: 'reform-autocompletebox-input'
-    };
-
     AutocompleteBox.prototype.KEY = {
       UP: 38,
       DOWN: 40,
@@ -68,14 +47,34 @@
 
       this.fillOptions = __bind(this.fillOptions, this);
 
+      this.options = {
+        data: [],
+        url: null,
+        dataType: 'json',
+        max: 1000,
+        selected: 0,
+        minChars: 2,
+        delay: 300,
+        matchCase: false,
+        colorTitle: true,
+        matchAll: false,
+        placeholder: "Input search string...",
+        autocompleteClass: 'reform-autocompletebox',
+        itemClass: 'reform-autocompletebox-item',
+        hoverClass: 'reform-autocompletebox-hover',
+        listClass: 'reform-autocompletebox-list',
+        optionsClass: 'reform-autocompletebox-options',
+        fakeClass: 'reform-autocompletebox-fake',
+        inputClass: 'reform-autocompletebox-input'
+      };
       this.orig = $(this.select);
+      if (this.orig.is(".reformed")) {
+        return;
+      }
       outsideOptions = this.orig.data();
       $.extend(this.options, options);
       $.extend(this.options, outsideOptions);
       this.cache = new Cache(this.options);
-      if (this.orig.is(".reformed")) {
-        return;
-      }
       this.body = $("body");
       if (!(this.options.url != null)) {
         this.options.delay = 0;
@@ -91,7 +90,6 @@
       this.input.addClass(this.options.inputClass + " placeholder");
       this.input.val(this.options.placeholder);
       this.fake.append(this.input);
-      this.refresh();
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = null;
       delay = (function() {
@@ -102,17 +100,17 @@
           return timer = setTimeout(callback, ms);
         };
       })();
-      this.input.on("focus", function(e) {
+      this.input.on("click", function(e) {
         if (_this.input.val() === _this.options.placeholder) {
           _this.input.val('');
           return _this.input.removeClass('placeholder');
         }
       });
       this.input.on("keyup.autocomplete", function(e) {
+        e.stopPropagation();
         if (_this.orig.is(":disabled")) {
           return;
         }
-        e.stopPropagation();
         if (e.keyCode === _this.KEY.UP) {
           e.preventDefault();
         }
@@ -122,7 +120,7 @@
               _this.onChange(function() {
                 _this.options.selected = 0;
                 _this.open();
-                return _this.refresh();
+                return _this.fillOptions();
               });
             } else {
               _this.setHover(_this.options.selected + 1);
@@ -147,19 +145,27 @@
               return _this.onChange(function() {
                 if (_this.floater === null) {
                   _this.open();
-                  return _this.refresh();
+                  return _this.fillOptions();
                 } else {
-                  return _this.refresh();
+                  return _this.fillOptions();
                 }
               });
           }
         }, _this.options.delay);
       });
+      this.input.on("blur", function(e) {
+        return _this.close();
+      });
+      this.refresh();
       this.body.on("reform.open", function(e) {
         if (e.target !== _this.select) {
           return _this.close();
         }
       });
+      this.orig.on("reform.sync change DOMSubtreeModified", function() {
+        return setTimeout(_this.refresh, 0);
+      });
+      $('.' + this.options.optionsClass).remove();
     }
 
     AutocompleteBox.prototype.fillOptions = function() {
@@ -200,9 +206,6 @@
           return e.preventDefault();
         });
         $item.on("click", function(e) {
-          if ($item.is('.disabled')) {
-            return;
-          }
           return _this.selectCurrent();
         });
         $item.on("mouseenter", function(e) {
@@ -214,6 +217,8 @@
       });
       if (!isAny) {
         return this.close();
+      } else if ((this.floater != null) && this.options.colorTitle) {
+        return this.colorTitles();
       }
     };
 
@@ -281,9 +286,9 @@
 
     AutocompleteBox.prototype.refresh = function() {
       this.fake.toggleClass("disabled", this.orig.is(":disabled"));
-      this.fillOptions();
-      if ((this.floater != null) && this.options.colorTitle) {
-        return this.colorTitles();
+      this.input.removeAttr('disabled');
+      if (this.orig.is(":disabled")) {
+        return this.input.attr("disabled", "disabled");
       }
     };
 
@@ -379,14 +384,14 @@
         return;
       }
       successCallback = function(data) {
-        _this.refresh();
+        _this.fillOptions();
         return callback();
       };
       failureCallback = function(data) {};
       if (this.options.url != null) {
         return this.request(this.currentSelection, successCallback, failureCallback);
       } else {
-        this.refresh();
+        this.fillOptions();
         return callback();
       }
     };
