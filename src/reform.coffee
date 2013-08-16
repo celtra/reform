@@ -8,7 +8,7 @@ GeoAutocompleteBox 	= require "./geoautocompletebox"
 class Reform
     process: (node) ->
         (new control n for n in $(node).parent().find ".#{cls}") for cls, control of Reform.controls
-    
+
     # Process static elements
     observe: ->
         $(document).on "ready",               => @process "body"
@@ -19,5 +19,6 @@ Reform.controls =
     "reform-checkbox"  			: CheckBox
     "reform-selectbox" 			: SelectBox
     "reform-geoautocompletebox" : GeoAutocompleteBox
+    "reform-autocompletebox"    : AutocompleteBox
 
 module.exports = Reform

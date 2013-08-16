@@ -4,36 +4,7 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom autocomplete box
 class AutocompleteBox
 
-    # some defaults
-    options: {
-        # add your data or supply url
-        data: []
-        url: null
-        # request options
-        dataType: 'json'
-        max: 1000
 
-        selected: 0
-        minChars: 2
-        delay: 300
-
-        matchCase: false
-
-        # wrap term in floater list in <strong>
-        colorTitle: true
-        # will not filter dropdown data if true
-        matchAll: false
-        placeholder: "Input search string..."
-
-        # custom classes
-        autocompleteClass:  'reform-autocompletebox'
-        itemClass:          'reform-autocompletebox-item'
-        hoverClass:         'reform-autocompletebox-hover'
-        listClass:          'reform-autocompletebox-list'
-        optionsClass:       'reform-autocompletebox-options'
-        fakeClass:          'reform-autocompletebox-fake'
-        inputClass:         'reform-autocompletebox-input'
-    }
 
     # key mappings
     KEY: {
@@ -51,16 +22,48 @@ class AutocompleteBox
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
 
+        # some defaults
+        @options = {
+            # add your data or supply url
+            data: []
+            url: null
+            # request options
+            dataType: 'json'
+            max: 1000
+
+            selected: 0
+            minChars: 2
+            delay: 300
+
+            matchCase: false
+
+            # wrap term in floater list in <strong>
+            colorTitle: true
+            # will not filter dropdown data if true
+            matchAll: false
+            placeholder: "Input search string..."
+
+            # custom classes
+            autocompleteClass:  'reform-autocompletebox'
+            itemClass:          'reform-autocompletebox-item'
+            hoverClass:         'reform-autocompletebox-hover'
+            listClass:          'reform-autocompletebox-list'
+            optionsClass:       'reform-autocompletebox-options'
+            fakeClass:          'reform-autocompletebox-fake'
+            inputClass:         'reform-autocompletebox-input'
+        }
+
         @orig = $ @select
+
+        # Don't do this twice
+        return if @orig.is ".reformed"
+
         outsideOptions = @orig.data()
 
         $.extend(@options, options)
         $.extend(@options, outsideOptions)
 
         @cache = new Cache(@options)
-
-        # Don't do this twice
-        return if @orig.is ".reformed"
 
         @body = $ "body"
         
@@ -79,7 +82,6 @@ class AutocompleteBox
         @input.val(@options.placeholder)
         @fake.append @input
 
-        @refresh()
         @orig.after(@fake).appendTo @fake
 
         # This is where options container will be
@@ -93,14 +95,14 @@ class AutocompleteBox
                 timer = setTimeout(callback, ms)
         )()
 
-        @input.on "focus", (e) =>
+        @input.on "click", (e) =>
             if @input.val() == @options.placeholder
                 @input.val('')
                 @input.removeClass('placeholder')
 
         @input.on "keyup.autocomplete", (e) =>
-            return if @orig.is ":disabled"
             e.stopPropagation()
+            return if @orig.is ":disabled"
             
             # key up goes to begining of input
             if e.keyCode == @KEY.UP
@@ -113,7 +115,7 @@ class AutocompleteBox
                         @onChange () =>
                             @options.selected = 0
                             @open()
-                            @refresh()
+                            @fillOptions()
                     else
                         @setHover(@options.selected + 1)
                     return
@@ -139,18 +141,27 @@ class AutocompleteBox
                         @onChange () =>
                             if @floater is null 
                                 @open()
-                                @refresh()
+                                @fillOptions()
                             else
-                                @refresh()
+                                @fillOptions()
 
             , @options.delay
 
-        #@input.on "blur", (e) =>
-        #    @close()
+        @input.on "blur", (e) =>
+            @close()
+
+        # copy state from original
+        @refresh()
 
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
     
+        # Replicate changes from the original input to the fake one
+        @orig.on "reform.sync change DOMSubtreeModified", => setTimeout @refresh, 0
+
+        # Clean up orphaned options containers
+        $('.' + @options.optionsClass).remove()
+
     # Fill options
     fillOptions: =>
         return unless @floater?
@@ -193,7 +204,6 @@ class AutocompleteBox
             
             # Option selection
             $item.on "click", (e) =>
-                return if $item.is '.disabled'
                 @selectCurrent()
 
             $item.on "mouseenter", (e) =>
@@ -204,6 +214,8 @@ class AutocompleteBox
 
         if !isAny
             @close()
+        else if @floater? and @options.colorTitle
+            @colorTitles()
 
     setHover: (newSelected) =>
         return if !@floater?
@@ -222,7 +234,7 @@ class AutocompleteBox
     selectCurrent: =>
         return if !@floater? or @options.selected == 0
 
-        $selected = @floater.find('.' + listClass).find(':nth-child('+@options.selected+')')
+        $selected = @floater.find('.' + @options.listClass).find(':nth-child('+@options.selected+')')
 
         $selected.addClass('selected')
 
@@ -275,11 +287,8 @@ class AutocompleteBox
     
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
-
-        @fillOptions()
-
-        if @floater? and @options.colorTitle
-            @colorTitles()
+        @input.removeAttr('disabled')
+        @input.attr("disabled", "disabled") if @orig.is ":disabled"
 
     colorTitles: =>
 
@@ -363,7 +372,7 @@ class AutocompleteBox
             return
 
         successCallback = (data) =>
-            @refresh()
+            @fillOptions()
             callback()
 
         failureCallback = (data) =>
@@ -371,7 +380,7 @@ class AutocompleteBox
         if @options.url?
             @request @currentSelection, successCallback, failureCallback
         else
-            @refresh()
+            @fillOptions()
             callback()
 
 class Cache

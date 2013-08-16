@@ -1,10 +1,10 @@
 .reform-geoautocompletebox-fake {
     position: relative;
     display: inline-block;
-    width: 200px;
-    height: 18px;
-    border: solid 1px #ccc;
-    padding: 10px 30px 10px 10px;
+    width: auto;
+    height: auto;
+    border: 0;
+    padding: 0;
     cursor: pointer;
     overflow: hidden;
     white-space: nowrap;
@@ -32,12 +32,8 @@
     font-family: "Tahoma"
 }
 
-.reform-geoautocompletebox-fake {
-    width: auto;
-    height: auto;
-    border: 0;
-    padding: 0;
-    font-size: 12px;
+.reform-geoautocompletebox-fake .reform-geoautocompletebox-input:disabled {
+    border: 1px solid #ddd;
 }
 
 .reform-geoautocompletebox-options {
