@@ -24,7 +24,7 @@
     cache = null;
 
     function AutocompleteBox(select, options) {
-      var delay, outsideOptions,
+      var delay, inlineOptions,
         _this = this;
       this.select = select;
       this.onChange = __bind(this.onChange, this);
@@ -71,9 +71,9 @@
       if (this.orig.is(".reformed")) {
         return;
       }
-      outsideOptions = this.orig.data();
+      inlineOptions = this.orig.data();
       $.extend(this.options, options);
-      $.extend(this.options, outsideOptions);
+      $.extend(this.options, inlineOptions);
       this.cache = new Cache(this.options);
       this.body = $("body");
       if (!(this.options.url != null)) {
@@ -118,9 +118,7 @@
           case _this.KEY.DOWN:
             if (_this.floater === null) {
               _this.onChange(function() {
-                _this.options.selected = 0;
-                _this.open();
-                return _this.fillOptions();
+                return _this.options.selected = 0;
               });
             } else {
               _this.setHover(_this.options.selected + 1);
@@ -137,19 +135,10 @@
           _this.currentSelection = _this.input.val();
           switch (e.keyCode) {
             case _this.KEY.RETURN:
-              return _this.onChange(function() {
-                return _this.selectCurrent();
-              });
+              return _this.selectCurrent();
             default:
               _this.options.selected = 0;
-              return _this.onChange(function() {
-                if (_this.floater === null) {
-                  _this.open();
-                  return _this.fillOptions();
-                } else {
-                  return _this.fillOptions();
-                }
-              });
+              return _this.onChange(function() {});
           }
         }, _this.options.delay);
       });
@@ -248,6 +237,7 @@
       $selected.addClass('selected');
       value = $selected.attr("value");
       title = $selected.attr("title");
+      this.orig.data("title", title);
       this.orig.val(value);
       this.input.val(title);
       this.orig.trigger("change");
@@ -322,14 +312,9 @@
     AutocompleteBox.prototype.request = function(term, success, failure) {
       var data, extraParams,
         _this = this;
-      if (!this.options.matchCase) {
-        term = term.toLowerCase();
-      }
       data = this.cache.load(term);
       if (data) {
-        if (data.length) {
-          return success(data, term);
-        }
+        return success();
       } else if (this.options.url != null) {
         extraParams = {
           timestamp: new Date()
@@ -352,10 +337,10 @@
             parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data, term) : void 0) || _this.parse(data, term);
             _this.options.data = parsed;
             _this.cache.add(term, parsed);
-            return success(parsed, term);
+            return success();
           },
           error: function(data) {
-            return failure(data, term);
+            return failure();
           }
         });
       } else {
@@ -383,16 +368,24 @@
         this.close();
         return;
       }
-      successCallback = function(data) {
-        _this.fillOptions();
+      successCallback = function() {
+        if (_this.floater === null) {
+          _this.open();
+          _this.fillOptions();
+        } else {
+          _this.fillOptions();
+        }
         return callback();
       };
-      failureCallback = function(data) {};
+      failureCallback = function() {
+        if (typeof console !== "undefined" && console !== null) {
+          return console.warn("Data not recieved.");
+        }
+      };
       if (this.options.url != null) {
         return this.request(this.currentSelection, successCallback, failureCallback);
       } else {
-        this.fillOptions();
-        return callback();
+        return successCallback();
       }
     };
 
@@ -448,24 +441,11 @@
     };
 
     Cache.prototype.load = function(q) {
-      var c, csub, i, k, self;
+      var c, csub, i, self;
       if (!this.options.cacheLength || !this.length) {
         return null;
       }
-      if (!this.options.url && this.options.matchContains) {
-        csub = [];
-        for (k in this.data) {
-          if (k.length > 0) {
-            c = data[k];
-            $.each(c, function(i, x) {
-              if (this.matchSubset(x.title, q)) {
-                return csub.push(x);
-              }
-            });
-          }
-        }
-        return csub;
-      } else if (this.data[q]) {
+      if (this.data[q]) {
         return this.data[q];
       } else if (this.options.matchSubset) {
         i = q.length - 1;
@@ -603,28 +583,24 @@
     }
 
     GeoAutocompleteBox.prototype.request = function(term, success, failure) {
-      var data, geocoder, options, parsed,
+      var data, geocoder, options,
         _this = this;
-      if (!this.options.matchCase) {
-        term = term.toLowerCase();
-      }
       data = this.cache.load(term);
       if (data) {
-        parsed = this.options.parse && this.options.parse(options.data) || this.parse(options.data);
-        return success(term, parsed);
+        return success();
       } else if (this.options.url != null) {
         geocoder = new google.maps.Geocoder();
         options = {
           'address': term
         };
         return geocoder.geocode(options, function(results, status) {
-          var _base;
+          var parsed, _base;
           if (status === google.maps.GeocoderStatus.OK) {
             parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(results, term) : void 0) || _this.parse(results, term);
             _this.options.data = parsed;
-            return success(parsed, term);
+            return success();
           } else {
-            return failure(status, results);
+            return failure();
           }
         });
       } else {

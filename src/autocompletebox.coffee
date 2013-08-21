@@ -4,8 +4,6 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom autocomplete box
 class AutocompleteBox
 
-
-
     # key mappings
     KEY: {
         UP: 38,
@@ -27,11 +25,13 @@ class AutocompleteBox
             # add your data or supply url
             data: []
             url: null
+
             # request options
             dataType: 'json'
             max: 1000
 
             selected: 0
+
             minChars: 2
             delay: 300
 
@@ -41,6 +41,7 @@ class AutocompleteBox
             colorTitle: true
             # will not filter dropdown data if true
             matchAll: false
+
             placeholder: "Input search string..."
 
             # custom classes
@@ -58,10 +59,11 @@ class AutocompleteBox
         # Don't do this twice
         return if @orig.is ".reformed"
 
-        outsideOptions = @orig.data()
+        # read inline params
+        inlineOptions = @orig.data()
 
         $.extend(@options, options)
-        $.extend(@options, outsideOptions)
+        $.extend(@options, inlineOptions)
 
         @cache = new Cache(@options)
 
@@ -114,8 +116,6 @@ class AutocompleteBox
                     if @floater is null
                         @onChange () =>
                             @options.selected = 0
-                            @open()
-                            @fillOptions()
                     else
                         @setHover(@options.selected + 1)
                     return
@@ -134,16 +134,10 @@ class AutocompleteBox
 
                 switch e.keyCode
                     when @KEY.RETURN
-                        @onChange () =>
-                            @selectCurrent()
+                        @selectCurrent()
                     else
                         @options.selected = 0
                         @onChange () =>
-                            if @floater is null 
-                                @open()
-                                @fillOptions()
-                            else
-                                @fillOptions()
 
             , @options.delay
 
@@ -212,6 +206,7 @@ class AutocompleteBox
 
             num++
 
+        # close if no items
         if !isAny
             @close()
         else if @floater? and @options.colorTitle
@@ -241,6 +236,7 @@ class AutocompleteBox
         value = $selected.attr "value"
         title = $selected.attr "title"
 
+        @orig.data("title", title)
         @orig.val(value)
         @input.val(title)
 
@@ -316,14 +312,10 @@ class AutocompleteBox
     # query the server
     request: (term, success, failure) =>
         
-        if not @options.matchCase
-            term = term.toLowerCase()
-
         data = @cache.load(term);
 
         if data
-            if data.length
-                success data, term
+            success()
         else if @options.url?
             extraParams = {
                 timestamp: new Date()
@@ -347,10 +339,13 @@ class AutocompleteBox
                     # fill data
                     @options.data = parsed
 
+                    # cache results
                     @cache.add term, parsed
-                    success parsed, term
+
+                    success()
+
                 error: (data) -> # 500
-                    failure data, term
+                    failure()
             });
         else
             failure 'Set options.url', term
@@ -371,17 +366,21 @@ class AutocompleteBox
             @close()
             return
 
-        successCallback = (data) =>
-            @fillOptions()
+        successCallback = () =>
+            if @floater is null 
+                @open()
+                @fillOptions()
+            else
+                @fillOptions()
             callback()
 
-        failureCallback = (data) =>
+        failureCallback = () =>
+            console.warn("Data not recieved.") if console?
 
         if @options.url?
             @request @currentSelection, successCallback, failureCallback
         else
-            @fillOptions()
-            callback()
+            successCallback()
 
 class Cache
 
@@ -416,31 +415,8 @@ class Cache
 
     load: (q) =>
         return null if not @options.cacheLength or not @length
-        #
-        #            * if dealing w/local data and matchContains than we must make sure
-        #            * to loop through all the data collections looking for matches
-        #            
-        if not @options.url and @options.matchContains
-          
-          # track all matches
-          csub = []
-          
-          # loop through all the data grids for matches
-          for k of @data
-            
-            # don't search through the stMatchSets[""] (minChars: 0) cache
-            # this prevents duplicates
-            if k.length > 0
-              c = data[k]
-              $.each c, (i, x) ->
-                
-                # if we've got a match, add it to the array
-                csub.push x  if @matchSubset(x.title, q)
-
-          return csub
         
-        # if the exact item exists, use it
-        else if @data[q]
+        if @data[q]
           return @data[q]
         else if @options.matchSubset
           i = q.length - 1
