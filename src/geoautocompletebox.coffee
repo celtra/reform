@@ -29,15 +29,11 @@ class GeoAutocompleteBox extends AutocompleteBox
 
     # query the server
     request: (term, success, failure) =>
-       	
-        if not @options.matchCase
-            term = term.toLowerCase()
-
+        
         data = @cache.load(term);
 
         if data
-            parsed = @options.parse && @options.parse(options.data) || @parse(options.data)
-            success term, parsed
+            success()
         else if @options.url?
             geocoder = new google.maps.Geocoder();
 
@@ -51,9 +47,10 @@ class GeoAutocompleteBox extends AutocompleteBox
 
                     # fill data
                     @options.data = parsed
-                    success parsed, term
+
+                    success()
                 else
-                	failure status, results
+                	failure()
         else
             failure 'Set options.url', term
 
