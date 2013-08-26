@@ -59,6 +59,7 @@
         colorTitle: true,
         matchAll: false,
         placeholder: "Input search string...",
+        title: null,
         autocompleteClass: 'reform-autocompletebox',
         itemClass: 'reform-autocompletebox-item',
         hoverClass: 'reform-autocompletebox-hover',
@@ -88,7 +89,14 @@
       }
       this.input = $("<input/>");
       this.input.addClass(this.options.inputClass + " placeholder");
-      this.input.val(this.options.placeholder);
+      if (this.options.placeholder != null) {
+        this.input.val(this.options.placeholder);
+      }
+      if (this.options.title != null) {
+        this.input.val(this.options.title);
+        this.currentSelection = this.options.title;
+        this.input.removeClass("placeholder");
+      }
       this.fake.append(this.input);
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = null;
@@ -133,6 +141,7 @@
         }
         return delay(function() {
           _this.currentSelection = _this.input.val();
+          _this.orig.attr('data-title', _this.currentSelection);
           switch (e.keyCode) {
             case _this.KEY.RETURN:
               return _this.selectCurrent();
@@ -153,6 +162,12 @@
       });
       this.orig.on("reform.sync change DOMSubtreeModified", function() {
         return setTimeout(_this.refresh, 0);
+      });
+      this.orig.on("reform.close", function(e) {
+        return _this.close();
+      });
+      this.orig.on("setData", function(e, data) {
+        return _this.options.data = _this.parse(data, _this.currentSelection);
       });
       $('.' + this.options.optionsClass).remove();
     }
@@ -237,7 +252,6 @@
       $selected.addClass('selected');
       value = $selected.attr("value");
       title = $selected.attr("title");
-      this.orig.data("title", title);
       this.orig.val(value);
       this.input.val(title);
       this.orig.trigger("change");
@@ -324,7 +338,11 @@
             return extraParams[key] = (typeof param === "function" ? param() : param);
           });
         }
-        return $.ajax({
+        if (this.ajaxInProgress) {
+          this.lastXHR.abort();
+        }
+        this.ajaxInProgress = true;
+        return this.lastXHR = $.ajax({
           dataType: this.options.dataType,
           url: this.options.url,
           data: $.extend({
@@ -334,12 +352,14 @@
           }, extraParams),
           success: function(data) {
             var parsed, _base;
+            _this.ajaxInProgress = false;
             parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data, term) : void 0) || _this.parse(data, term);
             _this.options.data = parsed;
             _this.cache.add(term, parsed);
             return success();
           },
           error: function(data) {
+            this.ajaxInProgress = false;
             return failure();
           }
         });
@@ -375,14 +395,14 @@
         } else {
           _this.fillOptions();
         }
+        _this.orig.trigger('ajaxRequestFinished');
         return callback();
       };
       failureCallback = function() {
-        if (typeof console !== "undefined" && console !== null) {
-          return console.warn("Data not recieved.");
-        }
+        return _this.orig.trigger('ajaxRequestFinished');
       };
       if (this.options.url != null) {
+        this.orig.trigger('ajaxRequestStarted');
         return this.request(this.currentSelection, successCallback, failureCallback);
       } else {
         return successCallback();
@@ -597,6 +617,9 @@
         if (e.target !== _this.select) {
           return _this.close();
         }
+      });
+      this.orig.on("reform.close", function(e) {
+        return _this.close();
       });
       $('.reform-selectbox-options').remove();
     }

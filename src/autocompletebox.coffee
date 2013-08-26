@@ -43,6 +43,8 @@ class AutocompleteBox
             matchAll: false
 
             placeholder: "Input search string..."
+            # preset input title
+            title: null
 
             # custom classes
             autocompleteClass:  'reform-autocompletebox'
@@ -81,7 +83,12 @@ class AutocompleteBox
 
         @input = $ "<input/>"
         @input.addClass @options.inputClass + " placeholder"
-        @input.val(@options.placeholder)
+        if @options.placeholder?
+            @input.val(@options.placeholder)
+        if @options.title?
+            @input.val(@options.title)
+            @currentSelection = @options.title
+            @input.removeClass("placeholder")
         @fake.append @input
 
         @orig.after(@fake).appendTo @fake
@@ -131,6 +138,8 @@ class AutocompleteBox
 
                 # get current value
                 @currentSelection = @input.val()
+                # append selection to elem
+                @orig.attr('data-title', @currentSelection)
 
                 switch e.keyCode
                     when @KEY.RETURN
@@ -153,6 +162,13 @@ class AutocompleteBox
         # Replicate changes from the original input to the fake one
         @orig.on "reform.sync change DOMSubtreeModified", => setTimeout @refresh, 0
 
+        # Close this selectbox
+        @orig.on "reform.close", (e) => @close()
+
+        # set inline data
+        @orig.on "setData", (e, data) =>
+            @options.data = @parse(data, @currentSelection)
+
         # Clean up orphaned options containers
         $('.' + @options.optionsClass).remove()
 
@@ -169,6 +185,7 @@ class AutocompleteBox
 
         isAny = false;
         num = 0
+
         # Filling options
         $.each @options.data, (i, item) =>
             if @options.max <= num
@@ -178,6 +195,7 @@ class AutocompleteBox
             if not @options.matchAll    
                 
                 title = item.title
+
                 currentSelection = @currentSelection
                 if not @options.matchCase
                     title = title.toLowerCase()
@@ -236,7 +254,6 @@ class AutocompleteBox
         value = $selected.attr "value"
         title = $selected.attr "title"
 
-        @orig.data("title", title)
         @orig.val(value)
         @input.val(title)
 
@@ -325,7 +342,12 @@ class AutocompleteBox
                 $.each @options.extraParams, (key, param) ->
                     extraParams[key] = (if typeof param is "function" then param() else param)
 
-            $.ajax({
+            # abort any ajax request allready in progress
+            if @ajaxInProgress
+                @lastXHR.abort()
+            @ajaxInProgress = true
+
+            @lastXHR = $.ajax({
                 dataType: @options.dataType,
                 url: @options.url,
                 data: $.extend({
@@ -334,6 +356,8 @@ class AutocompleteBox
                     limit: @options.max
                 }, extraParams),
                 success: (data) => # 200 OK
+                    @ajaxInProgress = false
+
                     parsed = @options.parse?(data, term) || @parse(data, term)
 
                     # fill data
@@ -345,6 +369,8 @@ class AutocompleteBox
                     success()
 
                 error: (data) -> # 500
+                    @ajaxInProgress = false
+
                     failure()
             });
         else
@@ -372,12 +398,17 @@ class AutocompleteBox
                 @fillOptions()
             else
                 @fillOptions()
+
+            @orig.trigger('ajaxRequestFinished')
+
             callback()
 
         failureCallback = () =>
-            console.warn("Data not recieved.") if console?
+            @orig.trigger('ajaxRequestFinished')
 
         if @options.url?
+            @orig.trigger('ajaxRequestStarted')
+
             @request @currentSelection, successCallback, failureCallback
         else
             successCallback()

@@ -39,6 +39,9 @@ class SelectBox
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
 
+        # Close this selectbox
+        @orig.on "reform.close", (e) => @close()
+
         # Clean up orphaned options containers
         $('.reform-selectbox-options').remove()
     
