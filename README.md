@@ -77,6 +77,48 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
+Autocompletebox
+----------
+
+Original:
+
+      <input class="reform-autocompletebox" data-placeholder="Placeholder..." type="texinput" />
+
+Will become:
+
+      <div class="reform-autocompletebox-fake">
+        <input class="reform-autocompletebox-input placeholder">
+        <input data-placeholder="Placeholder..." class="reformed" type="texinput" style="display: none;">
+      </div>
+
+Optional input field parameters:
+
+* data-url
+* data-matchCase
+* data-placeholder
+* data-colorTitle
+* data-minChars
+
+Default json format is:
+
+      [{
+          "title": 'example1',
+          "value": '1'
+        },
+        {
+          "title": 'example2',
+          "value": '2'
+        },
+        ...
+      ]
+
+For performance reasons results are cached. Also keyup delay is used if dooing ajax requests. That means that request is send after no key was pressed for certain amount of time.
+
+Geoautocompletebox
+----------
+
+This is an extended version of autocompletebox. It autocompletes addresses from google maps geocode.
+
 NPM package
 ----------
 
