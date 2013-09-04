@@ -167,7 +167,7 @@
     border-bottom: none;
 }
 
-.reform-selectbox-item:hover {
+.reform-selectbox-item.hover {
     background: #eee;
 }
 
@@ -180,6 +180,6 @@
     color: #ccc;
 }
 
-.reform-selectbox-item.disabled:hover {
+.reform-selectbox-item.disabled.hover {
     background: inherit;
 }
