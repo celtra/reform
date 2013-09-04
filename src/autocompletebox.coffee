@@ -166,7 +166,7 @@ class AutocompleteBox
         @orig.on "reform.close", (e) => @close()
 
         # set inline data
-        @orig.on "setData", (e, data) =>
+        @orig.on "reform.fill", (e, data) =>
             @options.data = @parse(data, @currentSelection)
 
         # Clean up orphaned options containers

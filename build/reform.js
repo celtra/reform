@@ -428,7 +428,7 @@
           return _this.input.removeClass('placeholder');
         }
       });
-      this.input.on("keyup.autocomplete", function(e) {
+      this.input.on("keydown.autocomplete", function(e) {
         e.stopPropagation();
         if (_this.orig.is(":disabled")) {
           return;
@@ -480,7 +480,7 @@
       this.orig.on("reform.close", function(e) {
         return _this.close();
       });
-      this.orig.on("setData", function(e, data) {
+      this.orig.on("reform.fill", function(e, data) {
         return _this.options.data = _this.parse(data, _this.currentSelection);
       });
       $('.' + this.options.optionsClass).remove();
