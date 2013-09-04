@@ -109,7 +109,7 @@ class AutocompleteBox
                 @input.val('')
                 @input.removeClass('placeholder')
 
-        @input.on "keyup.autocomplete", (e) =>
+        @input.on "keydown.autocomplete", (e) =>
             e.stopPropagation()
             return if @orig.is ":disabled"
             
