@@ -29,6 +29,7 @@ class SelectBox
                 ev.stopPropagation()
         
         @fake.on "keydown", (ev) =>
+            ev.preventDefault()
             ev.stopPropagation()
             return if @orig.is "[multiple]"
             

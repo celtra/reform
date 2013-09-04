@@ -184,6 +184,7 @@
       });
       this.fake.on("keydown", function(ev) {
         var $current, $item, $nextItem, done, goDown, goUp, itemDoesNotExist, itemIsDisabled;
+        ev.preventDefault();
         ev.stopPropagation();
         if (_this.orig.is("[multiple]")) {
           return;
