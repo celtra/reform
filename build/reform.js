@@ -60,6 +60,10 @@
       });
     };
 
+    Reform.prototype.register = function(controlName, controlObj) {
+      return Reform.controls[controlName] = controlObj;
+    };
+
     return Reform;
 
   })();

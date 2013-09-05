@@ -13,6 +13,9 @@ class Reform
         $(document).on "ready",               => @process "body"
         $(document).on "DOMNodeInserted", (e) => @process e.target
 
+    register: (controlName, controlObj)->
+        Reform.controls[controlName] = controlObj
+
 # Posible custom controls
 Reform.controls =
     "reform-checkbox"  			: CheckBox
