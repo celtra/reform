@@ -174,6 +174,7 @@ class AutocompleteBox
         # Clean up orphaned options containers
         $('.' + @options.optionsClass).remove()
 
+    # scroll container currently selected item
     scrollTo: () ->
         $item = @floater.find('.' + @options.listClass).find(':nth-child('+@options.selected+')')
 
@@ -233,8 +234,7 @@ class AutocompleteBox
                 @selectCurrent()
 
             $item.on "mouseenter", (e) =>
-                elem = e.target
-                @setHover($(elem).index() + 1)
+                @setHover($(e.target).index() + 1)
 
             num++
 
@@ -250,9 +250,9 @@ class AutocompleteBox
         $list = @floater.find('.' + @options.listClass)
 
         if newSelected < 1
-            return
+            newSelected = $list.children().length
         if newSelected > $list.children().length
-            return
+            newSelected = 1
 
         @options.selected = newSelected
         $list.children().removeClass @options.hoverClass
