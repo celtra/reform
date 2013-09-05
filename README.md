@@ -114,6 +114,8 @@ Default json format is:
 
 For performance reasons results are cached. Also keyup delay is used if dooing ajax requests.
 
+Once autocomplete detects results the options container is shown:
+
       <div class="reform-autocompletebox-options">
         <div class="reform-autocompletebox-list">
           <div class="reform-autocompletebox-item" title="example1" value="4">
