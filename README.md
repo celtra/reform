@@ -82,20 +82,20 @@ Autocompletebox
 
 Original:
 
-      <input class="reform-autocompletebox" data-placeholder="Placeholder..." type="texinput" />
+      <input class="reform-autocompletebox" type="text" />
 
 Will become:
 
       <div class="reform-autocompletebox-fake">
-        <input class="reform-autocompletebox-input placeholder">
-        <input data-placeholder="Placeholder..." class="reformed" type="texinput" style="display: none;">
+        <input class="reform-autocompletebox-input">
+        <input class="reformed" type="text" style="display: none;">
       </div>
 
 Optional input field parameters:
 
 * data-url
-* data-matchCase
 * data-placeholder
+* data-matchCase
 * data-colorTitle
 * data-minChars
 
@@ -112,12 +112,19 @@ Default json format is:
         ...
       ]
 
-For performance reasons results are cached. Also keyup delay is used if dooing ajax requests. That means that request is send after no key was pressed for certain amount of time.
+For performance reasons results are cached. Also keyup delay is used if dooing ajax requests.
 
-Geoautocompletebox
-----------
-
-This is an extended version of autocompletebox. It autocompletes addresses from google maps geocode.
+      <div class="reform-autocompletebox-options">
+        <div class="reform-autocompletebox-list">
+          <div class="reform-autocompletebox-item" title="example1" value="4">
+            <strong>exam</strong>ple1
+          </div>
+          <div class="reform-autocompletebox-item" title="example2" value="40">
+            <strong>exam</strong>ple2
+          </div>
+          ...
+        </div>
+      </div>
 
 NPM package
 ----------
@@ -141,6 +148,10 @@ You can then either process nodes individually:
 The easy way is just to "observe" the DOM for any custom controls being inserted:
 
     reform.observe();
+
+You can register new extended component before observing:
+
+    reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 
 Development
 -----------
