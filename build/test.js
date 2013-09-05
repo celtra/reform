@@ -629,7 +629,8 @@
         }
         return delay(function() {
           _this.currentSelection = _this.input.val();
-          _this.orig.attr('data-title', _this.currentSelection);
+          _this.orig.val(null);
+          _this.orig.data('title', _this.currentSelection);
           switch (e.keyCode) {
             case _this.KEY.RETURN:
               return _this.selectCurrent();
@@ -661,7 +662,6 @@
     }
 
     AutocompleteBox.prototype.fillOptions = function() {
-      debugger;
       var $list, isAny, num,
         _this = this;
       if (this.floater == null) {
@@ -685,6 +685,7 @@
             currentSelection = currentSelection.toLowerCase();
           }
           if (title.indexOf(currentSelection) === -1) {
+            debugger;
             return;
           }
         }
@@ -742,6 +743,7 @@
       value = $selected.attr("value");
       title = $selected.attr("title");
       this.orig.val(value);
+      this.orig.data('title', title);
       this.input.val(title);
       this.orig.trigger("change");
       return this.close();

@@ -153,7 +153,8 @@ class AutocompleteBox
                 # get current value
                 @currentSelection = @input.val()
                 # append selection to elem
-                @orig.attr('data-title', @currentSelection)
+                @orig.val(null)
+                @orig.data 'title', @currentSelection
 
                 switch e.keyCode
                     when @KEY.RETURN
@@ -187,7 +188,6 @@ class AutocompleteBox
 
     # Fill options
     fillOptions: =>
-        debugger;
         return unless @floater?
 
         # Empty the options container
@@ -215,6 +215,7 @@ class AutocompleteBox
                     currentSelection = currentSelection.toLowerCase()
                 
                 if title.indexOf(currentSelection) == -1
+                    debugger;
                     return
 
             isAny = true
@@ -267,9 +268,10 @@ class AutocompleteBox
 
         value = $selected.attr "value"
         title = $selected.attr "title"
-
-        @orig.val(value)
-        @input.val(title)
+        
+        @orig.val value
+        @orig.data 'title', title
+        @input.val title
 
         @orig.trigger("change")
 
@@ -439,7 +441,6 @@ class Cache
     }
 
     constructor: (options) ->
-
         $.extend(@options, options)
 
     matchSubset: (s, sub) ->
