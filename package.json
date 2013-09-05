@@ -1,20 +1,25 @@
 {
-    "name"                : "reform",
-    "version"             : "0.1.9",
-    "author"              : "Rod Petrovic <me@rodpetrovic.com>",
-    "description"         : "HTML forms the way you want them",
-    "contributors"        : [],
-    "lib"                 : "lib",
-    "main"                : "./lib/reform.js",
-    "repository"          : { "type": "git", "url": "https://github.com/celtra/reform.git" },
-    "dependencies"        : {
-        "jquery-commonjs" : ">= 1.7.1"
-    },
-    "devDependencies"     : {
-        "coffee-script"   : ">=1.2.0",
-        "browserify"      : ">=1.9.2",
-        "uglify-js"       : ">=1.2.5"
-    },
-    "license"             : "MIT",
-    "engine"              : { "node": ">=0.4.12" }
+  "name": "reform",
+  "version": "0.2.0",
+  "author": "Rod Petrovic <me@rodpetrovic.com>",
+  "description": "HTML forms the way you want them",
+  "contributors": [],
+  "lib": "lib",
+  "main": "./lib/reform.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celtra/reform.git"
+  },
+  "dependencies": {
+    "jquery-commonjs": ">= 1.7.1"
+  },
+  "devDependencies": {
+    "coffee-script": ">=1.2.0",
+    "browserify": ">=1.9.2",
+    "uglify-js": ">=1.2.5"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4.12"
+  }
 }

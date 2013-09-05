@@ -14,12 +14,68 @@ class SelectBox
         
         # Fake select box
         @fake = $ "<div/>"
+        @fake.attr "tabindex", 0
         @fake.attr "class", @orig.attr "class"
         @orig.hide().attr "class", "reformed"
         @fake.removeClass("reform-selectbox").addClass "reform-selectbox-fake"
         @fake.addClass "disabled" if @orig.is ":disabled"
+        
         @refresh()
         @orig.after(@fake).appendTo @fake
+        
+        @fake.on "keyup", (ev) =>
+            if ev.keyCode is 27
+                ev.preventDefault()
+                ev.stopPropagation()
+        
+        @fake.on "keydown", (ev) =>
+            ev.preventDefault()
+            ev.stopPropagation()
+            return if @orig.is "[multiple]"
+            
+            @fake.focus()
+            
+            goUp   = ev.keyCode is 38
+            goDown = ev.keyCode is 40
+
+            if goUp or goDown
+                if not @floater?
+                    @open()
+                else
+                    $current  = if $('.hover', @floater).length is 0 then $('.selected', @floater) else $('.hover', @floater)
+                    
+                    if goUp
+                        $nextItem = if $current.prev().length is 0 then $current.parent().children().last() else $current.prev()
+                    else
+                        $nextItem = if $current.next().length is 0 then $current.parent().children().first() else $current.next()
+                    
+                    @hover $nextItem
+                    @scrollTo $nextItem
+            
+            else if ev.keyCode is 13
+            
+                $item = $(@floater).find '.hover'
+                
+                itemDoesNotExist = $item.length is 0
+                itemIsDisabled = $item.is ".disabled"
+                
+                return if itemDoesNotExist or itemIsDisabled
+                
+                $item.siblings().andSelf().removeClass "selected"
+                $item.addClass "selected"
+                @orig.val(@value()).trigger "change"
+                @close()
+                         
+            else if ev.keyCode is 27
+                @close() if @floater?
+            else
+                done = no
+                @$list.children().each (i, item) =>
+                    unless done
+                        if $(item).text().charAt(0).toLowerCase() is String.fromCharCode(ev.keyCode).toLowerCase()
+                            done = yes
+                            @hover $(item)
+                            @scrollTo $(item)
 
         # This is where options container will be
         @floater = null
@@ -39,22 +95,42 @@ class SelectBox
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
 
-        # Close this selectbox
-        @orig.on "reform.close", (e) => @close()
-
         # Clean up orphaned options containers
         $('.reform-selectbox-options').remove()
+    
+    hover: ($item) ->
+        $item.siblings().andSelf().removeClass "hover"
+        $item.addClass "hover"
+    
+    scrollTo: ($item) ->
+        $container   = $item.parent()
+        newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop()
+        
+        @ignoreMouse = yes
+        
+        if newScrollTop > ($container.outerHeight() - $item.outerHeight())
+            scrollTop = newScrollTop - $container.outerHeight() + $item.outerHeight()
+            $container.scrollTop scrollTop
+        else
+            $container.scrollTop 0
+        
+        clearTimeout @to if @to
+        @to = setTimeout( =>
+            @ignoreMouse = no
+        , 500)
     
     # Fill options
     options: =>
         return unless @floater?
         
+        @fake.focus()
+        
         # Empty the options container
         @floater.empty()
 
         # List container
-        $list = $("<div/>").appendTo @floater
-        $list.attr "class", "reform-selectbox-list"
+        @$list = $("<div/>").appendTo @floater
+        @$list.attr "class", "reform-selectbox-list"
         
         # Filling options
         @orig.find("option").each (i, option) =>
@@ -66,10 +142,13 @@ class SelectBox
             $item.attr "title", $option.attr("title")
             $item.attr "value", $option.val()
             $item.text $option.text()
-            $item.appendTo $list
+            $item.appendTo @$list
             
             # Prevent text selection
             $item.on "mousedown", (e) -> e.preventDefault()
+            
+            $item.hover => @hover $item unless @ignoreMouse
+            
             
             # Option selection
             $item.on "click", (e) =>
@@ -83,9 +162,11 @@ class SelectBox
                     $item.addClass "selected"
                 
                 # Update values
-                values = $item.parent().find(".reform-selectbox-item.selected").map -> $(@).val()
-                @orig.val(values).trigger "change"
-
+                @orig.val(@value()).trigger "change"
+    
+    value: ->
+        @$list.find(".reform-selectbox-item.selected").map -> $(@).val()
+    
     # Generates and opens the options container
     open: =>
         # Let everyone know we're open

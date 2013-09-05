@@ -2,7 +2,6 @@ window.$ 	   		?= require "jquery-commonjs"
 CheckBox  			= require "./checkbox"
 SelectBox 			= require "./selectbox"
 AutocompleteBox 	= require "./autocompletebox"
-GeoAutocompleteBox 	= require "./geoautocompletebox"
 
 # This class does the magic
 class Reform
@@ -18,7 +17,6 @@ class Reform
 Reform.controls =
     "reform-checkbox"  			: CheckBox
     "reform-selectbox" 			: SelectBox
-    "reform-geoautocompletebox" : GeoAutocompleteBox
     "reform-autocompletebox"    : AutocompleteBox
 
 module.exports = Reform
