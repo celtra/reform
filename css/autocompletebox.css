@@ -11,14 +11,6 @@
     text-overflow: ellipsis;
     line-height: 18px;
     vertical-align: middle;
-    outline: none;
-    
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
 }
 
 .reform-autocompletebox-fake.disabled .reform-autocompletebox-input{
@@ -42,11 +34,15 @@
 .reform-autocompletebox-options {
     display: none;
     position: absolute;
-    max-height: none;
-    overflow-y: auto;
     border: solid 1px #ccc;
     background: #fff;
     box-shadow: 0 0 10px #ccc;
+}
+
+.reform-autocompletebox-list {
+    min-width: 50px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .reform-autocompletebox-item {

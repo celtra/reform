@@ -110,7 +110,7 @@ class AutocompleteBox
         # This is where options container will be
         @floater = null
         
-        # artificial delay for server requests we don't overrun the server
+        # artificial delay for server requests so we don't overrun the server
         delay = ( ->
             timer = 0
             (callback, ms) ->
@@ -139,9 +139,11 @@ class AutocompleteBox
                             @options.selected = 0
                     else
                         @setHover(@options.selected + 1)
+                        @scrollTo();
                     return
                 when @KEY.UP
                     @setHover(@options.selected - 1)
+                    @scrollTo()
                     return
                 when @KEY.ESC
                     @close()
@@ -186,6 +188,19 @@ class AutocompleteBox
         # Clean up orphaned options containers
         $('.' + @options.optionsClass).remove()
 
+    # scroll container currently selected item
+    scrollTo: () ->
+        $item = @floater.find('.' + @options.listClass).find(':nth-child('+@options.selected+')')
+
+        $container   = $item.parent()
+        newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop()
+        
+        if newScrollTop > ($container.outerHeight() - $item.outerHeight())
+            scrollTop = newScrollTop - $container.outerHeight() + $item.outerHeight()
+            $container.scrollTop scrollTop
+        else
+            $container.scrollTop 0
+
     # Fill options
     fillOptions: =>
         return unless @floater?
@@ -215,7 +230,6 @@ class AutocompleteBox
                     currentSelection = currentSelection.toLowerCase()
                 
                 if title.indexOf(currentSelection) == -1
-                    debugger;
                     return
 
             isAny = true
@@ -234,8 +248,7 @@ class AutocompleteBox
                 @selectCurrent()
 
             $item.on "mouseenter", (e) =>
-                elem = e.target
-                @setHover($(elem).index() + 1)
+                @setHover($(e.target).index() + 1)
 
             num++
 
@@ -251,9 +264,9 @@ class AutocompleteBox
         $list = @floater.find('.' + @options.listClass)
 
         if newSelected < 1
-            return
+            newSelected = $list.children().length
         if newSelected > $list.children().length
-            return
+            newSelected = 1
 
         @options.selected = newSelected
         $list.children().removeClass @options.hoverClass
