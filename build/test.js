@@ -619,10 +619,12 @@
               });
             } else {
               _this.setHover(_this.options.selected + 1);
+              _this.scrollTo();
             }
             return;
           case _this.KEY.UP:
             _this.setHover(_this.options.selected - 1);
+            _this.scrollTo();
             return;
           case _this.KEY.ESC:
             _this.close();
@@ -661,6 +663,19 @@
       });
       $('.' + this.options.optionsClass).remove();
     }
+
+    AutocompleteBox.prototype.scrollTo = function() {
+      var $container, $item, newScrollTop, scrollTop;
+      $item = this.floater.find('.' + this.options.listClass).find(':nth-child(' + this.options.selected + ')');
+      $container = $item.parent();
+      newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop();
+      if (newScrollTop > ($container.outerHeight() - $item.outerHeight())) {
+        scrollTop = newScrollTop - $container.outerHeight() + $item.outerHeight();
+        return $container.scrollTop(scrollTop);
+      } else {
+        return $container.scrollTop(0);
+      }
+    };
 
     AutocompleteBox.prototype.fillOptions = function() {
       var $list, isAny, num,
@@ -705,9 +720,7 @@
           return _this.selectCurrent();
         });
         $item.on("mouseenter", function(e) {
-          var elem;
-          elem = e.target;
-          return _this.setHover($(elem).index() + 1);
+          return _this.setHover($(e.target).index() + 1);
         });
         return num++;
       });
@@ -725,10 +738,10 @@
       }
       $list = this.floater.find('.' + this.options.listClass);
       if (newSelected < 1) {
-        return;
+        newSelected = $list.children().length;
       }
       if (newSelected > $list.children().length) {
-        return;
+        newSelected = 1;
       }
       this.options.selected = newSelected;
       $list.children().removeClass(this.options.hoverClass);
