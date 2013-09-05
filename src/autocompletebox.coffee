@@ -54,6 +54,8 @@ class AutocompleteBox
             fakeClass:          'reform-autocompletebox-fake'
             inputClass:         'reform-autocompletebox-input'
         }
+        
+        @currentList = []
 
         @orig = $ @select
 
@@ -194,6 +196,7 @@ class AutocompleteBox
         @floater.empty()
 
         # List container
+        @currentList = []
         $list = $("<div/>").appendTo @floater
         $list.attr "class", @options.listClass
 
@@ -201,6 +204,7 @@ class AutocompleteBox
         num = 0
 
         # Filling options
+        
         $.each @options.data, (i, item) =>
             if @options.max <= num
                 return false
@@ -215,8 +219,9 @@ class AutocompleteBox
                     currentSelection = currentSelection.toLowerCase()
                 
                 if title.indexOf(currentSelection) == -1
-                    debugger;
                     return
+
+            @currentList.push item
 
             isAny = true
             $item = $ "<div/>"
@@ -269,14 +274,16 @@ class AutocompleteBox
         value = $selected.attr "value"
         title = $selected.attr "title"
         
-        @orig.val value
-        @orig.data 'title', title
-        @input.val title
-
-        @orig.trigger("change")
+        @setContent value, title
 
         @close()
 
+    setContent: (value, title) ->
+        @orig.val value
+        @orig.data 'title', title
+        @input.val title
+        @orig.trigger "change"
+    
     # Generates and opens the options container
     open: =>
         # Let everyone know we're open
@@ -313,6 +320,10 @@ class AutocompleteBox
     close: =>
         @floater?.remove()
         @floater = null
+        
+        if @currentList.length is 1
+            if @input.val() is @currentList[0].title
+                @setContent @currentList[0].value, @currentList[0].title
     
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
