@@ -77,6 +77,57 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
+Autocompletebox
+----------
+
+Original:
+
+      <input class="reform-autocompletebox" type="text" />
+
+Will become:
+
+      <div class="reform-autocompletebox-fake">
+        <input class="reform-autocompletebox-input">
+        <input class="reformed" type="text" style="display: none;">
+      </div>
+
+Optional input field parameters:
+
+* data-url
+* data-placeholder
+* data-matchCase
+* data-colorTitle
+* data-minChars
+
+Default json format is:
+
+      [{
+          "title": 'example1',
+          "value": '1'
+        },
+        {
+          "title": 'example2',
+          "value": '2'
+        },
+        ...
+      ]
+
+For performance reasons results are cached. Also keyup delay is used if dooing ajax requests.
+
+Once autocomplete detects results the options container is shown:
+
+      <div class="reform-autocompletebox-options">
+        <div class="reform-autocompletebox-list">
+          <div class="reform-autocompletebox-item" title="example1" value="4">
+            <strong>exam</strong>ple1
+          </div>
+          <div class="reform-autocompletebox-item" title="example2" value="40">
+            <strong>exam</strong>ple2
+          </div>
+          ...
+        </div>
+      </div>
+
 NPM package
 ----------
 
@@ -99,6 +150,10 @@ You can then either process nodes individually:
 The easy way is just to "observe" the DOM for any custom controls being inserted:
 
     reform.observe();
+
+You can register new extended component before observing:
+
+    reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 
 Development
 -----------
