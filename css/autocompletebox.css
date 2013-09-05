@@ -17,6 +17,20 @@
     background-color: #eee;
 }
 
+.reform-autocompletebox-fake.arrow:after {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        content: "";
+        width: 0;
+        height: 0;
+        margin: -4px 0 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+
+        border-top: 8px solid #333;
+}
+
 .reform-autocompletebox-options {
     display: none;
     position: absolute;
