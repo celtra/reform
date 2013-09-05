@@ -1,4 +1,3 @@
-
 window.$ ?= require "jquery-commonjs"
 
 # Implements custom autocomplete box
@@ -83,12 +82,27 @@ class AutocompleteBox
 
         @input = $ "<input/>"
         @input.addClass @options.inputClass + " placeholder"
+        
         if @options.placeholder?
             @input.val(@options.placeholder)
+        
         if @options.title?
             @input.val(@options.title)
             @currentSelection = @options.title
             @input.removeClass("placeholder")
+        
+        if @options.arrow?
+            @fake.addClass 'arrow'
+        
+        @fake.on "click", (e) =>
+            return if @orig.is ":disabled"
+            e.stopPropagation()
+            if @floater is null
+                @open()
+                @fillOptions()
+            else
+                @close()    
+        
         @fake.append @input
 
         @orig.after(@fake).appendTo @fake
@@ -166,14 +180,14 @@ class AutocompleteBox
         @orig.on "reform.close", (e) => @close()
 
         # set inline data
-        @orig.on "reform.fill", (e, data) =>
-            @options.data = @parse(data, @currentSelection)
+        @orig.on "reform.fill", (e, data) => @options.data = @parse(data, @currentSelection)
 
         # Clean up orphaned options containers
         $('.' + @options.optionsClass).remove()
 
     # Fill options
     fillOptions: =>
+        debugger;
         return unless @floater?
 
         # Empty the options container
@@ -192,14 +206,14 @@ class AutocompleteBox
                 return false
 
             # can match all, usefull for custom requests
-            if not @options.matchAll    
-                
+            if not @options.matchAll and @currentSelection?    
                 title = item.title
-
                 currentSelection = @currentSelection
+                
                 if not @options.matchCase
                     title = title.toLowerCase()
                     currentSelection = currentSelection.toLowerCase()
+                
                 if title.indexOf(currentSelection) == -1
                     return
 
@@ -306,17 +320,17 @@ class AutocompleteBox
     colorTitles: =>
 
         colorTitle = (title) =>
-            coloredTitle = ""
-            pos = title.toLowerCase().indexOf(@currentSelection.toLowerCase())
-
-            if pos != -1
-                coloredTitle += title.substr(0, pos)
-                coloredTitle += "<strong>"
-                coloredTitle += title.substr(pos, @currentSelection.length)
-                coloredTitle += "</strong>"
-                coloredTitle += title.substr(pos + @currentSelection.length, title.length)
-            else
-                coloredTitle = title
+            coloredTitle = title
+            
+            if @currentSelection?
+                pos = title.toLowerCase().indexOf(@currentSelection.toLowerCase())
+                
+                if pos != -1
+                    coloredTitle  = title.substr(0, pos)
+                    coloredTitle += "<strong>"
+                    coloredTitle += title.substr(pos, @currentSelection.length)
+                    coloredTitle += "</strong>"
+                    coloredTitle += title.substr(pos + @currentSelection.length, title.length)
 
             return coloredTitle
 

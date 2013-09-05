@@ -15,6 +15,7 @@
     text-overflow: ellipsis;
     line-height: 18px;
     vertical-align: middle;
+    outline: none;
     
     -webkit-user-select: none;
     -khtml-user-select: none;

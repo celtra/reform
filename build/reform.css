@@ -11,6 +11,7 @@
     text-overflow: ellipsis;
     line-height: 18px;
     vertical-align: middle;
+    outline: none;
     
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -24,11 +25,24 @@
     background-color: #eee;
 }
 
+.reform-autocompletebox-fake.arrow:after {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        content: "";
+        width: 0;
+        height: 0;
+        margin: -4px 0 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+
+        border-top: 8px solid #333;
+}
+
 .reform-autocompletebox-options {
     display: none;
     position: absolute;
     max-height: none;
-    /*max-height: 200px;*/
     overflow-y: auto;
     border: solid 1px #ccc;
     background: #fff;
@@ -120,6 +134,7 @@
     text-overflow: ellipsis;
     line-height: 18px;
     vertical-align: middle;
+    outline: none;
     
     -webkit-user-select: none;
     -khtml-user-select: none;

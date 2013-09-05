@@ -498,6 +498,21 @@
         this.currentSelection = this.options.title;
         this.input.removeClass("placeholder");
       }
+      if (this.options.arrow != null) {
+        this.fake.addClass('arrow');
+      }
+      this.fake.on("click", function(e) {
+        if (_this.orig.is(":disabled")) {
+          return;
+        }
+        e.stopPropagation();
+        if (_this.floater === null) {
+          _this.open();
+          return _this.fillOptions();
+        } else {
+          return _this.close();
+        }
+      });
       this.fake.append(this.input);
       this.orig.after(this.fake).appendTo(this.fake);
       this.floater = null;
@@ -574,6 +589,7 @@
     }
 
     AutocompleteBox.prototype.fillOptions = function() {
+      debugger;
       var $list, isAny, num,
         _this = this;
       if (this.floater == null) {
@@ -589,7 +605,7 @@
         if (_this.options.max <= num) {
           return false;
         }
-        if (!_this.options.matchAll) {
+        if (!_this.options.matchAll && (_this.currentSelection != null)) {
           title = item.title;
           currentSelection = _this.currentSelection;
           if (!_this.options.matchCase) {
@@ -702,16 +718,16 @@
         _this = this;
       colorTitle = function(title) {
         var coloredTitle, pos;
-        coloredTitle = "";
-        pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
-        if (pos !== -1) {
-          coloredTitle += title.substr(0, pos);
-          coloredTitle += "<strong>";
-          coloredTitle += title.substr(pos, _this.currentSelection.length);
-          coloredTitle += "</strong>";
-          coloredTitle += title.substr(pos + _this.currentSelection.length, title.length);
-        } else {
-          coloredTitle = title;
+        coloredTitle = title;
+        if (_this.currentSelection != null) {
+          pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
+          if (pos !== -1) {
+            coloredTitle = title.substr(0, pos);
+            coloredTitle += "<strong>";
+            coloredTitle += title.substr(pos, _this.currentSelection.length);
+            coloredTitle += "</strong>";
+            coloredTitle += title.substr(pos + _this.currentSelection.length, title.length);
+          }
         }
         return coloredTitle;
       };
