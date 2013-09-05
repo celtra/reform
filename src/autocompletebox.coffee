@@ -3,18 +3,17 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom autocomplete box
 class AutocompleteBox
 
-    # key mappings
-    KEY: {
-        UP: 38,
-        DOWN: 40,
-        DEL: 46,
-        RETURN: 13,
-        ESC: 27,
-        PAGEUP: 33,
-        PAGEDOWN: 34,
+    KEY : {
+        UP       : 38,
+        DOWN     : 40,
+        DEL      : 46,
+        RETURN   : 13,
+        ESC      : 27,
+        PAGEUP   : 33,
+        PAGEDOWN : 34
     }
 
-    cache = null
+    @cache : null
 
     # Generating a fake select box from a real one
     constructor: (@select, options) ->

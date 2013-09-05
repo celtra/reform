@@ -414,7 +414,6 @@
   }
 
   AutocompleteBox = (function() {
-    var cache;
 
     AutocompleteBox.prototype.KEY = {
       UP: 38,
@@ -426,7 +425,7 @@
       PAGEDOWN: 34
     };
 
-    cache = null;
+    AutocompleteBox.cache = null;
 
     function AutocompleteBox(select, options) {
       var delay, inlineOptions,
