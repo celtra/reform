@@ -45,11 +45,15 @@
 .reform-selectbox-options {
     display: none;
     position: absolute;
-    max-height: 200px;
-    overflow-y: auto;
     border: solid 1px #ccc;
     background: #fff;
     box-shadow: 0 0 10px #ccc;
+}
+
+.reform-selectbox-list {
+    min-width: 180px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .reform-selectbox-item {
