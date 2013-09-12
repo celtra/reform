@@ -3,18 +3,17 @@ window.$ ?= require "jquery-commonjs"
 # Implements custom autocomplete box
 class AutocompleteBox
 
-    # key mappings
-    KEY: {
-        UP: 38,
-        DOWN: 40,
-        DEL: 46,
-        RETURN: 13,
-        ESC: 27,
-        PAGEUP: 33,
-        PAGEDOWN: 34,
+    KEY : {
+        UP       : 38,
+        DOWN     : 40,
+        DEL      : 46,
+        RETURN   : 13,
+        ESC      : 27,
+        PAGEUP   : 33,
+        PAGEDOWN : 34
     }
 
-    cache = null
+    @cache : null
 
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
@@ -54,6 +53,8 @@ class AutocompleteBox
             fakeClass:          'reform-autocompletebox-fake'
             inputClass:         'reform-autocompletebox-input'
         }
+        
+        @currentList = []
 
         @orig = $ @select
 
@@ -209,6 +210,7 @@ class AutocompleteBox
         @floater.empty()
 
         # List container
+        @currentList = []
         $list = $("<div/>").appendTo @floater
         $list.attr "class", @options.listClass
 
@@ -216,6 +218,7 @@ class AutocompleteBox
         num = 0
 
         # Filling options
+        
         $.each @options.data, (i, item) =>
             if @options.max <= num
                 return false
@@ -231,6 +234,8 @@ class AutocompleteBox
                 
                 if title.indexOf(currentSelection) == -1
                     return
+
+            @currentList.push item
 
             isAny = true
             $item = $ "<div/>"
@@ -282,14 +287,16 @@ class AutocompleteBox
         value = $selected.attr "value"
         title = $selected.attr "title"
         
-        @orig.val value
-        @orig.data 'title', title
-        @input.val title
-
-        @orig.trigger("change")
+        @setContent value, title
 
         @close()
 
+    setContent: (value, title) ->
+        @orig.val value
+        @orig.data 'title', title
+        @input.val title
+        @orig.trigger "change"
+    
     # Generates and opens the options container
     open: =>
         # Let everyone know we're open
@@ -326,6 +333,10 @@ class AutocompleteBox
     close: =>
         @floater?.remove()
         @floater = null
+        
+        if @currentList.length is 1
+            if @input.val() is @currentList[0].title
+                @setContent @currentList[0].value, @currentList[0].title
     
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"

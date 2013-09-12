@@ -9,7 +9,6 @@
   }
 
   AutocompleteBox = (function() {
-    var cache;
 
     AutocompleteBox.prototype.KEY = {
       UP: 38,
@@ -21,7 +20,7 @@
       PAGEDOWN: 34
     };
 
-    cache = null;
+    AutocompleteBox.cache = null;
 
     function AutocompleteBox(select, options) {
       var delay, inlineOptions,
@@ -68,6 +67,7 @@
         fakeClass: 'reform-autocompletebox-fake',
         inputClass: 'reform-autocompletebox-input'
       };
+      this.currentList = [];
       this.orig = $(this.select);
       if (this.orig.is(".reformed")) {
         return;
@@ -210,6 +210,7 @@
         return;
       }
       this.floater.empty();
+      this.currentList = [];
       $list = $("<div/>").appendTo(this.floater);
       $list.attr("class", this.options.listClass);
       isAny = false;
@@ -230,6 +231,7 @@
             return;
           }
         }
+        _this.currentList.push(item);
         isAny = true;
         $item = $("<div/>");
         $item.attr("class", _this.options.itemClass);
@@ -281,11 +283,15 @@
       $selected.addClass('selected');
       value = $selected.attr("value");
       title = $selected.attr("title");
+      this.setContent(value, title);
+      return this.close();
+    };
+
+    AutocompleteBox.prototype.setContent = function(value, title) {
       this.orig.val(value);
       this.orig.data('title', title);
       this.input.val(title);
-      this.orig.trigger("change");
-      return this.close();
+      return this.orig.trigger("change");
     };
 
     AutocompleteBox.prototype.open = function() {
@@ -315,7 +321,12 @@
       if ((_ref1 = this.floater) != null) {
         _ref1.remove();
       }
-      return this.floater = null;
+      this.floater = null;
+      if (this.currentList.length === 1) {
+        if (this.input.val() === this.currentList[0].title) {
+          return this.setContent(this.currentList[0].value, this.currentList[0].title);
+        }
+      }
     };
 
     AutocompleteBox.prototype.refresh = function() {
