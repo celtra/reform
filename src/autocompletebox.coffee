@@ -82,7 +82,7 @@ class AutocompleteBox
 
         @input = $ "<input/>"
         @input.addClass @options.inputClass + " placeholder"
-        
+
         if @options.placeholder?
             @input.val(@options.placeholder)
         
@@ -97,7 +97,7 @@ class AutocompleteBox
         @fake.on "click", (e) =>
             return if @orig.is ":disabled"
             e.stopPropagation()
-            if @floater is null
+            if @floater is null and @currentSelection.length > @options.minChars and @currentSelection != ''
                 @open()
                 @fillOptions()
             else

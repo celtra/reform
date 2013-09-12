@@ -105,7 +105,7 @@
           return;
         }
         e.stopPropagation();
-        if (_this.floater === null) {
+        if (_this.floater === null && _this.currentSelection.length > _this.options.minChars && _this.currentSelection !== '') {
           _this.open();
           return _this.fillOptions();
         } else {
