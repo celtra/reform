@@ -67,6 +67,7 @@
         fakeClass: 'reform-autocompletebox-fake',
         inputClass: 'reform-autocompletebox-input'
       };
+      this.currentSelection = '';
       this.currentList = [];
       this.orig = $(this.select);
       if (this.orig.is(".reformed")) {
