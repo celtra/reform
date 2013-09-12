@@ -54,6 +54,7 @@ class AutocompleteBox
             inputClass:         'reform-autocompletebox-input'
         }
         
+        @currentSelection = ''
         @currentList = []
 
         @orig = $ @select
@@ -91,7 +92,7 @@ class AutocompleteBox
             @input.val(@options.title)
             @currentSelection = @options.title
             @input.removeClass("placeholder")
-        
+
         if @options.arrow?
             @fake.addClass 'arrow'
         
