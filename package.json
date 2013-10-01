@@ -1,6 +1,10 @@
 {
   "name": "reform",
+<<<<<<< HEAD
   "version": "0.2.5",
+=======
+  "version": "0.2.7",
+>>>>>>> 9e54706ce6e2efee764d3cec469777713375053c
   "author": "Rod Petrovic <me@rodpetrovic.com>",
   "description": "HTML forms the way you want them",
   "contributors": [],

@@ -54,6 +54,7 @@ class AutocompleteBox
             inputClass:         'reform-autocompletebox-input'
         }
         
+        @currentSelection = ''
         @currentList = []
 
         @orig = $ @select
@@ -83,7 +84,7 @@ class AutocompleteBox
 
         @input = $ "<input/>"
         @input.addClass @options.inputClass + " placeholder"
-        
+
         if @options.placeholder?
             @input.val(@options.placeholder)
         
@@ -91,14 +92,14 @@ class AutocompleteBox
             @input.val(@options.title)
             @currentSelection = @options.title
             @input.removeClass("placeholder")
-        
+
         if @options.arrow?
             @fake.addClass 'arrow'
         
         @fake.on "click", (e) =>
             return if @orig.is ":disabled"
             e.stopPropagation()
-            if @floater is null
+            if @floater is null and @currentSelection.length > @options.minChars and @currentSelection != ''
                 @open()
                 @fillOptions()
             else

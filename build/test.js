@@ -891,6 +891,7 @@ require.define("/lib/autocompletebox.js", function (require, module, exports, __
         fakeClass: 'reform-autocompletebox-fake',
         inputClass: 'reform-autocompletebox-input'
       };
+      this.currentSelection = '';
       this.currentList = [];
       this.orig = $(this.select);
       if (this.orig.is(".reformed")) {
@@ -929,7 +930,7 @@ require.define("/lib/autocompletebox.js", function (require, module, exports, __
           return;
         }
         e.stopPropagation();
-        if (_this.floater === null) {
+        if (_this.floater === null && _this.currentSelection.length > _this.options.minChars && _this.currentSelection !== '') {
           _this.open();
           return _this.fillOptions();
         } else {
