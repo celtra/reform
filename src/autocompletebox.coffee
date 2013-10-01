@@ -335,7 +335,10 @@ class AutocompleteBox
         @floater = null
         
         if @currentList.length is 1
-            if @input.val() is @currentList[0].title
+            isSameCaseSensitive   = @input.val() is @currentList[0].title
+            isSameCaseInsensitive = @input.val().toLowerCase() is @currentList[0].title.toLowerCase()
+            
+            if (@options.matchCase and isSameCaseSensitive) or (!@options.matchCase and isSameCaseInsensitive)
                 @setContent @currentList[0].value, @currentList[0].title
     
     refresh: =>
