@@ -16,8 +16,7 @@ class AutocompleteAbstract
     constructor: (@select, options) ->
         # some defaults
         @options = {
-            data                : []        # supply data
-            url                 : null      # or url
+            url                 : null      # data url
             dataType            : 'json'
             max                 : 1000      # max results
             minChars            : 0
@@ -66,6 +65,7 @@ class AutocompleteAbstract
         @options.showArrows       = @options.arrow       unless !@options.arrow
         
         # set initial state
+        @data = []
         if @options.title? then @filterValue = @options.title else @filterValue = ''
         if @orig.val().length is 0 
             @selectedItem = { value: 0, title: '' }
@@ -114,7 +114,7 @@ class AutocompleteAbstract
         return if @options.url
 
         @close()
-        @options.data = @parse(data)
+        @data = @parse(data)
 
     handleFilterChanged: ->
         return if !@floater
@@ -379,7 +379,7 @@ class AutocompleteAbstract
         filteredData = []
 
         # filter local collection
-        for item in @options.data
+        for item in @data
             # can match all, usefull for custom requests
             if not @options.exactMatch and @filterValue?    
                 title = item.title
