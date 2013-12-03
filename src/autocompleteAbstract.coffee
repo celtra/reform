@@ -152,7 +152,7 @@ class AutocompleteAbstract
         $el.addClass @options.fakeClass
         $el.addClass @options.disabledClass if @orig.is ":disabled"
 
-        if @options.showArrows?
+        if @options.showArrows
             $el.addClass @options.arrowDownClass
 
         $el
