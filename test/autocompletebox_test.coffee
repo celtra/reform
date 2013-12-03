@@ -1,5 +1,5 @@
-window.$ ?= require "jquery-commonjs"
-AutocompleteBox = require "../lib/autocompletebox"
+window.$        ?= require "jquery-commonjs"
+AutocompleteBox  = require "../lib/autocompletebox"
 
 module.exports = ->
     
@@ -9,7 +9,7 @@ module.exports = ->
     $orig = null
     $fake = null
     setup = (options = [], attrs = "") ->
-        $orig = $ "<select class=\"reform-autocompletebox\" #{attrs}>#{options.map((opt) -> "<option value=\"#{opt.value}\">#{opt.text}</option>").join("")}</select>"
+        $orig = $ "<input class=\"reform-autocompletebox\" #{attrs} />"
         $orig.appendTo "#qunit-fixture"
         
         new AutocompleteBox $orig.get(0)
@@ -17,8 +17,8 @@ module.exports = ->
 
     test "The fake wraps the original", 1, ->
         setup()
-        ok $fake.is(".reform-autocompletebox-fake"), "Parent should be the fake"
+        ok $fake.is(".reform-autocomplete-fake"), "Parent should be the fake"
 
-    test "Title input created", 1, ->
+    test "Filter input created", 1, ->
         setup()
-        ok $fake.find(':first-child').hasClass("reform-autocompletebox-input"), "Fake should have title input"
+        ok $fake.find('input:visible').hasClass("reform-autocomplete-filter"), "Fake should have filter input"
