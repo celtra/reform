@@ -4,12 +4,12 @@ Cache       = require "./cache"
 class Autocomplete
 
     KEY : {
-        UP       : 38,
-        DOWN     : 40,
-        DEL      : 46,
-        RETURN   : 13,
-        ESC      : 27,
-        PAGEUP   : 33,
+        UP       : 38
+        DOWN     : 40
+        DEL      : 46
+        RETURN   : 13
+        ESC      : 27
+        PAGEUP   : 33
         PAGEDOWN : 34
     }
 
@@ -63,7 +63,7 @@ class Autocomplete
         @options.exactMatch       = @options.matchAll    unless !@options.matchAll
         @options.placeholderText  = @options.placeholder unless !@options.placeholder
         
-        # set globals
+        # set initial state
         if @options.title? then @filterValue = @options.title else @filterValue = ''
         if @orig.val().length is 0 
             @selectedItem = { value: 0, title: '' }
@@ -84,7 +84,7 @@ class Autocomplete
 
         @orig.after(@el).appendTo @el
 
-        # # Close any other open options containers
+        # Close any other open options containers
         $( 'body' ).on "reform.open", (e) => @close() unless e.target is @select
 
         # Replicate changes from the original input to the fake one
@@ -96,6 +96,7 @@ class Autocomplete
         # set inline data
         @orig.on "reform.fill", (e, data) => @handleDataFill(data)
 
+        # reform events
         @el.on 'filterChanged', => @handleFilterChanged()
 
         @el.on 'selectedItemChanged', => @handleSelectionChanged()

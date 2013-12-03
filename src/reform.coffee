@@ -1,7 +1,7 @@
 window.$ 	   		?= require "jquery-commonjs"
-CheckBox  			 = require "./checkbox"
-SelectBox 			 = require "./selectbox"
-AutocompleteBox 	 = require "./autocompletebox"
+CheckBox             = require "./checkbox"
+SelectBox            = require "./selectbox"
+AutocompleteBox      = require "./autocompletebox"
 AutocompleteCombobox = require "./autocompletecombobox"
 
 # This class does the magic
@@ -19,8 +19,8 @@ class Reform
 
 # Posible custom controls
 Reform.controls =
-    "reform-checkbox"  			  : CheckBox
-    "reform-selectbox" 			  : SelectBox
+    "reform-checkbox"             : CheckBox
+    "reform-selectbox"            : SelectBox
     "reform-autocompletebox"      : AutocompleteBox
     "reform-autocompletecombobox" : AutocompleteCombobox
 
