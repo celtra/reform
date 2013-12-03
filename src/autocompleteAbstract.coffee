@@ -179,6 +179,8 @@ class AutocompleteAbstract
 
         $filter.on "keyup.autocomplete", (e) => @handleKeyUp e
 
+        $filter.on "keydown.autocomplete", (e) => @handleKeyDown e
+
         $filter
 
     createEmptyList: ->
@@ -288,18 +290,26 @@ class AutocompleteAbstract
 
         @el.trigger 'selectedItemChanged', @selectedItem
 
-    handleKeyUp: (e) ->
+    handleKeyDown: (e) ->
         return if @orig.is ':disabled'
 
-        # key up goes to begining of input
-        if e.keyCode is @KEY.UP or e.keyCode is @KEY.RETURN
+        if e.keyCode is @KEY.UP
             e.preventDefault()
-        
+
         switch e.keyCode
             when @KEY.DOWN
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
+            when @KEY.RETURN, @KEY.ESC
+                return
+
+    handleKeyUp: (e) ->
+        return if @orig.is ':disabled'
+
+        switch e.keyCode
+            when @KEY.DOWN, @KEY.UP
+                return
             when @KEY.RETURN
                 @handleItemSelect @list.find '.' + @options.hoverClass unless !@floater
             when @KEY.ESC
