@@ -29,12 +29,6 @@ class AutocompleteBox extends AutocompleteAbstract
 
         super
 
-    handleFilterChanged: ->
-        super
-
-        @orig.val 0
-        @orig.data 'title', @filterValue
-
     handleDisabledToggle: =>
         super
         return if !@filter
@@ -54,13 +48,29 @@ class AutocompleteBox extends AutocompleteAbstract
 
         $el
 
-    createFilter: ->
-        $filter = super
+    handleFilterBlur: ->
+        if @selectedItem.title isnt @filter.val()
 
-        $filter.on 'blur', () =>
-            @close()
+            if @filter.val() is @options.placeholderText
+                title = ''
+            else
+                title = @filter.val()
+            
+            @getData (data) =>
+                matchingItem = null
 
-        $filter
+                if title.length isnt 0
+                    for item in data
+                        if !matchingItem and item.title is title
+                            matchingItem = item
+
+                if matchingItem?
+                    @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
+                else
+                    @setSelectedItem { value: 0, title: title }
+
+        @close()
+        super
 
     open: ->
         @filterValue = @filter.val()
@@ -90,6 +100,8 @@ class AutocompleteBox extends AutocompleteAbstract
             @open() unless @floater?
         else
             @close() unless !@floater
+            @cancelChanges() if e.keyCode is @KEY.ESC
+
             return
 
         super

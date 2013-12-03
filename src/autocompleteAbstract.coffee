@@ -175,10 +175,7 @@ class AutocompleteAbstract
                 $filter.val ''
                 $filter.removeClass @options.placeholderClass
 
-        $filter.on 'blur', () =>
-            if $filter.val().length is 0
-                $filter.val @options.placeholderText
-                $filter.addClass @options.placeholderClass
+        $filter.on 'blur', () => @handleFilterBlur()
 
         $filter.on "keyup.autocomplete", (e) => @handleKeyUp e
 
@@ -304,7 +301,7 @@ class AutocompleteAbstract
             when @KEY.UP
                 @moveHover 'up'
             when @KEY.RETURN
-                @handleItemSelect @list.find '.' + @options.hoverClass
+                @handleItemSelect @list.find '.' + @options.hoverClass unless !@floater
             when @KEY.ESC
                 @cancelChanges()
                 @close()
@@ -315,6 +312,11 @@ class AutocompleteAbstract
         return if $item.length is 0
         @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
         @close()
+
+    handleFilterBlur: ->
+        if @filter.val().length is 0
+            @filter.val @options.placeholderText
+            @filter.addClass @options.placeholderClass
 
     moveHover: (direction = 'down') ->
         return if !@floater
