@@ -8,53 +8,41 @@ class AutocompleteBox extends Autocomplete
     constructor: (@select, options) ->
 
         @options = $.extend @options, {
-            autocompleteClass: 'reform-autocompletebox'
-            # itemClass:          'reform-autocomplete-item'
-            # hoverClass:         'reform-autocomplete-hover'
-            # listClass:          'reform-autocomplete-list'
-            # optionsClass:       'reform-autocomplete-floater'
-            # fakeClass:          'reform-autocomplete-fake'
-            # inputClass:         'reform-autocomplete-filter' 
-            # overlayClass:       'reform-autocomplete-overlay'
+            minChars           : 2 
+            autocompleteClass  : 'reform-autocompletebox'
         }
         
         super @select, @options
 
-        # return if !@fake
         return if !@el
 
         @filter = @createFilter()
 
-        # @filter = $ "<input/>"
-        # @filter.addClass @options.inputClass + " placeholder"
-
-        # if @options.placeholder?
-        #     @filter.val(@options.placeholder)
-        
-        if @options.title?
-            @filter.val @options.title 
-            # @currentSelection = @options.title
+        if @selectedItem.value isnt 0
+            @filter.val @selectedItem.title
             @filter.removeClass @options.placeholderClass
 
         @el.append @filter
-
-        # @filter.on "click", (e) =>
-        #     if @filter.val() == @options.placeholder
-        #         @filter.val('')
-        #         @filter.removeClass('placeholder')
-
-        # @filter.on "keydown.autocomplete", (e) => @handleKeyDown e
-
-        # @filter.on "blur", (e) =>
-        #     @close()
-
-        # # copy state from original
-        # @refresh()
 
     handleSelectionChanged: ->
         @filter.val @selectedItem.title
 
         super
+
+    handleFilterChanged: ->
+        super
+
+        @orig.val 0
+        @orig.data 'title', @filterValue
+
+    handleDisabledToggle: =>
+        super
+        return if !@filter
+
+        if @orig.is( ':disabled' ) and !@filter.is( ':disabled' )
+            @filter.attr 'disabled', 'disabled'
+        else 
+            @filter.removeAttr 'disabled'
 
     createFilter: ->
         $filter = super
@@ -63,10 +51,14 @@ class AutocompleteBox extends Autocomplete
             @close()
 
         $filter.on 'click', () =>
-            @open() if @filterValue.length > @options.minChars and !@floater                
+            @open() if @filter.val().length > @options.minChars and !@floater
 
         $filter
     
+    open: ->
+        @filterValue = @filter.val()
+        super
+
     handleKeyUp: (e) ->
         e.stopPropagation()
 
@@ -82,17 +74,5 @@ class AutocompleteBox extends Autocomplete
         position = super
         position.top += @el.outerHeight()
         position
-
-    handleDisabledToggle: =>
-        super
-        return if !@filter
-
-        if @orig.is( ':disabled' ) and !@filter.is( ':disabled' )
-            @filter.attr 'disabled', 'disabled'
-        else 
-            @filter.removeAttr 'disabled'
-        # @filter.removeAttr('disabled')
-        # @filter.attr("disabled", "disabled") if @orig.is ":disabled"
-
 
 module.exports = AutocompleteBox

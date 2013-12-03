@@ -20,14 +20,14 @@ class Autocomplete
             url                 : null      # or url
             dataType            : 'json'
             max                 : 1000      # max results
-            # selected          : 0         # todo: remove
-            minChars            : 2
+            minChars            : 0
             delay               : 300
             caseSensitive       : yes
             highlightTitles     : yes
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
-            placeholderText     : "Type to search..."
+            placeholderText     : 'Type to search...'
+            emptyText           : 'No results.'
 
             # custom classes
             autocompleteClass   : 'reform-autocomplete'
@@ -40,6 +40,7 @@ class Autocomplete
             hoverClass          : 'reform-autocomplete-hover'
             arrowDownClass      : 'reform-autocomplete-arrowDown'
             arrowUpClass        : 'reform-autocomplete-arrowUp'
+            emptyClass          : 'reform-autocomplete-empty'
             placeholderClass    : 'placeholder'
             disabledClass       : 'disabled'
         }
@@ -65,7 +66,7 @@ class Autocomplete
         # set globals
         if @options.title? then @filterValue = @options.title else @filterValue = ''
         if @orig.val().length is 0 
-            @selectedItem = null
+            @selectedItem = { value: 0, title: '' }
         else
             @selectedItem = { value: @orig.val(), title: @options.title }
 
@@ -94,9 +95,6 @@ class Autocomplete
 
         # set inline data
         @orig.on "reform.fill", (e, data) => @handleDataFill(data)
-
-        # # Clean up orphaned options containers
-        # $('.' + @options.optionsClass).remove()
 
         @el.on 'filterChanged', => @handleFilterChanged()
 
@@ -142,6 +140,9 @@ class Autocomplete
 
         @el.trigger 'selectedItemChanged', item
 
+    refreshState: =>
+        @handleDisabledToggle()
+
     createClosed: ->
         $el = $ "<div/>"
         $el.attr "class", @orig.attr "class"
@@ -159,48 +160,6 @@ class Autocomplete
         $floater = $ "<div/>"
         $floater.addClass @options.floaterClass
         $floater.css "min-width", @el.outerWidth() - 2
-
-    createEmptyList: ->
-        $list = $ '<div></div>'
-        $list.addClass @options.listClass
-
-        $list
-
-    createList: (data) ->
-        $list = @createEmptyList()
-
-        return if !data
-
-        count = 0
-        for item in data
-            return if @options.max <= count
-
-            $item = $ '<div></div>'
-            $item.addClass @options.itemClass
-            $item.attr 'title', item.title # obsolete - use data-title
-            $item.attr 'value', item.value # obsolete - use data-value
-            $item.data 'value', item.value
-            
-            if @options.highlightTitles
-                highlightedText = "<strong>#{@filterValue}</strong>"
-                $item.html item.title.replace @filterValue, highlightedText
-            else 
-                $item.text item.title
-            
-            $item.appendTo $list
-
-            # Prevent text selection
-            $item.on 'mousedown', (e) ->  e.preventDefault()
-
-            # Item selection
-            $item.on 'click', (e) => @handleItemSelect $ (e.target)
-
-            # hover items
-            $item.on 'mouseenter', (e) => @setHover $ (e.target)
-
-            count++
-
-        $list
 
     createFilter: ->
         $filter = $ "<input/>"
@@ -224,8 +183,61 @@ class Autocomplete
 
         $filter
 
-    refreshState: =>
-        @handleDisabledToggle()
+    createEmptyList: ->
+        $list = $ '<div></div>'
+        $list.addClass @options.listClass
+
+        $list
+
+    createNoResults: ->
+        $empty = $ '<div></div>'
+        $empty.addClass @options.emptyClass
+        $empty.text @options.emptyText
+
+    createList: (data) ->
+        $list = @createEmptyList()
+
+        return if !data
+        debugger
+        count = 0
+        for item in data
+            return if @options.max <= count
+
+            $item = @createItem item
+            $item.appendTo $list
+
+            count++
+
+        $list.append @createNoResults() if count is 0
+
+        $list
+
+    createItem: (item) ->
+        $item = $ '<div></div>'
+        $item.addClass @options.itemClass
+        $item.attr 'title', item.title # obsolete - use data-title
+        $item.attr 'value', item.value # obsolete - use data-value
+        $item.data 'value', item.value
+        
+        if item.value is @selectedItem.value
+            $item.addClass @options.hoverClass
+
+        if @options.highlightTitles
+            highlightedText = "<strong>#{@filterValue}</strong>"
+            $item.html item.title.replace @filterValue, highlightedText
+        else 
+            $item.text item.title
+        
+        # Prevent text selection
+        $item.on 'mousedown', (e) ->  e.preventDefault()
+
+        # Item selection
+        $item.on 'click', (e) => @handleItemSelect $ (e.target)
+
+        # hover items
+        $item.on 'mouseenter', (e) => @setHover $ (e.target)
+
+        $item
 
     open: ->
         return if @floater? or @el.hasClass @options.disabledClass
@@ -262,13 +274,21 @@ class Autocomplete
         @floater = null
         @list = null
 
+        @filterValue = ''
         clearTimeout @fetchTimeout
+
+    cancelChanges: ->
+        @filterValue = @selectedItem.title
+        
+        @filter.val @filterValue
+
+        @el.trigger 'selectedItemChanged', @selectedItem
 
     handleKeyUp: (e) ->
         return if @orig.is ':disabled'
 
         # key up goes to begining of input
-        if e.keyCode is @KEY.UP
+        if e.keyCode is @KEY.UP or e.keyCode is @KEY.RETURN
             e.preventDefault()
         
         switch e.keyCode
@@ -279,11 +299,13 @@ class Autocomplete
             when @KEY.RETURN
                 @handleItemSelect @list.find '.' + @options.hoverClass
             when @KEY.ESC
+                @cancelChanges()
                 @close()
             else
                 @setFilterValue @filter.val()
 
     handleItemSelect: ($item) ->
+        return if $item.length is 0
         @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
         @close()
 

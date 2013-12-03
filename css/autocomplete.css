@@ -73,7 +73,7 @@ input.reform-autocomplete-filter.placeholder {
     color: #aaa;
 }
 
-/*** options ***/
+/*** list ***/
 .reform-autocomplete-list {
     min-width: 50px;
     max-height: 300px;
@@ -100,4 +100,9 @@ input.reform-autocomplete-filter.placeholder {
 }
 .reform-autocomplete-item strong{
     background: inherit;
+}
+
+.reform-autocomplete-empty {
+    padding: 10px;
+    color: #aaa;
 }
