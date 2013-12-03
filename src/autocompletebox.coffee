@@ -94,8 +94,6 @@ class AutocompleteBox extends AutocompleteAbstract
             @el.addClass @options.arrowDownClass
 
     handleKeyUp: (e) ->
-        e.stopPropagation()
-
         if @filter.val().length > @options.minChars
             @open() unless @floater?
         else

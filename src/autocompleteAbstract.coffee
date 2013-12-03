@@ -301,7 +301,7 @@ class AutocompleteAbstract
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
-            when @KEY.RETURN, @KEY.ESC
+            else
                 return
 
     handleKeyUp: (e) ->
