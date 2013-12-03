@@ -1,7 +1,7 @@
-window.$        ?= require "jquery-commonjs"
-Autocomplete     = require "./autocomplete"
+window.$             ?= require "jquery-commonjs"
+AutocompleteAbstract  = require "./autocompleteAbstract"
 
-class AutocompleteCombobox extends Autocomplete
+class AutocompleteCombobox extends AutocompleteAbstract
     constructor: (@select, options) ->
         @options = $.extend @options, {
             placeholderText     : 'Select an item...'
@@ -10,6 +10,7 @@ class AutocompleteCombobox extends Autocomplete
             fakeClass           : 'reform-autocompletecombobox-fake'
             titleClass          : 'reform-autocompletecombobox-selected'
             floaterLabelClass   : 'reform-autocompletecombobox-floaterLabel'
+            emptyClass          : 'reform-autocompletecombobox-empty'
         }
         super @select, @options
 
@@ -33,20 +34,27 @@ class AutocompleteCombobox extends Autocomplete
 
         super
 
+    createClosed: ->
+        $el = super
+
+        $el.on 'click', () => @open()
+
+        $el
+
     createTitle: ->
         $title = $ '<span></span>'
         $title.addClass @options.titleClass
         $title.addClass @options.placeholderClass
         $title.text @options.placeholderText 
 
-        $title.on 'click', () => @open()
-
         $title
 
     createFloaterLabel: ->
         $title = $ '<span></span>'
         $title.addClass @options.floaterLabelClass
-        $title.addClass @options.arrowUpClass
+        
+        if @options.showArrows
+            $title.addClass @options.arrowUpClass
 
         if @selectedItem.value is 0
             $title.text @options.placeholderText
@@ -56,6 +64,14 @@ class AutocompleteCombobox extends Autocomplete
         $title.one 'click', () => @close()
 
         $title
+
+    createNoResults: ->
+        $empty = $ '<div></div>'
+        $empty.addClass @options.emptyClass
+        $empty.text @options.emptyText
+
+    handleEmptyList: ->
+        @list.append @createNoResults()
 
     open: ->
         super

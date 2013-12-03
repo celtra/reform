@@ -1,7 +1,7 @@
 window.$   ?= require "jquery-commonjs"
 Cache       = require "./cache"
 
-class Autocomplete
+class AutocompleteAbstract
 
     KEY : {
         UP       : 38
@@ -24,6 +24,7 @@ class Autocomplete
             delay               : 300
             caseSensitive       : yes
             highlightTitles     : yes
+            showArrows          : yes
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
             placeholderText     : 'Type to search...'
@@ -62,6 +63,7 @@ class Autocomplete
         @options.highlightTitles  = @options.colorTitle  unless !@options.colorTitle
         @options.exactMatch       = @options.matchAll    unless !@options.matchAll
         @options.placeholderText  = @options.placeholder unless !@options.placeholder
+        @options.showArrows       = @options.arrow       unless !@options.arrow
         
         # set initial state
         if @options.title? then @filterValue = @options.title else @filterValue = ''
@@ -120,8 +122,7 @@ class Autocomplete
         @getData (data) =>
             $list = @createList data
 
-            @list.empty()
-            @list.append $list.children()
+            @insertList $list
 
     handleDisabledToggle: ->
         if @orig.is( ':disabled' ) and !@el.hasClass( ':disabled' )
@@ -149,11 +150,10 @@ class Autocomplete
         $el.attr "class", @orig.attr "class"
         $el.removeClass @options.autocompleteClass
         $el.addClass @options.fakeClass
-        $el.addClass @options.arrowDownClass
-        $el.addClass "disabled" if @orig.is ":disabled"
+        $el.addClass @options.disabledClass if @orig.is ":disabled"
 
-        if @options.arrow?
-            $el.addClass 'arrow'
+        if @options.showArrows?
+            $el.addClass @options.arrowDownClass
 
         $el
 
@@ -190,16 +190,11 @@ class Autocomplete
 
         $list
 
-    createNoResults: ->
-        $empty = $ '<div></div>'
-        $empty.addClass @options.emptyClass
-        $empty.text @options.emptyText
-
     createList: (data) ->
         $list = @createEmptyList()
 
         return if !data
-        debugger
+
         count = 0
         for item in data
             return if @options.max <= count
@@ -208,8 +203,6 @@ class Autocomplete
             $item.appendTo $list
 
             count++
-
-        $list.append @createNoResults() if count is 0
 
         $list
 
@@ -240,6 +233,20 @@ class Autocomplete
 
         $item
 
+    insertList: ($list) ->
+        return if !@floater
+
+        @list.empty()
+        @list.append $list.children()
+
+        if @list.children().length is 0
+            @handleEmptyList()
+
+        @list
+
+    handleEmptyList: ->
+        @close()
+
     open: ->
         return if @floater? or @el.hasClass @options.disabledClass
         
@@ -256,16 +263,15 @@ class Autocomplete
         @list = @createEmptyList()
         @list.appendTo @floater
 
-        @getData (data) =>
-            $list = @createList data
-            @list.empty()
-            @list.append $list.children()
-
         @floater.css @getFloaterPosition()
 
         $body = $ 'body'
         $body.append $overlay
         $body.append @floater
+
+        @getData (data) =>
+            $list = @createList data
+            @insertList $list
 
     close: ->
         return if !@floater
@@ -311,6 +317,8 @@ class Autocomplete
         @close()
 
     moveHover: (direction = 'down') ->
+        return if !@floater
+
         $current = @list.find '.' + @options.hoverClass
 
         if $current.length is 0
@@ -442,4 +450,4 @@ class Autocomplete
                 console.log data
         }
 
-module.exports = Autocomplete
+module.exports = AutocompleteAbstract

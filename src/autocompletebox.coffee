@@ -1,8 +1,8 @@
-window.$     ?= require "jquery-commonjs"
-Autocomplete  = require "./autocomplete"
+window.$             ?= require "jquery-commonjs"
+AutocompleteAbstract  = require "./autocompleteAbstract"
 
 # Implements custom autocomplete box
-class AutocompleteBox extends Autocomplete
+class AutocompleteBox extends AutocompleteAbstract
 
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
@@ -44,20 +44,44 @@ class AutocompleteBox extends Autocomplete
         else 
             @filter.removeAttr 'disabled'
 
+    createClosed: ->
+        $el = super
+
+        $el.on 'click', () => 
+            if !@floater and @filter.val().length > @options.minChars
+                @open()
+                @filter.focus()
+
+        $el
+
     createFilter: ->
         $filter = super
 
         $filter.on 'blur', () =>
             @close()
 
-        $filter.on 'click', () =>
-            @open() if @filter.val().length > @options.minChars and !@floater
-
         $filter
-    
+
     open: ->
         @filterValue = @filter.val()
         super
+
+        @handleArrowsToggle()
+
+    close: ->
+        super
+
+        @handleArrowsToggle()
+
+    handleArrowsToggle: ->
+        return if !@options.showArrows
+
+        if @floater? 
+            @el.removeClass @options.arrowDownClass
+            @el.addClass @options.arrowUpClass
+        else
+            @el.removeClass @options.arrowUpClass
+            @el.addClass @options.arrowDownClass
 
     handleKeyUp: (e) ->
         e.stopPropagation()

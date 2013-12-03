@@ -48,3 +48,8 @@ span.reform-autocompletecombobox-floaterLabel {
     outline: none;
     cursor: pointer;
 }
+
+.reform-autocompletecombobox-empty {
+    padding: 10px;
+    color: #aaa;
+}
