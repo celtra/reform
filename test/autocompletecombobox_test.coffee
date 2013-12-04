@@ -17,7 +17,7 @@ module.exports = ->
 
     test "The fake wraps the original", 1, ->
         setup()
-        ok $fake.is(".reform-autocompletecombobox-fake"), "Parent should be the fake"
+        ok $fake.is(".reform-autocompletecombobox-ui"), "Parent should be the fake"
 
     test "Selected title created", 1, ->
         setup()

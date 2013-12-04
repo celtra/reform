@@ -27,7 +27,7 @@
     };
     test("The fake wraps the original", 1, function() {
       setup();
-      return ok($fake.is(".reform-autocompletecombobox-fake"), "Parent should be the fake");
+      return ok($fake.is(".reform-autocompletecombobox-ui"), "Parent should be the fake");
     });
     return test("Selected title created", 1, function() {
       setup();
