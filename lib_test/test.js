@@ -7,4 +7,6 @@
 
   require("./autocompletebox_test")();
 
+  require("./autocompletecombobox_test")();
+
 }).call(this);

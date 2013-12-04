@@ -1,409 +1,953 @@
-var require = function (file, cwd) {
-    var resolved = require.resolve(file, cwd || '/');
-    var mod = require.modules[resolved];
-    if (!mod) throw new Error(
-        'Failed to resolve module ' + file + ', tried ' + resolved
-    );
-    var res = mod._cached ? mod._cached : mod();
-    return res;
-}
+;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
-require.paths = [];
-require.modules = {};
-require.extensions = [".js",".coffee"];
-
-require._core = {
-    'assert': true,
-    'events': true,
-    'fs': true,
-    'path': true,
-    'vm': true
-};
-
-require.resolve = (function () {
-    return function (x, cwd) {
-        if (!cwd) cwd = '/';
-        
-        if (require._core[x]) return x;
-        var path = require.modules.path();
-        cwd = path.resolve('/', cwd);
-        var y = cwd || '/';
-        
-        if (x.match(/^(?:\.\.?\/|\/)/)) {
-            var m = loadAsFileSync(path.resolve(y, x))
-                || loadAsDirectorySync(path.resolve(y, x));
-            if (m) return m;
-        }
-        
-        var n = loadNodeModulesSync(x, y);
-        if (n) return n;
-        
-        throw new Error("Cannot find module '" + x + "'");
-        
-        function loadAsFileSync (x) {
-            if (require.modules[x]) {
-                return x;
-            }
-            
-            for (var i = 0; i < require.extensions.length; i++) {
-                var ext = require.extensions[i];
-                if (require.modules[x + ext]) return x + ext;
-            }
-        }
-        
-        function loadAsDirectorySync (x) {
-            x = x.replace(/\/+$/, '');
-            var pkgfile = x + '/package.json';
-            if (require.modules[pkgfile]) {
-                var pkg = require.modules[pkgfile]();
-                var b = pkg.browserify;
-                if (typeof b === 'object' && b.main) {
-                    var m = loadAsFileSync(path.resolve(x, b.main));
-                    if (m) return m;
-                }
-                else if (typeof b === 'string') {
-                    var m = loadAsFileSync(path.resolve(x, b));
-                    if (m) return m;
-                }
-                else if (pkg.main) {
-                    var m = loadAsFileSync(path.resolve(x, pkg.main));
-                    if (m) return m;
-                }
-            }
-            
-            return loadAsFileSync(x + '/index');
-        }
-        
-        function loadNodeModulesSync (x, start) {
-            var dirs = nodeModulesPathsSync(start);
-            for (var i = 0; i < dirs.length; i++) {
-                var dir = dirs[i];
-                var m = loadAsFileSync(dir + '/' + x);
-                if (m) return m;
-                var n = loadAsDirectorySync(dir + '/' + x);
-                if (n) return n;
-            }
-            
-            var m = loadAsFileSync(x);
-            if (m) return m;
-        }
-        
-        function nodeModulesPathsSync (start) {
-            var parts;
-            if (start === '/') parts = [ '' ];
-            else parts = path.normalize(start).split('/');
-            
-            var dirs = [];
-            for (var i = parts.length - 1; i >= 0; i--) {
-                if (parts[i] === 'node_modules') continue;
-                var dir = parts.slice(0, i + 1).join('/') + '/node_modules';
-                dirs.push(dir);
-            }
-            
-            return dirs;
-        }
-    };
-})();
-
-require.alias = function (from, to) {
-    var path = require.modules.path();
-    var res = null;
-    try {
-        res = require.resolve(from + '/package.json', '/');
-    }
-    catch (err) {
-        res = require.resolve(from, '/');
-    }
-    var basedir = path.dirname(res);
-    
-    var keys = (Object.keys || function (obj) {
-        var res = [];
-        for (var key in obj) res.push(key)
-        return res;
-    })(require.modules);
-    
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (key.slice(0, basedir.length + 1) === basedir + '/') {
-            var f = key.slice(basedir.length);
-            require.modules[to + f] = require.modules[basedir + f];
-        }
-        else if (key === basedir) {
-            require.modules[to] = require.modules[basedir];
-        }
-    }
-};
-
-require.define = function (filename, fn) {
-    var dirname = require._core[filename]
-        ? ''
-        : require.modules.path().dirname(filename)
-    ;
-    
-    var require_ = function (file) {
-        return require(file, dirname)
-    };
-    require_.resolve = function (name) {
-        return require.resolve(name, dirname);
-    };
-    require_.modules = require.modules;
-    require_.define = require.define;
-    var module_ = { exports : {} };
-    
-    require.modules[filename] = function () {
-        require.modules[filename]._cached = module_.exports;
-        fn.call(
-            module_.exports,
-            require_,
-            module_,
-            module_.exports,
-            dirname,
-            filename
-        );
-        require.modules[filename]._cached = module_.exports;
-        return module_.exports;
-    };
-};
-
-if (typeof process === 'undefined') process = {};
-
-if (!process.nextTick) process.nextTick = (function () {
-    var queue = [];
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-    
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-    }
-    
-    return function (fn) {
-        if (canPost) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
-        }
-        else setTimeout(fn, 0);
-    };
-})();
-
-if (!process.title) process.title = 'browser';
-
-if (!process.binding) process.binding = function (name) {
-    if (name === 'evals') return require('vm')
-    else throw new Error('No such module')
-};
-
-if (!process.cwd) process.cwd = function () { return '.' };
-
-if (!process.env) process.env = {};
-if (!process.argv) process.argv = [];
-
-require.define("path", function (require, module, exports, __dirname, __filename) {
-function filter (xs, fn) {
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (fn(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length; i >= 0; i--) {
-    var last = parts[i];
-    if (last == '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Regex to split a filename into [*, dir, basename, ext]
-// posix version
-var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-var resolvedPath = '',
-    resolvedAbsolute = false;
-
-for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
-  var path = (i >= 0)
-      ? arguments[i]
-      : process.cwd();
-
-  // Skip empty and invalid entries
-  if (typeof path !== 'string' || !path) {
-    continue;
-  }
-
-  resolvedPath = path + '/' + resolvedPath;
-  resolvedAbsolute = path.charAt(0) === '/';
-}
-
-// At this point the path should be resolved to a full absolute path, but
-// handle relative paths to be safe (might happen when process.cwd() fails)
-
-// Normalize the path
-resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-var isAbsolute = path.charAt(0) === '/',
-    trailingSlash = path.slice(-1) === '/';
-
-// Normalize the path
-path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-  
-  return (isAbsolute ? '/' : '') + path;
-};
-
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    return p && typeof p === 'string';
-  }).join('/'));
-};
-
-
-exports.dirname = function(path) {
-  var dir = splitPathRe.exec(path)[1] || '';
-  var isWindows = false;
-  if (!dir) {
-    // No dirname
-    return '.';
-  } else if (dir.length === 1 ||
-      (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
-    // It is just a slash or a drive letter with a slash
-    return dir;
-  } else {
-    // It is a full dirname, strip trailing slash
-    return dir.substring(0, dir.length - 1);
-  }
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPathRe.exec(path)[2] || '';
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPathRe.exec(path)[3] || '';
-};
-
-});
-
-require.define("/lib_test/checkbox_test.js", function (require, module, exports, __dirname, __filename) {
+},{}],2:[function(require,module,exports){
 // Generated by CoffeeScript 1.4.0
 (function() {
-  var CheckBox, _ref;
+  var AutocompleteAbstract, Cache, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   if ((_ref = window.$) == null) {
     window.$ = require("jquery-commonjs");
   }
 
-  CheckBox = require("../lib/checkbox");
+  Cache = require("./cache");
 
-  module.exports = function() {
-    var $fake, $orig, setup;
-    QUnit.module("CheckBox");
-    $orig = null;
-    $fake = null;
-    setup = function(attrs) {
-      if (attrs == null) {
-        attrs = "";
-      }
-      $orig = $("<input type=\"checkbox\" class=\"reform-checkbox\" " + attrs + ">");
-      $orig.appendTo("#qunit-fixture");
-      new CheckBox($orig.get(0));
-      return $fake = $orig.parent();
+  AutocompleteAbstract = (function() {
+
+    AutocompleteAbstract.prototype.KEY = {
+      UP: 38,
+      DOWN: 40,
+      DEL: 46,
+      RETURN: 13,
+      ESC: 27,
+      PAGEUP: 33,
+      PAGEDOWN: 34
     };
-    test("The fake wraps the original", 1, function() {
-      setup();
-      return ok($fake.is(".reform-checkbox-fake"), "Parent should be the fake");
-    });
-    test("Fake gets the 'disabled' class when disabled", 1, function() {
-      setup("disabled");
-      return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
-    });
-    asyncTest("Fake gets the 'checked' class", 1, function() {
-      setup();
-      $orig.attr("checked", true).trigger("change");
-      return setTimeout((function() {
-        ok($fake.is(".checked"), "Fake should have class 'checked'");
-        return start();
-      }), 0);
-    });
-    return asyncTest("States must match before and after the fake is clicked", 2, function() {
-      var match;
-      setup();
-      match = function() {
-        ok($fake.is(".checked") === $orig.is(":checked"), "States should be the same");
-        return start();
+
+    function AutocompleteAbstract(select, options) {
+      var inlineOptions,
+        _this = this;
+      this.select = select;
+      this.refreshState = __bind(this.refreshState, this);
+
+      this.options = {
+        url: null,
+        dataType: 'json',
+        max: 1000,
+        minChars: 0,
+        delay: 0,
+        caseSensitive: false,
+        highlightTitles: true,
+        showArrows: true,
+        exactMatch: false,
+        title: null,
+        placeholderText: 'Type to search...',
+        emptyText: 'No results.',
+        reformClass: 'reform-autocomplete',
+        uiClass: 'reform-autocomplete-ui',
+        fakeClass: 'reform-autocomplete-fake',
+        floaterClass: 'reform-autocomplete-floater',
+        overlayClass: 'reform-autocomplete-overlay',
+        filterClass: 'reform-autocomplete-filter',
+        listClass: 'reform-autocomplete-list',
+        itemClass: 'reform-autocomplete-item',
+        hoverClass: 'reform-autocomplete-hover',
+        arrowDownClass: 'reform-autocomplete-arrowDown',
+        arrowUpClass: 'reform-autocomplete-arrowUp',
+        emptyClass: 'reform-autocomplete-empty',
+        placeholderClass: 'placeholder',
+        disabledClass: 'disabled'
       };
-      match();
-      stop();
-      $orig.attr("checked", true).trigger("change");
-      return setTimeout(match, 0);
-    });
-  };
+      this.orig = $(this.select);
+      if (this.orig.is(".reformed")) {
+        return;
+      }
+      inlineOptions = this.orig.data();
+      $.extend(this.options, options);
+      $.extend(this.options, inlineOptions);
+      if (!!this.options.extraParams) {
+        this.options.customParams = this.options.extraParams;
+      }
+      if (!!this.options.matchCase) {
+        this.options.caseSensitive = this.options.matchCase;
+      }
+      if (!!this.options.colorTitle) {
+        this.options.highlightTitles = this.options.colorTitle;
+      }
+      if (!!this.options.matchAll) {
+        this.options.exactMatch = this.options.matchAll;
+      }
+      if (!!this.options.placeholder) {
+        this.options.placeholderText = this.options.placeholder;
+      }
+      if (!!this.options.arrow) {
+        this.options.showArrows = this.options.arrow;
+      }
+      this.data = [];
+      if (this.options.title != null) {
+        this.filterValue = this.options.title;
+      } else {
+        this.filterValue = '';
+      }
+      if (this.orig.val().length === 0) {
+        this.selectedItem = {
+          value: 0,
+          title: ''
+        };
+      } else {
+        this.selectedItem = {
+          value: this.orig.val(),
+          title: this.options.title
+        };
+      }
+      if (this.options.url != null) {
+        this.cache = new Cache(this.options);
+      }
+      this.el = null;
+      this.floater = null;
+      this.list = null;
+      this.filter = null;
+      this.el = this.createClosed();
+      this.orig.hide().attr("class", "reformed");
+      this.orig.after(this.el).appendTo(this.el);
+      $('body').on("reform.open", function(e) {
+        if (e.target !== _this.select) {
+          return _this.close();
+        }
+      });
+      this.orig.on("reform.sync change DOMSubtreeModified", function() {
+        return setTimeout(_this.refreshState, 0);
+      });
+      this.orig.on("reform.close", function(e) {
+        return _this.close();
+      });
+      this.orig.on("reform.fill", function(e, data) {
+        return _this.handleDataFill(data);
+      });
+      this.el.on('filterChanged', function() {
+        return _this.handleFilterChanged();
+      });
+      this.el.on('selectedItemChanged', function() {
+        return _this.handleSelectionChanged();
+      });
+      this.refreshState();
+    }
+
+    AutocompleteAbstract.prototype.handleSelectionChanged = function() {
+      this.orig.val(this.selectedItem.value);
+      this.orig.data('title', this.selectedItem.title);
+      return this.orig.trigger('change', this.selectedItem);
+    };
+
+    AutocompleteAbstract.prototype.handleDataFill = function(data) {
+      if (this.options.url) {
+        return;
+      }
+      this.close();
+      return this.data = this.parse(data);
+    };
+
+    AutocompleteAbstract.prototype.handleFilterChanged = function() {
+      var _this = this;
+      if (!this.floater) {
+        return;
+      }
+      return this.getData(function(data) {
+        var $list;
+        $list = _this.createList(data);
+        return _this.insertList($list);
+      });
+    };
+
+    AutocompleteAbstract.prototype.handleDisabledToggle = function() {
+      if (this.orig.is(':disabled') && !this.el.hasClass(':disabled')) {
+        this.close();
+        return this.el.addClass(this.options.disabledClass);
+      } else if (!this.orig.is(':disabled') && !this.el.hasClass(':disabled')) {
+        return this.el.removeClass(this.options.disabledClass);
+      }
+    };
+
+    AutocompleteAbstract.prototype.setFilterValue = function(value) {
+      var oldValue;
+      oldValue = this.filterValue;
+      this.filterValue = value;
+      return this.el.trigger('filterChanged', {
+        oldValue: oldValue,
+        newValue: this.filterValue
+      });
+    };
+
+    AutocompleteAbstract.prototype.setSelectedItem = function(item) {
+      this.selectedItem = item;
+      return this.el.trigger('selectedItemChanged', item);
+    };
+
+    AutocompleteAbstract.prototype.refreshState = function() {
+      return this.handleDisabledToggle();
+    };
+
+    AutocompleteAbstract.prototype.createClosed = function() {
+      var $el;
+      $el = $("<div/>");
+      $el.attr("class", this.orig.attr("class"));
+      $el.removeClass(this.options.reformClass);
+      $el.addClass(this.options.uiClass);
+      $el.addClass(this.options.fakeClass);
+      if (this.orig.is(":disabled")) {
+        $el.addClass(this.options.disabledClass);
+      }
+      if (this.options.showArrows) {
+        $el.addClass(this.options.arrowDownClass);
+      }
+      return $el;
+    };
+
+    AutocompleteAbstract.prototype.createFloater = function() {
+      var $floater;
+      $floater = $("<div/>");
+      $floater.addClass(this.options.uiClass);
+      $floater.addClass(this.options.floaterClass);
+      return $floater.css("min-width", this.el.outerWidth() - 2);
+    };
+
+    AutocompleteAbstract.prototype.createFilter = function() {
+      var $filter,
+        _this = this;
+      $filter = $("<input/>");
+      $filter.addClass(this.options.filterClass);
+      $filter.addClass(this.options.placeholderClass);
+      if (this.options.placeholderText != null) {
+        $filter.val(this.options.placeholderText);
+      }
+      $filter.on('focus', function(e) {
+        if ($filter.val() === _this.options.placeholderText) {
+          $filter.val('');
+          return $filter.removeClass(_this.options.placeholderClass);
+        }
+      });
+      $filter.on('blur', function() {
+        return _this.handleFilterBlur();
+      });
+      $filter.on("keyup.autocomplete", function(e) {
+        return _this.handleKeyUp(e);
+      });
+      $filter.on("keydown.autocomplete", function(e) {
+        return _this.handleKeyDown(e);
+      });
+      return $filter;
+    };
+
+    AutocompleteAbstract.prototype.handleFilterBlur = function() {
+      if (this.filter.val().length === 0) {
+        this.filter.val(this.options.placeholderText);
+        return this.filter.addClass(this.options.placeholderClass);
+      }
+    };
+
+    AutocompleteAbstract.prototype.createEmptyList = function() {
+      var $list;
+      $list = $('<div></div>');
+      $list.addClass(this.options.listClass);
+      return $list;
+    };
+
+    AutocompleteAbstract.prototype.createList = function(data) {
+      var $item, $list, count, item, _i, _len;
+      $list = this.createEmptyList();
+      if (!data) {
+        return;
+      }
+      count = 0;
+      for (_i = 0, _len = data.length; _i < _len; _i++) {
+        item = data[_i];
+        if (this.options.max > count) {
+          $item = this.createItem(item);
+          $item.appendTo($list);
+          count++;
+        }
+      }
+      return $list;
+    };
+
+    AutocompleteAbstract.prototype.createItem = function(item) {
+      var $item, highlightedText,
+        _this = this;
+      $item = $('<div></div>');
+      $item.addClass(this.options.itemClass);
+      $item.attr('title', item.title);
+      $item.attr('value', item.value);
+      $item.data('value', item.value);
+      if (item.value === this.selectedItem.value) {
+        $item.addClass(this.options.hoverClass);
+      }
+      if (this.options.highlightTitles) {
+        highlightedText = "<strong>" + this.filterValue + "</strong>";
+        $item.html(item.title.toLowerCase().replace(this.filterValue.toLowerCase(), highlightedText));
+      } else {
+        $item.text(item.title);
+      }
+      $item.on('mousedown', function(e) {
+        return e.preventDefault();
+      });
+      $item.on('click', function(e) {
+        return _this.handleItemSelect($(e.target));
+      });
+      $item.on('mouseenter', function(e) {
+        return _this.setHover($(e.target));
+      });
+      return $item;
+    };
+
+    AutocompleteAbstract.prototype.handleItemSelect = function($item) {
+      if ($item.length === 0) {
+        return;
+      }
+      this.setSelectedItem({
+        value: $item.data('value'),
+        title: $item.text()
+      });
+      return this.close();
+    };
+
+    AutocompleteAbstract.prototype.insertList = function($list) {
+      if (!this.floater) {
+        return;
+      }
+      this.list.empty();
+      this.list.append($list.children());
+      if (this.list.children().length === 0) {
+        this.handleEmptyList();
+      }
+      return this.list;
+    };
+
+    AutocompleteAbstract.prototype.handleEmptyList = function() {
+      return this.close();
+    };
+
+    AutocompleteAbstract.prototype.open = function() {
+      var $body, $overlay,
+        _this = this;
+      if ((this.floater != null) || this.el.hasClass(this.options.disabledClass)) {
+        return;
+      }
+      this.orig.trigger("reform.open");
+      this.floater = this.createFloater();
+      $overlay = $('<div></div>');
+      $overlay.addClass(this.options.overlayClass);
+      $overlay.one('click', function() {
+        return _this.close();
+      });
+      this.list = this.createEmptyList();
+      this.list.appendTo(this.floater);
+      this.floater.css(this.getFloaterPosition());
+      $body = $('body');
+      $body.append($overlay);
+      $body.append(this.floater);
+      return this.getData(function(data) {
+        var $list;
+        $list = _this.createList(data);
+        return _this.insertList($list);
+      });
+    };
+
+    AutocompleteAbstract.prototype.close = function() {
+      if (!this.floater) {
+        return;
+      }
+      this.floater.siblings('.' + this.options.overlayClass).remove();
+      this.floater.remove();
+      this.floater = null;
+      this.list = null;
+      this.filterValue = '';
+      return this.orig.trigger("reform.closed");
+    };
+
+    AutocompleteAbstract.prototype.cancelChanges = function() {
+      this.filterValue = this.selectedItem.title;
+      this.filter.val(this.filterValue);
+      return this.el.trigger('selectedItemChanged', this.selectedItem);
+    };
+
+    AutocompleteAbstract.prototype.handleKeyDown = function(e) {
+      if (this.orig.is(':disabled')) {
+        return;
+      }
+      if (e.keyCode === this.KEY.UP) {
+        e.preventDefault();
+      }
+      switch (e.keyCode) {
+        case this.KEY.DOWN:
+          return this.moveHover('down');
+        case this.KEY.UP:
+          return this.moveHover('up');
+      }
+    };
+
+    AutocompleteAbstract.prototype.handleKeyUp = function(e) {
+      if (this.orig.is(':disabled')) {
+        return;
+      }
+      switch (e.keyCode) {
+        case this.KEY.DOWN:
+        case this.KEY.UP:
+          break;
+        case this.KEY.RETURN:
+          if (!!this.floater) {
+            return this.handleItemSelect(this.list.find('.' + this.options.hoverClass));
+          }
+          break;
+        case this.KEY.ESC:
+          this.cancelChanges();
+          return this.close();
+        default:
+          return this.setFilterValue(this.filter.val());
+      }
+    };
+
+    AutocompleteAbstract.prototype.moveHover = function(direction) {
+      var $current, $nextHover;
+      if (direction == null) {
+        direction = 'down';
+      }
+      if (!this.floater) {
+        return;
+      }
+      $current = this.list.find('.' + this.options.hoverClass);
+      if ($current.length === 0) {
+        $nextHover = this.list.find('.' + this.options.itemClass + ':first-child');
+      } else if (direction === 'down') {
+        $nextHover = $current.next();
+      } else if (direction === 'up') {
+        $nextHover = $current.prev();
+      }
+      if ($nextHover.length !== 0) {
+        this.setHover($nextHover);
+        return this.scrollTo($nextHover);
+      }
+    };
+
+    AutocompleteAbstract.prototype.scrollTo = function($item) {
+      var $container, newScrollTop, scrollTop;
+      if (!this.floater) {
+        return;
+      }
+      $container = $item.parent();
+      newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop();
+      if (newScrollTop > ($container.outerHeight() - $item.outerHeight())) {
+        scrollTop = newScrollTop - $container.outerHeight() + $item.outerHeight();
+        return $container.scrollTop(scrollTop);
+      } else {
+        return $container.scrollTop(0);
+      }
+    };
+
+    AutocompleteAbstract.prototype.setHover = function($item) {
+      var $items;
+      if (!this.floater) {
+        return;
+      }
+      $items = this.list.find('.' + this.options.itemClass);
+      $items.removeClass(this.options.hoverClass);
+      return $item.addClass(this.options.hoverClass);
+    };
+
+    AutocompleteAbstract.prototype.getFloaterPosition = function() {
+      return this.el.offset();
+    };
+
+    AutocompleteAbstract.prototype.parse = function(data) {
+      var parsed,
+        _this = this;
+      parsed = [];
+      $.each(data, function(num, item) {
+        return parsed.push({
+          value: item.value,
+          title: _this.options.formatResult && _this.options.formatResult(item) || item.title
+        });
+      });
+      return parsed;
+    };
+
+    AutocompleteAbstract.prototype.getData = function(callback) {
+      var data;
+      if (!callback) {
+        return;
+      }
+      if (this.options.url) {
+        return this.loadDataFromUrl(callback);
+      } else {
+        data = this.filterData();
+        return callback(data);
+      }
+    };
+
+    AutocompleteAbstract.prototype.filterData = function() {
+      var filterValue, filteredData, item, title, _i, _len, _ref1;
+      filteredData = [];
+      _ref1 = this.data;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        item = _ref1[_i];
+        if (!this.options.exactMatch && (this.filterValue != null)) {
+          title = item.title;
+          filterValue = this.filterValue;
+          if (!this.options.caseSensitive) {
+            title = title.toLowerCase();
+            filterValue = filterValue.toLowerCase();
+          }
+          if (title.indexOf(filterValue) !== -1) {
+            filteredData.push(item);
+          }
+        } else {
+          filteredData.push(item);
+        }
+      }
+      return filteredData;
+    };
+
+    AutocompleteAbstract.prototype.loadDataFromUrl = function(callback) {
+      var customParams, data, fetchDataCallback, key, param, params, _i, _len, _ref1,
+        _this = this;
+      data = this.cache.load(this.filterValue);
+      if (data != null) {
+        callback(data);
+        return;
+      }
+      params = {
+        q: this.filterValue,
+        matchCase: this.options.caseSensitive,
+        limit: this.options.max,
+        timeStamp: new Date()
+      };
+      if (this.options.customParams != null) {
+        customParams = [];
+        _ref1 = this.options.customParams;
+        for (param = _i = 0, _len = _ref1.length; _i < _len; param = ++_i) {
+          key = _ref1[param];
+          customParams[key] = typeof param === "function" ? param() : param;
+        }
+        $.extend(params, customParams);
+      }
+      fetchDataCallback = function() {
+        return _this.fetchData(params, function(data) {
+          var parsedData, _base;
+          parsedData = (typeof (_base = _this.options).parse === "function" ? _base.parse(data) : void 0) || _this.parse(data);
+          _this.cache.add(_this.filterValue, parsedData);
+          if (callback != null) {
+            return callback(parsedData);
+          }
+        });
+      };
+      clearTimeout(this.fetchTimeout);
+      return this.fetchTimeout = setTimeout(fetchDataCallback, this.options.delay);
+    };
+
+    AutocompleteAbstract.prototype.fetchData = function(params, successCallback) {
+      var _this = this;
+      if (this.ajaxInProgress) {
+        this.lastXHR.abort();
+      }
+      this.ajaxInProgress = true;
+      this.orig.trigger('ajaxRequestStarted');
+      return this.lastXHR = $.ajax({
+        dataType: this.options.dataType,
+        url: this.options.url,
+        data: params,
+        success: function(data) {
+          _this.ajaxInProgress = false;
+          _this.orig.trigger('ajaxRequestFinished');
+          return successCallback(data);
+        },
+        error: function(data) {
+          _this.ajaxInProgress = false;
+          _this.orig.trigger('ajaxRequestFinished');
+          return console.log(data);
+        }
+      });
+    };
+
+    return AutocompleteAbstract;
+
+  })();
+
+  module.exports = AutocompleteAbstract;
 
 }).call(this);
 
-});
+},{"./cache":5,"jquery-commonjs":1}],3:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
+(function() {
+  var AutocompleteAbstract, AutocompleteBox, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-require.define("/lib/checkbox.js", function (require, module, exports, __dirname, __filename) {
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
+
+  AutocompleteAbstract = require("./autocompleteAbstract");
+
+  AutocompleteBox = (function(_super) {
+
+    __extends(AutocompleteBox, _super);
+
+    function AutocompleteBox(select, options) {
+      this.select = select;
+      this.handleDisabledToggle = __bind(this.handleDisabledToggle, this);
+
+      this.options = $.extend(this.options, {
+        minChars: 2,
+        delay: 300,
+        reformClass: 'reform-autocompletebox',
+        uiClass: 'reform-autocompletebox-ui'
+      });
+      AutocompleteBox.__super__.constructor.call(this, this.select, this.options);
+      if (!this.el) {
+        return;
+      }
+      this.filter = this.createFilter();
+      if (this.selectedItem.value !== 0) {
+        this.filter.val(this.selectedItem.title);
+        this.filter.removeClass(this.options.placeholderClass);
+      }
+      this.el.append(this.filter);
+    }
+
+    AutocompleteBox.prototype.handleSelectionChanged = function() {
+      this.filter.val(this.selectedItem.title);
+      return AutocompleteBox.__super__.handleSelectionChanged.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.handleDisabledToggle = function() {
+      AutocompleteBox.__super__.handleDisabledToggle.apply(this, arguments);
+      if (!this.filter) {
+        return;
+      }
+      if (this.orig.is(':disabled') && !this.filter.is(':disabled')) {
+        return this.filter.attr('disabled', 'disabled');
+      } else {
+        return this.filter.removeAttr('disabled');
+      }
+    };
+
+    AutocompleteBox.prototype.createClosed = function() {
+      var $el,
+        _this = this;
+      $el = AutocompleteBox.__super__.createClosed.apply(this, arguments);
+      $el.on('click', function() {
+        if (!_this.floater && _this.filter.val().length > _this.options.minChars) {
+          _this.open();
+          return _this.filter.focus();
+        }
+      });
+      return $el;
+    };
+
+    AutocompleteBox.prototype.handleFilterBlur = function() {
+      var title,
+        _this = this;
+      if (this.selectedItem.title !== this.filter.val()) {
+        if (this.filter.val() === this.options.placeholderText) {
+          title = '';
+        } else {
+          title = this.filter.val();
+        }
+        this.getData(function(data) {
+          var item, matchingItem, _i, _len;
+          matchingItem = null;
+          if (title.length !== 0) {
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              item = data[_i];
+              if (!matchingItem && item.title === title) {
+                matchingItem = item;
+              }
+            }
+          }
+          if (matchingItem != null) {
+            return _this.setSelectedItem({
+              value: matchingItem.value,
+              title: matchingItem.title
+            });
+          } else {
+            return _this.setSelectedItem({
+              value: 0,
+              title: title
+            });
+          }
+        });
+      }
+      this.close();
+      return AutocompleteBox.__super__.handleFilterBlur.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.open = function() {
+      this.filterValue = this.filter.val();
+      AutocompleteBox.__super__.open.apply(this, arguments);
+      return this.handleArrowsToggle();
+    };
+
+    AutocompleteBox.prototype.close = function() {
+      AutocompleteBox.__super__.close.apply(this, arguments);
+      return this.handleArrowsToggle();
+    };
+
+    AutocompleteBox.prototype.handleArrowsToggle = function() {
+      if (!this.options.showArrows) {
+        return;
+      }
+      if (this.floater != null) {
+        this.el.removeClass(this.options.arrowDownClass);
+        return this.el.addClass(this.options.arrowUpClass);
+      } else {
+        this.el.removeClass(this.options.arrowUpClass);
+        return this.el.addClass(this.options.arrowDownClass);
+      }
+    };
+
+    AutocompleteBox.prototype.handleKeyUp = function(e) {
+      if (this.filter.val().length > this.options.minChars) {
+        if (this.floater == null) {
+          this.open();
+        }
+      } else if (this.floater != null) {
+        this.close();
+        return;
+      } else {
+        if (e.keyCode === this.KEY.ESC) {
+          this.cancelChanges();
+        }
+        return;
+      }
+      return AutocompleteBox.__super__.handleKeyUp.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.getFloaterPosition = function() {
+      var position;
+      position = AutocompleteBox.__super__.getFloaterPosition.apply(this, arguments);
+      position.top += this.el.outerHeight();
+      return position;
+    };
+
+    return AutocompleteBox;
+
+  })(AutocompleteAbstract);
+
+  module.exports = AutocompleteBox;
+
+}).call(this);
+
+},{"./autocompleteAbstract":2,"jquery-commonjs":1}],4:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
+(function() {
+  var AutocompleteAbstract, AutocompleteCombobox, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
+
+  AutocompleteAbstract = require("./autocompleteAbstract");
+
+  AutocompleteCombobox = (function(_super) {
+
+    __extends(AutocompleteCombobox, _super);
+
+    function AutocompleteCombobox(select, options) {
+      var $title;
+      this.select = select;
+      this.options = $.extend(this.options, {
+        placeholderText: 'Select an item...',
+        reformClass: 'reform-autocompletecombobox',
+        uiClass: 'reform-autocompletecombobox-ui',
+        titleClass: 'reform-autocompletecombobox-selected',
+        floaterLabelClass: 'reform-autocompletecombobox-floaterLabel'
+      });
+      AutocompleteCombobox.__super__.constructor.call(this, this.select, this.options);
+      if (!this.el) {
+        return;
+      }
+      this.filterValue = '';
+      $title = this.createTitle();
+      if (this.selectedItem.value !== 0) {
+        $title.text(this.selectedItem.title);
+        $title.removeClass(this.options.placeholderClass);
+      }
+      this.el.append($title);
+    }
+
+    AutocompleteCombobox.prototype.handleSelectionChanged = function() {
+      var $title;
+      $title = this.el.find('span');
+      if (this.selectedItem.value !== 0) {
+        $title.text(this.selectedItem.title);
+        $title.removeClass(this.options.placeholderClass);
+      }
+      return AutocompleteCombobox.__super__.handleSelectionChanged.apply(this, arguments);
+    };
+
+    AutocompleteCombobox.prototype.createClosed = function() {
+      var $el,
+        _this = this;
+      $el = AutocompleteCombobox.__super__.createClosed.apply(this, arguments);
+      $el.on('click', function() {
+        return _this.open();
+      });
+      return $el;
+    };
+
+    AutocompleteCombobox.prototype.createTitle = function() {
+      var $title;
+      $title = $('<span></span>');
+      $title.addClass(this.options.titleClass);
+      $title.addClass(this.options.placeholderClass);
+      $title.text(this.options.placeholderText);
+      return $title;
+    };
+
+    AutocompleteCombobox.prototype.createFloaterLabel = function() {
+      var $title,
+        _this = this;
+      $title = $('<span></span>');
+      $title.addClass(this.options.floaterLabelClass);
+      if (this.options.showArrows) {
+        $title.addClass(this.options.arrowUpClass);
+      }
+      if (this.selectedItem.value === 0) {
+        $title.text(this.options.placeholderText);
+      } else {
+        $title.text(this.selectedItem.title);
+      }
+      $title.one('click', function() {
+        return _this.close();
+      });
+      return $title;
+    };
+
+    AutocompleteCombobox.prototype.createNoResults = function() {
+      var $empty;
+      $empty = $('<div></div>');
+      $empty.addClass(this.options.emptyClass);
+      return $empty.text(this.options.emptyText);
+    };
+
+    AutocompleteCombobox.prototype.handleEmptyList = function() {
+      return this.list.append(this.createNoResults());
+    };
+
+    AutocompleteCombobox.prototype.open = function() {
+      var $title;
+      AutocompleteCombobox.__super__.open.apply(this, arguments);
+      $title = this.createFloaterLabel();
+      $title.insertBefore(this.list);
+      this.filter = this.createFilter();
+      this.filter.insertBefore(this.list);
+      return this.filter.focus();
+    };
+
+    return AutocompleteCombobox;
+
+  })(AutocompleteAbstract);
+
+  module.exports = AutocompleteCombobox;
+
+}).call(this);
+
+},{"./autocompleteAbstract":2,"jquery-commonjs":1}],5:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
+(function() {
+  var Cache, _ref,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
+
+  Cache = (function() {
+
+    Cache.prototype.data = {};
+
+    Cache.prototype.length = 0;
+
+    Cache.prototype.options = {
+      cacheLength: 100,
+      matchContains: false,
+      matchSubset: true
+    };
+
+    function Cache(options) {
+      this.load = __bind(this.load, this);
+      $.extend(this.options, options);
+    }
+
+    Cache.prototype.matchSubset = function(s, sub) {
+      var i;
+      if (!this.options.matchCase) {
+        s = s.toLowerCase();
+      }
+      i = s.indexOf(sub);
+      if (this.options.matchContains === "word") {
+        i = s.toLowerCase().search("\\b" + sub.toLowerCase());
+      }
+      if (i === -1) {
+        return false;
+      }
+      return i === 0 || this.options.matchContains;
+    };
+
+    Cache.prototype.add = function(q, value) {
+      if (this.length > this.options.cacheLength) {
+        flush();
+      }
+      if (!this.data[q]) {
+        this.length++;
+      }
+      return this.data[q] = value;
+    };
+
+    Cache.prototype.flush = function() {
+      this.data = {};
+      return this.length = 0;
+    };
+
+    Cache.prototype.load = function(q) {
+      var c, csub, i, self;
+      if (!this.options.cacheLength || !this.length) {
+        return null;
+      }
+      if (this.data[q]) {
+        return this.data[q];
+      } else if (this.options.matchSubset) {
+        i = q.length - 1;
+        while (i >= this.options.minChars) {
+          c = this.data[q.substr(0, i)];
+          if (c) {
+            csub = [];
+            self = this;
+            $.each(c, function(i, x) {
+              if (self.matchSubset(x.title, q)) {
+                return csub[csub.length] = x;
+              }
+            });
+            return csub;
+          }
+          i--;
+        }
+      }
+      return null;
+    };
+
+    return Cache;
+
+  })();
+
+  module.exports = Cache;
+
+}).call(this);
+
+},{"jquery-commonjs":1}],6:[function(require,module,exports){
 // Generated by CoffeeScript 1.4.0
 (function() {
   var CheckBox, _ref,
@@ -468,53 +1012,7 @@ require.define("/lib/checkbox.js", function (require, module, exports, __dirname
 
 }).call(this);
 
-});
-
-require.define("/lib_test/selectbox_test.js", function (require, module, exports, __dirname, __filename) {
-// Generated by CoffeeScript 1.4.0
-(function() {
-  var SelectBox, _ref;
-
-  if ((_ref = window.$) == null) {
-    window.$ = require("jquery-commonjs");
-  }
-
-  SelectBox = require("../lib/selectbox");
-
-  module.exports = function() {
-    var $fake, $orig, setup;
-    QUnit.module("SelectBox");
-    $orig = null;
-    $fake = null;
-    setup = function(options, attrs) {
-      if (options == null) {
-        options = [];
-      }
-      if (attrs == null) {
-        attrs = "";
-      }
-      $orig = $("<select class=\"reform-selectbox\" " + attrs + ">" + (options.map(function(opt) {
-        return "<option value=\"" + opt.value + "\">" + opt.text + "</option>";
-      }).join("")) + "</select>");
-      $orig.appendTo("#qunit-fixture");
-      new SelectBox($orig.get(0));
-      return $fake = $orig.parent();
-    };
-    test("The fake wraps the original", 1, function() {
-      setup();
-      return ok($fake.is(".reform-selectbox-fake"), "Parent should be the fake");
-    });
-    return test("Fake gets the 'disabled' class when disabled", 1, function() {
-      setup([], "disabled");
-      return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
-    });
-  };
-
-}).call(this);
-
-});
-
-require.define("/lib/selectbox.js", function (require, module, exports, __dirname, __filename) {
+},{"jquery-commonjs":1}],7:[function(require,module,exports){
 // Generated by CoffeeScript 1.4.0
 (function() {
   var SelectBox, _ref,
@@ -776,9 +1274,7 @@ require.define("/lib/selectbox.js", function (require, module, exports, __dirnam
 
 }).call(this);
 
-});
-
-require.define("/lib_test/autocompletebox_test.js", function (require, module, exports, __dirname, __filename) {
+},{"jquery-commonjs":1}],8:[function(require,module,exports){
 // Generated by CoffeeScript 1.4.0
 (function() {
   var AutocompleteBox, _ref;
@@ -801,572 +1297,164 @@ require.define("/lib_test/autocompletebox_test.js", function (require, module, e
       if (attrs == null) {
         attrs = "";
       }
-      $orig = $("<select class=\"reform-autocompletebox\" " + attrs + ">" + (options.map(function(opt) {
-        return "<option value=\"" + opt.value + "\">" + opt.text + "</option>";
-      }).join("")) + "</select>");
+      $orig = $("<input class=\"reform-autocompletebox\" " + attrs + " />");
       $orig.appendTo("#qunit-fixture");
       new AutocompleteBox($orig.get(0));
       return $fake = $orig.parent();
     };
     test("The fake wraps the original", 1, function() {
       setup();
-      return ok($fake.is(".reform-autocompletebox-fake"), "Parent should be the fake");
+      return ok($fake.is(".reform-autocomplete-fake"), "Parent should be the fake");
     });
-    return test("Title input created", 1, function() {
+    return test("Filter input created", 1, function() {
       setup();
-      return ok($fake.find(':first-child').hasClass("reform-autocompletebox-input"), "Fake should have title input");
+      return ok($fake.find('input:visible').hasClass("reform-autocomplete-filter"), "Fake should have filter input");
     });
   };
 
 }).call(this);
 
-});
-
-require.define("/lib/autocompletebox.js", function (require, module, exports, __dirname, __filename) {
+},{"../lib/autocompletebox":3,"jquery-commonjs":1}],9:[function(require,module,exports){
 // Generated by CoffeeScript 1.4.0
 (function() {
-  var AutocompleteBox, Cache, _ref,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var AutocompleteCombobox, _ref;
 
   if ((_ref = window.$) == null) {
     window.$ = require("jquery-commonjs");
   }
 
-  AutocompleteBox = (function() {
+  AutocompleteCombobox = require("../lib/autocompletecombobox");
 
-    AutocompleteBox.prototype.KEY = {
-      UP: 38,
-      DOWN: 40,
-      DEL: 46,
-      RETURN: 13,
-      ESC: 27,
-      PAGEUP: 33,
-      PAGEDOWN: 34
+  module.exports = function() {
+    var $fake, $orig, setup;
+    QUnit.module("AutocompleteCombobox");
+    $orig = null;
+    $fake = null;
+    setup = function(options, attrs) {
+      if (options == null) {
+        options = [];
+      }
+      if (attrs == null) {
+        attrs = "";
+      }
+      $orig = $("<input class=\"reform-autocompletecombobox\" " + attrs + " />");
+      $orig.appendTo("#qunit-fixture");
+      new AutocompleteCombobox($orig.get(0));
+      return $fake = $orig.parent();
     };
-
-    AutocompleteBox.cache = null;
-
-    function AutocompleteBox(select, options) {
-      var delay, inlineOptions,
-        _this = this;
-      this.select = select;
-      this.onChange = __bind(this.onChange, this);
-
-      this.parse = __bind(this.parse, this);
-
-      this.request = __bind(this.request, this);
-
-      this.colorTitles = __bind(this.colorTitles, this);
-
-      this.refresh = __bind(this.refresh, this);
-
-      this.close = __bind(this.close, this);
-
-      this.open = __bind(this.open, this);
-
-      this.selectCurrent = __bind(this.selectCurrent, this);
-
-      this.setHover = __bind(this.setHover, this);
-
-      this.fillOptions = __bind(this.fillOptions, this);
-
-      this.options = {
-        data: [],
-        url: null,
-        dataType: 'json',
-        max: 1000,
-        selected: 0,
-        minChars: 2,
-        delay: 300,
-        matchCase: false,
-        colorTitle: true,
-        matchAll: false,
-        placeholder: "Input search string...",
-        title: null,
-        autocompleteClass: 'reform-autocompletebox',
-        itemClass: 'reform-autocompletebox-item',
-        hoverClass: 'reform-autocompletebox-hover',
-        listClass: 'reform-autocompletebox-list',
-        optionsClass: 'reform-autocompletebox-options',
-        fakeClass: 'reform-autocompletebox-fake',
-        inputClass: 'reform-autocompletebox-input'
-      };
-      this.currentSelection = '';
-      this.currentList = [];
-      this.orig = $(this.select);
-      if (this.orig.is(".reformed")) {
-        return;
-      }
-      inlineOptions = this.orig.data();
-      $.extend(this.options, options);
-      $.extend(this.options, inlineOptions);
-      this.cache = new Cache(this.options);
-      this.body = $("body");
-      if (!(this.options.url != null)) {
-        this.options.delay = 0;
-      }
-      this.fake = $("<div/>");
-      this.fake.attr("class", this.orig.attr("class"));
-      this.orig.hide().attr("class", "reformed");
-      this.fake.removeClass(this.options.autocompleteClass).addClass(this.options.fakeClass);
-      if (this.orig.is(":disabled")) {
-        this.fake.addClass("disabled");
-      }
-      this.input = $("<input/>");
-      this.input.addClass(this.options.inputClass + " placeholder");
-      if (this.options.placeholder != null) {
-        this.input.val(this.options.placeholder);
-      }
-      if (this.options.title != null) {
-        this.input.val(this.options.title);
-        this.currentSelection = this.options.title;
-        this.input.removeClass("placeholder");
-      }
-      if (this.options.arrow != null) {
-        this.fake.addClass('arrow');
-      }
-      this.fake.on("click", function(e) {
-        if (_this.orig.is(":disabled")) {
-          return;
-        }
-        e.stopPropagation();
-        if (_this.floater === null && _this.currentSelection.length > _this.options.minChars && _this.currentSelection !== '') {
-          _this.open();
-          return _this.fillOptions();
-        } else {
-          return _this.close();
-        }
-      });
-      this.fake.append(this.input);
-      this.orig.after(this.fake).appendTo(this.fake);
-      this.floater = null;
-      delay = (function() {
-        var timer;
-        timer = 0;
-        return function(callback, ms) {
-          clearTimeout(timer);
-          return timer = setTimeout(callback, ms);
-        };
-      })();
-      this.input.on("click", function(e) {
-        if (_this.input.val() === _this.options.placeholder) {
-          _this.input.val('');
-          return _this.input.removeClass('placeholder');
-        }
-      });
-      this.input.on("keydown.autocomplete", function(e) {
-        e.stopPropagation();
-        if (_this.orig.is(":disabled")) {
-          return;
-        }
-        if (e.keyCode === _this.KEY.UP) {
-          e.preventDefault();
-        }
-        switch (e.keyCode) {
-          case _this.KEY.DOWN:
-            if (_this.floater === null) {
-              _this.onChange(function() {
-                return _this.options.selected = 0;
-              });
-            } else {
-              _this.setHover(_this.options.selected + 1);
-              _this.scrollTo();
-            }
-            return;
-          case _this.KEY.UP:
-            _this.setHover(_this.options.selected - 1);
-            _this.scrollTo();
-            return;
-          case _this.KEY.ESC:
-            _this.close();
-            return;
-        }
-        return delay(function() {
-          _this.currentSelection = _this.input.val();
-          _this.orig.val(null);
-          _this.orig.data('title', _this.currentSelection);
-          switch (e.keyCode) {
-            case _this.KEY.RETURN:
-              return _this.selectCurrent();
-            default:
-              _this.options.selected = 0;
-              return _this.onChange(function() {});
-          }
-        }, _this.options.delay);
-      });
-      this.input.on("blur", function(e) {
-        return _this.close();
-      });
-      this.refresh();
-      this.body.on("reform.open", function(e) {
-        if (e.target !== _this.select) {
-          return _this.close();
-        }
-      });
-      this.orig.on("reform.sync change DOMSubtreeModified", function() {
-        return setTimeout(_this.refresh, 0);
-      });
-      this.orig.on("reform.close", function(e) {
-        return _this.close();
-      });
-      this.orig.on("reform.fill", function(e, data) {
-        return _this.options.data = _this.parse(data, _this.currentSelection);
-      });
-      $('.' + this.options.optionsClass).remove();
-    }
-
-    AutocompleteBox.prototype.scrollTo = function() {
-      var $container, $item, newScrollTop, scrollTop;
-      $item = this.floater.find('.' + this.options.listClass).find(':nth-child(' + this.options.selected + ')');
-      $container = $item.parent();
-      newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop();
-      if (newScrollTop > ($container.outerHeight() - $item.outerHeight())) {
-        scrollTop = newScrollTop - $container.outerHeight() + $item.outerHeight();
-        return $container.scrollTop(scrollTop);
-      } else {
-        return $container.scrollTop(0);
-      }
-    };
-
-    AutocompleteBox.prototype.fillOptions = function() {
-      var $list, isAny, num,
-        _this = this;
-      if (this.floater == null) {
-        return;
-      }
-      this.floater.empty();
-      this.currentList = [];
-      $list = $("<div/>").appendTo(this.floater);
-      $list.attr("class", this.options.listClass);
-      isAny = false;
-      num = 0;
-      $.each(this.options.data, function(i, item) {
-        var $item, currentSelection, title;
-        if (_this.options.max <= num) {
-          return false;
-        }
-        if (!_this.options.matchAll && (_this.currentSelection != null)) {
-          title = item.title;
-          currentSelection = _this.currentSelection;
-          if (!_this.options.matchCase) {
-            title = title.toLowerCase();
-            currentSelection = currentSelection.toLowerCase();
-          }
-          if (title.indexOf(currentSelection) === -1) {
-            return;
-          }
-        }
-        _this.currentList.push(item);
-        isAny = true;
-        $item = $("<div/>");
-        $item.attr("class", _this.options.itemClass);
-        $item.attr("title", item.title);
-        $item.attr("value", item.value);
-        $item.html(item.title);
-        $item.appendTo($list);
-        $item.on("mousedown", function(e) {
-          return e.preventDefault();
-        });
-        $item.on("click", function(e) {
-          return _this.selectCurrent();
-        });
-        $item.on("mouseenter", function(e) {
-          return _this.setHover($(e.target).index() + 1);
-        });
-        return num++;
-      });
-      if (!isAny) {
-        return this.close();
-      } else if ((this.floater != null) && this.options.colorTitle) {
-        return this.colorTitles();
-      }
-    };
-
-    AutocompleteBox.prototype.setHover = function(newSelected) {
-      var $list;
-      if (!(this.floater != null)) {
-        return;
-      }
-      $list = this.floater.find('.' + this.options.listClass);
-      if (newSelected < 1) {
-        newSelected = $list.children().length;
-      }
-      if (newSelected > $list.children().length) {
-        newSelected = 1;
-      }
-      this.options.selected = newSelected;
-      $list.children().removeClass(this.options.hoverClass);
-      return $list.find(':nth-child(' + this.options.selected + ')').addClass(this.options.hoverClass);
-    };
-
-    AutocompleteBox.prototype.selectCurrent = function() {
-      var $selected, title, value;
-      if (!(this.floater != null) || this.options.selected === 0) {
-        return;
-      }
-      $selected = this.floater.find('.' + this.options.listClass).find(':nth-child(' + this.options.selected + ')');
-      $selected.addClass('selected');
-      value = $selected.attr("value");
-      title = $selected.attr("title");
-      this.setContent(value, title);
-      return this.close();
-    };
-
-    AutocompleteBox.prototype.setContent = function(value, title) {
-      this.orig.val(value);
-      this.orig.data('title', title);
-      this.input.val(title);
-      return this.orig.trigger("change");
-    };
-
-    AutocompleteBox.prototype.open = function() {
-      var $window, pos,
-        _this = this;
-      this.orig.trigger("reform.open");
-      this.floater = $("<div/>");
-      this.floater.attr("class", this.options.optionsClass);
-      this.floater.css("min-width", this.fake.outerWidth() - 2);
-      this.floater.addClass(this.orig.data("options-class"));
-      this.body.append(this.floater);
-      this.body.on("click.autocomplete", function(e) {
-        if (!$(e.target).hasClass(_this.options.inputClass)) {
-          _this.body.off("click.autocomplete");
-          return _this.close();
-        }
-      });
-      pos = this.fake.offset();
-      this.floater.show();
-      $window = $(window);
-      pos.top += this.fake.outerHeight();
-      return this.floater.css(pos);
-    };
-
-    AutocompleteBox.prototype.close = function() {
-      var isSameCaseInsensitive, isSameCaseSensitive, _ref1;
-      if ((_ref1 = this.floater) != null) {
-        _ref1.remove();
-      }
-      this.floater = null;
-      if (this.currentList.length === 1) {
-        isSameCaseSensitive = this.input.val() === this.currentList[0].title;
-        isSameCaseInsensitive = this.input.val().toLowerCase() === this.currentList[0].title.toLowerCase();
-        if ((this.options.matchCase && isSameCaseSensitive) || (!this.options.matchCase && isSameCaseInsensitive)) {
-          return this.setContent(this.currentList[0].value, this.currentList[0].title);
-        }
-      }
-    };
-
-    AutocompleteBox.prototype.refresh = function() {
-      this.fake.toggleClass("disabled", this.orig.is(":disabled"));
-      this.input.removeAttr('disabled');
-      if (this.orig.is(":disabled")) {
-        return this.input.attr("disabled", "disabled");
-      }
-    };
-
-    AutocompleteBox.prototype.colorTitles = function() {
-      var colorTitle,
-        _this = this;
-      colorTitle = function(title) {
-        var coloredTitle, pos;
-        coloredTitle = title;
-        if (_this.currentSelection != null) {
-          pos = title.toLowerCase().indexOf(_this.currentSelection.toLowerCase());
-          if (pos !== -1) {
-            coloredTitle = title.substr(0, pos);
-            coloredTitle += "<strong>";
-            coloredTitle += title.substr(pos, _this.currentSelection.length);
-            coloredTitle += "</strong>";
-            coloredTitle += title.substr(pos + _this.currentSelection.length, title.length);
-          }
-        }
-        return coloredTitle;
-      };
-      return this.floater.find("." + this.options.itemClass).each(function(num, item) {
-        var $item, title;
-        $item = $(item);
-        title = $item.html();
-        title = colorTitle(title);
-        return $item.html(title);
-      });
-    };
-
-    AutocompleteBox.prototype.request = function(term, success, failure) {
-      var data, extraParams,
-        _this = this;
-      data = this.cache.load(term);
-      if (data) {
-        return success();
-      } else if (this.options.url != null) {
-        extraParams = {
-          timestamp: new Date()
-        };
-        if (this.options.extraParams != null) {
-          $.each(this.options.extraParams, function(key, param) {
-            return extraParams[key] = (typeof param === "function" ? param() : param);
-          });
-        }
-        if (this.ajaxInProgress) {
-          this.lastXHR.abort();
-        }
-        this.ajaxInProgress = true;
-        return this.lastXHR = $.ajax({
-          dataType: this.options.dataType,
-          url: this.options.url,
-          data: $.extend({
-            q: term,
-            matchCase: this.options.matchCase,
-            limit: this.options.max
-          }, extraParams),
-          success: function(data) {
-            var parsed, _base;
-            _this.ajaxInProgress = false;
-            parsed = (typeof (_base = _this.options).parse === "function" ? _base.parse(data, term) : void 0) || _this.parse(data, term);
-            _this.options.data = parsed;
-            _this.cache.add(term, parsed);
-            return success();
-          },
-          error: function(data) {
-            this.ajaxInProgress = false;
-            return failure();
-          }
-        });
-      } else {
-        return failure('Set options.url', term);
-      }
-    };
-
-    AutocompleteBox.prototype.parse = function(data, term) {
-      var parsed,
-        _this = this;
-      parsed = [];
-      $.each(data, function(num, item) {
-        return parsed.push({
-          value: item.value,
-          title: _this.options.formatResult && _this.options.formatResult(item) || item.title
-        });
-      });
-      return parsed;
-    };
-
-    AutocompleteBox.prototype.onChange = function(callback) {
-      var failureCallback, successCallback,
-        _this = this;
-      if (this.options.minChars >= this.currentSelection.length) {
-        this.close();
-        return;
-      }
-      successCallback = function() {
-        if (_this.floater === null) {
-          _this.open();
-          _this.fillOptions();
-        } else {
-          _this.fillOptions();
-        }
-        _this.orig.trigger('ajaxRequestFinished');
-        return callback();
-      };
-      failureCallback = function() {
-        return _this.orig.trigger('ajaxRequestFinished');
-      };
-      if (this.options.url != null) {
-        this.orig.trigger('ajaxRequestStarted');
-        return this.request(this.currentSelection, successCallback, failureCallback);
-      } else {
-        return successCallback();
-      }
-    };
-
-    return AutocompleteBox;
-
-  })();
-
-  Cache = (function() {
-
-    Cache.prototype.data = {};
-
-    Cache.prototype.length = 0;
-
-    Cache.prototype.options = {
-      cacheLength: 100,
-      matchContains: false,
-      matchSubset: true
-    };
-
-    function Cache(options) {
-      this.load = __bind(this.load, this);
-      $.extend(this.options, options);
-    }
-
-    Cache.prototype.matchSubset = function(s, sub) {
-      var i;
-      if (!this.options.matchCase) {
-        s = s.toLowerCase();
-      }
-      i = s.indexOf(sub);
-      if (this.options.matchContains === "word") {
-        i = s.toLowerCase().search("\\b" + sub.toLowerCase());
-      }
-      if (i === -1) {
-        return false;
-      }
-      return i === 0 || this.options.matchContains;
-    };
-
-    Cache.prototype.add = function(q, value) {
-      if (this.length > this.options.cacheLength) {
-        flush();
-      }
-      if (!this.data[q]) {
-        this.length++;
-      }
-      return this.data[q] = value;
-    };
-
-    Cache.prototype.flush = function() {
-      this.data = {};
-      return this.length = 0;
-    };
-
-    Cache.prototype.load = function(q) {
-      var c, csub, i, self;
-      if (!this.options.cacheLength || !this.length) {
-        return null;
-      }
-      if (this.data[q]) {
-        return this.data[q];
-      } else if (this.options.matchSubset) {
-        i = q.length - 1;
-        while (i >= this.options.minChars) {
-          c = this.data[q.substr(0, i)];
-          if (c) {
-            csub = [];
-            self = this;
-            $.each(c, function(i, x) {
-              if (self.matchSubset(x.title, q)) {
-                return csub[csub.length] = x;
-              }
-            });
-            return csub;
-          }
-          i--;
-        }
-      }
-      return null;
-    };
-
-    return Cache;
-
-  })();
-
-  module.exports = AutocompleteBox;
+    test("The fake wraps the original", 1, function() {
+      setup();
+      return ok($fake.is(".reform-autocompletecombobox-fake"), "Parent should be the fake");
+    });
+    return test("Selected title created", 1, function() {
+      setup();
+      return ok($fake.find('span').hasClass("reform-autocompletecombobox-selected"), "Fake should have selected title");
+    });
+  };
 
 }).call(this);
 
-});
+},{"../lib/autocompletecombobox":4,"jquery-commonjs":1}],10:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
+(function() {
+  var CheckBox, _ref;
 
-require.define("/lib_test/test.js", function (require, module, exports, __dirname, __filename) {
-    // Generated by CoffeeScript 1.4.0
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
+
+  CheckBox = require("../lib/checkbox");
+
+  module.exports = function() {
+    var $fake, $orig, setup;
+    QUnit.module("CheckBox");
+    $orig = null;
+    $fake = null;
+    setup = function(attrs) {
+      if (attrs == null) {
+        attrs = "";
+      }
+      $orig = $("<input type=\"checkbox\" class=\"reform-checkbox\" " + attrs + ">");
+      $orig.appendTo("#qunit-fixture");
+      new CheckBox($orig.get(0));
+      return $fake = $orig.parent();
+    };
+    test("The fake wraps the original", 1, function() {
+      setup();
+      return ok($fake.is(".reform-checkbox-fake"), "Parent should be the fake");
+    });
+    test("Fake gets the 'disabled' class when disabled", 1, function() {
+      setup("disabled");
+      return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
+    });
+    asyncTest("Fake gets the 'checked' class", 1, function() {
+      setup();
+      $orig.attr("checked", true).trigger("change");
+      return setTimeout((function() {
+        ok($fake.is(".checked"), "Fake should have class 'checked'");
+        return start();
+      }), 0);
+    });
+    return asyncTest("States must match before and after the fake is clicked", 2, function() {
+      var match;
+      setup();
+      match = function() {
+        ok($fake.is(".checked") === $orig.is(":checked"), "States should be the same");
+        return start();
+      };
+      match();
+      stop();
+      $orig.attr("checked", true).trigger("change");
+      return setTimeout(match, 0);
+    });
+  };
+
+}).call(this);
+
+},{"../lib/checkbox":6,"jquery-commonjs":1}],11:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
+(function() {
+  var SelectBox, _ref;
+
+  if ((_ref = window.$) == null) {
+    window.$ = require("jquery-commonjs");
+  }
+
+  SelectBox = require("../lib/selectbox");
+
+  module.exports = function() {
+    var $fake, $orig, setup;
+    QUnit.module("SelectBox");
+    $orig = null;
+    $fake = null;
+    setup = function(options, attrs) {
+      if (options == null) {
+        options = [];
+      }
+      if (attrs == null) {
+        attrs = "";
+      }
+      $orig = $("<select class=\"reform-selectbox\" " + attrs + ">" + (options.map(function(opt) {
+        return "<option value=\"" + opt.value + "\">" + opt.text + "</option>";
+      }).join("")) + "</select>");
+      $orig.appendTo("#qunit-fixture");
+      new SelectBox($orig.get(0));
+      return $fake = $orig.parent();
+    };
+    test("The fake wraps the original", 1, function() {
+      setup();
+      return ok($fake.is(".reform-selectbox-fake"), "Parent should be the fake");
+    });
+    return test("Fake gets the 'disabled' class when disabled", 1, function() {
+      setup([], "disabled");
+      return ok($fake.is(".disabled"), "Fake should have class 'disabled'");
+    });
+  };
+
+}).call(this);
+
+},{"../lib/selectbox":7,"jquery-commonjs":1}],12:[function(require,module,exports){
+// Generated by CoffeeScript 1.4.0
 (function() {
 
   require("./checkbox_test")();
@@ -1375,7 +1463,9 @@ require.define("/lib_test/test.js", function (require, module, exports, __dirnam
 
   require("./autocompletebox_test")();
 
+  require("./autocompletecombobox_test")();
+
 }).call(this);
 
-});
-require("/lib_test/test.js");
+},{"./autocompletebox_test":8,"./autocompletecombobox_test":9,"./checkbox_test":10,"./selectbox_test":11}]},{},[12])
+;

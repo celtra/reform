@@ -1,4 +1,62 @@
-.reform-autocompletebox-fake {
+.reform-autocompletecombobox-ui.reform-autocomplete-fake {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 18px;
+    border: solid 1px #ccc;
+    padding: 10px 30px 10px 10px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 18px;
+    vertical-align: middle;
+    outline: none;
+    
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.reform-autocompletecombobox-ui.reform-autocomplete-fake.disabled {
+    background-color: #eee;
+    cursor: default;
+}
+
+.reform-autocompletecombobox-ui .reform-autocompletecombobox-selected {
+    display: block;
+}
+
+.reform-autocompletecombobox-ui span.reform-autocompletecombobox-selected.placeholder {
+    color: #aaa;
+}
+
+.reform-autocompletecombobox-ui span.reform-autocompletecombobox-floaterLabel {
+    position: relative;
+    display: block;
+    width: 200px;
+    height: 18px;
+    padding: 10px 30px 10px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 18px;
+    vertical-align: middle;
+    outline: none;
+    cursor: pointer;
+}
+
+.reform-autocompletecombobox-ui input.reform-autocomplete-filter:focus {
+    outline: none;
+}
+
+.reform-autocompletecombobox-ui .reform-autocomplete-empty {
+    padding: 10px;
+    color: #aaa;
+}.reform-autocomplete-fake {
     position: relative;
     display: inline-block;
     width: auto;
@@ -13,64 +71,94 @@
     vertical-align: middle;
 }
 
-.reform-autocompletebox-fake.disabled .reform-autocompletebox-input{
+.reform-autocomplete-fake.disabled .reform-autocomplete-filter {
     background-color: #eee;
 }
 
-.reform-autocompletebox-fake.arrow:after {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        content: "";
-        width: 0;
-        height: 0;
-        margin: -4px 0 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-
-        border-top: 8px solid #333;
+.reform-autocomplete-arrowUp:after, .reform-autocomplete-arrowDown:after {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    content: "";
+    width: 0;
+    height: 0;
+    margin: -4px 0 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
 }
 
-.reform-autocompletebox-options {
-    display: none;
+.reform-autocomplete-arrowUp.disabled:after, .reform-autocomplete-arrowDown.disabled:after {
+    border-top-color: #aaa;
+    border-bottom-color: #aaa;
+}
+
+.reform-autocomplete-arrowUp:after {
+    border-bottom: 8px solid #333;
+}
+
+.reform-autocomplete-arrowDown:after {
+    border-top: 8px solid #333;
+}
+
+/*** floater ***/
+.reform-autocomplete-floater {
+    z-index: 20;
     position: absolute;
     border: solid 1px #ccc;
     background: #fff;
     box-shadow: 0 0 10px #ccc;
 }
 
-.reform-autocompletebox-list {
+.reform-autocomplete-overlay {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 10
+}
+
+/*** filter input ***/
+input.reform-autocomplete-filter {
+    width: 100%;
+    height: 40px;
+    padding: 10px 30px 10px 10px;
+    font-size: 14px;
+    font-family: "Tahoma";
+}
+
+input.reform-autocomplete-filter.placeholder {
+    color: #aaa;
+}
+
+/*** list ***/
+.reform-autocomplete-list {
     min-width: 50px;
     max-height: 300px;
     overflow-y: auto;
 }
 
-.reform-autocompletebox-item {
+.reform-autocomplete-item {
     border-bottom: solid 1px #eee;
     padding: 10px;
     cursor: pointer;
 }
 
-.reform-autocompletebox-item:last-child {
+.reform-autocomplete-item:last-child {
     border-bottom: none;
 }
 
-.reform-autocompletebox-hover {
+.reform-autocomplete-hover {
     background: #eee;
 }
 
-.reform-autocompletebox-item.selected {
+.reform-autocomplete-item.selected {
     background: #333;
     color: #fff;
 }
-.reform-autocompletebox-item strong{
+.reform-autocomplete-item strong{
     background: inherit;
-}
-
-.reform-autocompletebox-input.placeholder {
-    color: #aaa;
-}
-.reform-checkbox {
+}.reform-checkbox {
     display: none;
 }
 
