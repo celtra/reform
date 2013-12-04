@@ -73,6 +73,10 @@ input.reform-autocomplete-filter.placeholder {
     color: #aaa;
 }
 
+.reform-autocomplete-floater input:focus {
+    outline: none;
+}
+
 /*** list ***/
 .reform-autocomplete-list {
     min-width: 50px;
