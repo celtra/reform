@@ -3,7 +3,7 @@
   "version": "0.2.10",
   "author": "Rod Petrovic <me@rodpetrovic.com>",
   "description": "HTML forms the way you want them",
-  "contributors": ["Rok Burgar <me@rokburgar.com>"],
+  "contributors": ["Rok Burgar <me@rokburgar.com>", "Gregor Praprotnik <gregor.praprotnik@gmail.com>"],
   "lib": "lib",
   "main": "./lib/reform.js",
   "repository": {
