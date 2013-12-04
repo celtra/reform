@@ -96,10 +96,11 @@ class AutocompleteBox extends AutocompleteAbstract
     handleKeyUp: (e) ->
         if @filter.val().length > @options.minChars
             @open() unless @floater?
+        else if @floater?
+            @close() 
+            return
         else
-            @close() unless !@floater
             @cancelChanges() if e.keyCode is @KEY.ESC
-
             return
 
         super

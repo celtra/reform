@@ -108,7 +108,7 @@ class AutocompleteAbstract
     handleSelectionChanged: ->
         @orig.val @selectedItem.value
         @orig.data 'title', @selectedItem.title
-        @orig.trigger 'change'
+        @orig.trigger 'change', @selectedItem
 
     handleDataFill: (data) ->
         return if @options.url
@@ -183,6 +183,11 @@ class AutocompleteAbstract
 
         $filter
 
+    handleFilterBlur: ->
+        if @filter.val().length is 0
+            @filter.val @options.placeholderText
+            @filter.addClass @options.placeholderClass
+
     createEmptyList: ->
         $list = $ '<div></div>'
         $list.addClass @options.listClass
@@ -208,7 +213,7 @@ class AutocompleteAbstract
     createItem: (item) ->
         $item = $ '<div></div>'
         $item.addClass @options.itemClass
-        $item.attr 'title', item.title # obsolete - use data-title
+        $item.attr 'title', item.title # obsolete - use text
         $item.attr 'value', item.value # obsolete - use data-value
         $item.data 'value', item.value
         
@@ -232,6 +237,11 @@ class AutocompleteAbstract
 
         $item
 
+    handleItemSelect: ($item) ->
+        return if $item.length is 0
+        @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
+        @close()
+
     insertList: ($list) ->
         return if !@floater
 
@@ -249,7 +259,6 @@ class AutocompleteAbstract
     open: ->
         return if @floater? or @el.hasClass @options.disabledClass
         
-        # Let everyone know we're open
         @orig.trigger "reform.open"
 
         @floater = @createFloater()
@@ -281,7 +290,8 @@ class AutocompleteAbstract
         @list = null
 
         @filterValue = ''
-        clearTimeout @fetchTimeout
+
+        @orig.trigger "reform.closed"
 
     cancelChanges: ->
         @filterValue = @selectedItem.title
@@ -317,16 +327,6 @@ class AutocompleteAbstract
                 @close()
             else
                 @setFilterValue @filter.val()
-
-    handleItemSelect: ($item) ->
-        return if $item.length is 0
-        @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
-        @close()
-
-    handleFilterBlur: ->
-        if @filter.val().length is 0
-            @filter.val @options.placeholderText
-            @filter.addClass @options.placeholderClass
 
     moveHover: (direction = 'down') ->
         return if !@floater
