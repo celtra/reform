@@ -10,21 +10,62 @@
         <script>
             var inlineData = [
                 {
-                    title: "one",
-                    value: "1"
+                    "title": "one",
+                    "value": "1"
                 },
                 {
-                    title: "four",
-                    value: "4"
+                    "title": "two",
+                    "value": "2"
+                }, 
+                {
+                    "title": "three",
+                    "value": "3"
+                },                
+                {
+                    "title": "four",
+                    "value": "4"
                 },
                 {
-                    title: "fourteen",
-                    value: "14"
+                    "title": "fourty",
+                    "value": "40"
+                },
+                {
+                    "title": "fourteen",
+                    "value": "14"
+                },
+                {
+                    "title": "fourtynine",
+                    "value": "49"
+                },
+                {
+                    "title": "fourtyeight",
+                    "value": "48"
+                },
+                {
+                    "title": "thirtynine",
+                    "value": "39"
+                },
+                {
+                    "title": "fifty",
+                    "value": "50"
+                },
+                {
+                    "title": "sixty",
+                    "value": "60"
+                },
+                {
+                    "title": "seventy",
+                    "value": "70"
+                },
+                {
+                    "title": "eighty",
+                    "value": "80"
                 }
             ];
 
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
+                $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
             });
         </script>
 
@@ -133,11 +174,15 @@
         
         <h2>Autocomplete Inline</h2>
         
-        <input id="autocomplete-inline" data-arrow data-placeholder="Placeholder..." class="reform-autocompletebox" type="text" value="4" />
+        <input id="autocomplete-inline" data-arrow data-placeholder="Type to search..." class="reform-autocompletebox" type="text" data-show-arrows="false" />
 
         <h2>Autocomplete (will not work if opened via file://)</h2>
-        <input class="reform-autocompletebox" data-title="fou" type="text" data-url="./demo.json" />
+        <input id="autocompletebox" class="reform-autocompletebox" type="text" data-delay="500" data-url="./demo.json" />
 
+        <br><br>
+
+        <h2>Autocomplete Combobox</h2>
+        <input id="autocompletecombobox" class="reform-autocompletecombobox" />
 
     </body>
 </html>
