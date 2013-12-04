@@ -1,4 +1,4 @@
-.reform-autocompletecombobox-fake {
+.reform-autocompletecombobox-ui.reform-autocomplete-fake {
     position: relative;
     display: inline-block;
     width: 200px;
@@ -21,20 +21,20 @@
     user-select: none;
 }
 
-.reform-autocompletecombobox-fake.disabled {
+.reform-autocompletecombobox-ui.reform-autocomplete-fake.disabled {
     background-color: #eee;
     cursor: default;
 }
 
-.reform-autocompletecombobox-selected {
+.reform-autocompletecombobox-ui .reform-autocompletecombobox-selected {
     display: block;
 }
 
-span.reform-autocompletecombobox-selected.placeholder {
+.reform-autocompletecombobox-ui span.reform-autocompletecombobox-selected.placeholder {
     color: #aaa;
 }
 
-span.reform-autocompletecombobox-floaterLabel {
+.reform-autocompletecombobox-ui span.reform-autocompletecombobox-floaterLabel {
     position: relative;
     display: block;
     width: 200px;
@@ -49,7 +49,11 @@ span.reform-autocompletecombobox-floaterLabel {
     cursor: pointer;
 }
 
-.reform-autocompletecombobox-empty {
+.reform-autocompletecombobox-ui input.reform-autocomplete-filter:focus {
+    outline: none;
+}
+
+.reform-autocompletecombobox-ui .reform-autocomplete-empty {
     padding: 10px;
     color: #aaa;
 }
