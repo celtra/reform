@@ -9,7 +9,8 @@ class AutocompleteBox extends AutocompleteAbstract
 
         @options = $.extend @options, {
             minChars           : 2 
-            autocompleteClass  : 'reform-autocompletebox'
+            reformClass        : 'reform-autocompletebox'
+            uiClass            : 'reform-autocompletebox-ui'
         }
         
         super @select, @options

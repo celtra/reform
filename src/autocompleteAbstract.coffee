@@ -30,7 +30,8 @@ class AutocompleteAbstract
             emptyText           : 'No results.'
 
             # custom classes
-            autocompleteClass   : 'reform-autocomplete'
+            reformClass         : 'reform-autocomplete'
+            uiClass             : 'reform-autocomplete-ui'
             fakeClass           : 'reform-autocomplete-fake'
             floaterClass        : 'reform-autocomplete-floater'
             overlayClass        : 'reform-autocomplete-overlay'
@@ -148,7 +149,8 @@ class AutocompleteAbstract
     createClosed: ->
         $el = $ "<div/>"
         $el.attr "class", @orig.attr "class"
-        $el.removeClass @options.autocompleteClass
+        $el.removeClass @options.reformClass
+        $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
         $el.addClass @options.disabledClass if @orig.is ":disabled"
 
@@ -159,6 +161,7 @@ class AutocompleteAbstract
 
     createFloater: ->
         $floater = $ "<div/>"
+        $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
         $floater.css "min-width", @el.outerWidth() - 2
 

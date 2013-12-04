@@ -6,11 +6,10 @@ class AutocompleteCombobox extends AutocompleteAbstract
         @options = $.extend @options, {
             placeholderText     : 'Select an item...'
 
-            autocompleteClass   : 'reform-autocompletecombobox'
-            fakeClass           : 'reform-autocompletecombobox-fake'
+            reformClass         : 'reform-autocompletecombobox'
+            uiClass             : 'reform-autocompletecombobox-ui'
             titleClass          : 'reform-autocompletecombobox-selected'
             floaterLabelClass   : 'reform-autocompletecombobox-floaterLabel'
-            emptyClass          : 'reform-autocompletecombobox-empty'
         }
         super @select, @options
 
