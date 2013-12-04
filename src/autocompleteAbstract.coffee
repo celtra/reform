@@ -20,8 +20,8 @@ class AutocompleteAbstract
             dataType            : 'json'
             max                 : 1000      # max results
             minChars            : 0
-            delay               : 300
-            caseSensitive       : yes
+            delay               : 0
+            caseSensitive       : no
             highlightTitles     : yes
             showArrows          : yes
             exactMatch          : no        # will not filter dropdown data if true
@@ -204,12 +204,12 @@ class AutocompleteAbstract
 
         count = 0
         for item in data
-            return if @options.max <= count
+            if @options.max > count
 
-            $item = @createItem item
-            $item.appendTo $list
+                $item = @createItem item
+                $item.appendTo $list
 
-            count++
+                count++
 
         $list
 
@@ -225,7 +225,7 @@ class AutocompleteAbstract
 
         if @options.highlightTitles
             highlightedText = "<strong>#{@filterValue}</strong>"
-            $item.html item.title.replace @filterValue, highlightedText
+            $item.html item.title.toLowerCase().replace @filterValue.toLowerCase(), highlightedText
         else 
             $item.text item.title
         
@@ -399,7 +399,7 @@ class AutocompleteAbstract
             if not @options.exactMatch and @filterValue?    
                 title = item.title
                 filterValue = @filterValue
-                
+
                 if not @options.caseSensitive
                     title = title.toLowerCase()
                     filterValue = filterValue.toLowerCase()

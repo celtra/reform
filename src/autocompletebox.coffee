@@ -8,7 +8,8 @@ class AutocompleteBox extends AutocompleteAbstract
     constructor: (@select, options) ->
 
         @options = $.extend @options, {
-            minChars           : 2 
+            minChars           : 2
+            delay              : 300
             reformClass        : 'reform-autocompletebox'
             uiClass            : 'reform-autocompletebox-ui'
         }
