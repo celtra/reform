@@ -314,6 +314,8 @@ class AutocompleteAbstract
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
+            when @KEY.RETURN
+                e.preventDefault() if @floater?
             else
                 return
 

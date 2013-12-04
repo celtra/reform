@@ -382,6 +382,11 @@
           return this.moveHover('down');
         case this.KEY.UP:
           return this.moveHover('up');
+        case this.KEY.RETURN:
+          if (this.floater != null) {
+            return e.preventDefault();
+          }
+          break;
       }
     };
 
