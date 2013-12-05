@@ -8,8 +8,8 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
             reformClass         : 'reform-autocompletecombobox'
             uiClass             : 'reform-autocompletecombobox-ui'
-            titleClass          : 'reform-autocompletecombobox-selected'
-            floaterLabelClass   : 'reform-autocompletecombobox-floaterLabel'
+            titleClass          : 'reform-autocomplete-selected-label'
+            floaterLabelClass   : 'reform-autocomplete-floater-label'
         }, options
         
         super @select, @options

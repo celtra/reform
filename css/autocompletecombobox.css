@@ -26,15 +26,15 @@
     cursor: default;
 }
 
-.reform-autocompletecombobox-ui .reform-autocompletecombobox-selected {
+.reform-autocompletecombobox-ui .reform-autocomplete-selected-label {
     display: block;
 }
 
-.reform-autocompletecombobox-ui span.reform-autocompletecombobox-selected.placeholder {
+.reform-autocompletecombobox-ui span.reform-autocomplete-selected-label.placeholder {
     color: #aaa;
 }
 
-.reform-autocompletecombobox-ui span.reform-autocompletecombobox-floaterLabel {
+.reform-autocompletecombobox-ui span.reform-autocomplete-floater-label {
     position: relative;
     display: block;
     width: 200px;
