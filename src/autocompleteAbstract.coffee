@@ -211,7 +211,7 @@ class AutocompleteAbstract
                 $item = @createItem item
                 $item.appendTo $list
 
-                count++
+            count++
 
         $list
 
@@ -427,13 +427,15 @@ class AutocompleteAbstract
         filteredData
 
     loadDataFromUrl: (callback) ->
-        data = @cache.load @filterValue
+        currentFilter = @filterValue
+
+        data = @cache.load currentFilter
         if data?
             callback data
             return
 
         params = {
-            q           : @filterValue
+            q           : currentFilter
             matchCase   : @options.caseSensitive
             limit       : @options.max
             timeStamp   : new Date()
@@ -450,7 +452,7 @@ class AutocompleteAbstract
         fetchDataCallback = () =>
             @fetchData params, (data) =>
                 parsedData = @options.parse?(data) || @parse data
-                @cache.add @filterValue, parsedData
+                @cache.add currentFilter, parsedData
                 if callback? then callback parsedData
 
         clearTimeout @fetchTimeout
