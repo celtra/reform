@@ -19,7 +19,7 @@ class AutocompleteBox extends AutocompleteAbstract
 
         @filter = @createFilter()
 
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             @filter.val @selectedItem.title
             @filter.removeClass @options.placeholderClass
 
@@ -68,7 +68,7 @@ class AutocompleteBox extends AutocompleteAbstract
                 if matchingItem?
                     @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
                 else
-                    @setSelectedItem { value: 0, title: title }
+                    @setSelectedItem { value: null, title: title }
 
         @close()
         super

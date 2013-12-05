@@ -19,7 +19,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
         $title = @createTitle()
 
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             $title.text @selectedItem.title
             $title.removeClass @options.placeholderClass
 
@@ -27,7 +27,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
     handleSelectionChanged: ->
         $title = @el.find 'span'
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             $title.text @selectedItem.title
             $title.removeClass @options.placeholderClass
 
@@ -55,7 +55,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
         if @options.showArrows
             $title.addClass @options.arrowUpClass
 
-        if @selectedItem.value is 0
+        if !@selectedItem.value
             $title.text @options.placeholderText
         else
             $title.text @selectedItem.title

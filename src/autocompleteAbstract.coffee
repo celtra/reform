@@ -69,7 +69,7 @@ class AutocompleteAbstract
         @data = []
         if @options.title? then @filterValue = @options.title else @filterValue = ''
         if @orig.val().length is 0 
-            @selectedItem = { value: 0, title: '' }
+            @selectedItem = { value: null, title: '' }
         else
             @selectedItem = { value: @orig.val(), title: @options.title }
 
