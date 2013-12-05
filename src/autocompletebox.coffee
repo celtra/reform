@@ -62,7 +62,14 @@ class AutocompleteBox extends AutocompleteAbstract
 
                 if title.length isnt 0
                     for item in data
-                        if !matchingItem and item.title is title
+                        if @options.caseSensitive
+                            itemTitle = item.title
+                            searchTitle = title
+                        else 
+                            itemTitle = item.title.toLowerCase()
+                            searchTitle = title.toLowerCase()
+
+                        if !matchingItem and itemTitle is searchTitle
                             matchingItem = item
 
                 if matchingItem?
