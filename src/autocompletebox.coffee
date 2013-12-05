@@ -7,12 +7,12 @@ class AutocompleteBox extends AutocompleteAbstract
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
 
-        @options = $.extend @options, {
+        @options = $.extend {
             showArrows         : no
             reformClass        : 'reform-autocompletebox'
             uiClass            : 'reform-autocompletebox-ui'
-        }
-        
+        }, @options
+
         super @select, @options
 
         return if !@el
