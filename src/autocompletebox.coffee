@@ -11,7 +11,7 @@ class AutocompleteBox extends AutocompleteAbstract
             showArrows         : no
             reformClass        : 'reform-autocompletebox'
             uiClass            : 'reform-autocompletebox-ui'
-        }, @options
+        }, options
 
         super @select, @options
 
