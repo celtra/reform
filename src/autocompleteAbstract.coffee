@@ -224,8 +224,10 @@ class AutocompleteAbstract
             $item.addClass @options.hoverClass
 
         if @options.highlightTitles and @filterValue.length isnt 0
-            highlightedText = "<strong>#{@filterValue}</strong>"
-            $item.html item.title.toLowerCase().replace @filterValue.toLowerCase(), highlightedText
+            position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
+            text = item.title.substring position, position + @filterValue.length # extract text with original casing
+            highlightedText = "<strong>#{text}</strong>"
+            $item.html item.title.replace text, highlightedText
         else 
             $item.text item.title
         
