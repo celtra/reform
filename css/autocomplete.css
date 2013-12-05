@@ -94,7 +94,7 @@ input.reform-autocomplete-filter.placeholder {
     background: #eee;
 }
 
-.reform-autocomplete-item.selected {
+.reform-autocomplete-selected {
     background: #333;
     color: #fff;
 }

@@ -23,6 +23,7 @@ class AutocompleteAbstract
             delay               : 0
             caseSensitive       : no
             highlightTitles     : yes
+            highlightSelection  : yes
             showArrows          : yes
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
@@ -39,6 +40,7 @@ class AutocompleteAbstract
             listClass           : 'reform-autocomplete-list'
             itemClass           : 'reform-autocomplete-item'
             hoverClass          : 'reform-autocomplete-hover'
+            selectedClass       : 'reform-autocomplete-selected'
             arrowDownClass      : 'reform-autocomplete-arrowDown'
             arrowUpClass        : 'reform-autocomplete-arrowUp'
             emptyClass          : 'reform-autocomplete-empty'
@@ -230,6 +232,9 @@ class AutocompleteAbstract
             $item.html item.title.replace text, highlightedText
         else 
             $item.text item.title
+
+        if @options.highlightSelection and @selectedItem.value?
+            $item.addClass @options.selectedClass if item.value is @selectedItem.value
         
         # Prevent text selection
         $item.on 'mousedown', (e) ->  e.preventDefault()
@@ -244,6 +249,11 @@ class AutocompleteAbstract
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
+
+        if @options.highlightSelection
+            @list.children().removeClass @options.selectedClass
+            $item.addClass @options.selectedClass
+
         @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
         @close()
 
