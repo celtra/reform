@@ -223,7 +223,7 @@ class AutocompleteAbstract
         if item.value is @selectedItem.value
             $item.addClass @options.hoverClass
 
-        if @options.highlightTitles
+        if @options.highlightTitles and @filterValue.length isnt 0
             highlightedText = "<strong>#{@filterValue}</strong>"
             $item.html item.title.toLowerCase().replace @filterValue.toLowerCase(), highlightedText
         else 
@@ -314,7 +314,7 @@ class AutocompleteAbstract
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
-            when @KEY.RETURN
+            when @KEY.RETURN, @KEY.ESC
                 e.preventDefault() if @floater?
             else
                 return
