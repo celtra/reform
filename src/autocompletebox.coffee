@@ -49,35 +49,9 @@ class AutocompleteBox extends AutocompleteAbstract
         $el
 
     handleFilterBlur: ->
-        if @selectedItem.title isnt @filter.val()
-
-            title = @filter.val()
-            
-            @getData (data) =>
-                matchingItem = null
-
-                if title.length isnt 0
-                    for item in data
-                        if @options.caseSensitive
-                            itemTitle = item.title
-                            searchTitle = title
-                        else 
-                            itemTitle = item.title.toLowerCase()
-                            searchTitle = title.toLowerCase()
-
-                        if !matchingItem and itemTitle is searchTitle
-                            matchingItem = item
-
-                if matchingItem?
-                    @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
-                else
-                    @setSelectedItem { value: null, title: title }
+        @setSelectedItemByCurrentFilterValue()
 
         @close()
-        super
-
-    handleItemSelect: ($item) ->
-        @close() if $item.length is 0
         super
 
     open: ->
@@ -90,6 +64,13 @@ class AutocompleteBox extends AutocompleteAbstract
         super
 
         @handleArrowsToggle()
+
+    handleReturnKeyPress: ->
+        $item = super
+
+        if !$item || $item.length is 0
+            @setSelectedItemByCurrentFilterValue()
+            @close()
 
     handleArrowsToggle: ->
         return if !@options.showArrows
@@ -117,5 +98,30 @@ class AutocompleteBox extends AutocompleteAbstract
         position = super
         position.top += @el.outerHeight()
         position
+
+    setSelectedItemByCurrentFilterValue: ->
+        if @selectedItem.title isnt @filter.val()
+
+            title = @filter.val()
+            
+            @getData (data) =>
+                matchingItem = null
+
+                if title.length isnt 0
+                    for item in data
+                        if @options.caseSensitive
+                            itemTitle = item.title
+                            searchTitle = title
+                        else 
+                            itemTitle = item.title.toLowerCase()
+                            searchTitle = title.toLowerCase()
+
+                        if !matchingItem and itemTitle is searchTitle
+                            matchingItem = item
+
+                if matchingItem?
+                    @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
+                else
+                    @setSelectedItem { value: null, title: title }
 
 module.exports = AutocompleteBox

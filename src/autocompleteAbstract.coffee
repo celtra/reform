@@ -324,12 +324,19 @@ class AutocompleteAbstract
             when @KEY.DOWN, @KEY.UP
                 return
             when @KEY.RETURN
-                @handleItemSelect @list.find '.' + @options.hoverClass unless !@floater
+                @handleReturnKeyPress()
             when @KEY.ESC
                 @cancelChanges()
                 @close()
             else
                 @setFilterValue @filter.val()
+
+    handleReturnKeyPress: ->
+        if @floater?
+            $item = @list.find '.' + @options.hoverClass
+            @handleItemSelect $item
+
+        $item
 
     moveHover: (direction = 'down') ->
         return if !@floater
