@@ -20,6 +20,11 @@
     user-select: none;
 }
 
+.reform-autocomplete-fake.disabled {
+    cursor: default;
+}
+
+/*** arrows ***/
 .reform-autocomplete-arrow-up:after, .reform-autocomplete-arrow-down:after {
     position: absolute;
     top: 50%;
@@ -32,17 +37,17 @@
     border-right: 8px solid transparent;
 }
 
-.reform-autocomplete-arrow-up.disabled:after, .reform-autocomplete-arrow-down.disabled:after {
-    border-top-color: #aaa;
-    border-bottom-color: #aaa;
-}
-
 .reform-autocomplete-arrow-up:after {
     border-bottom: 8px solid #333;
 }
 
 .reform-autocomplete-arrow-down:after {
     border-top: 8px solid #333;
+}
+
+.reform-autocomplete-fake.disabled.reform-autocomplete-arrow-up:after, .reform-autocomplete-fake.disabled.reform-autocomplete-arrow-down:after {
+    border-top-color: #aaa;
+    border-bottom-color: #aaa;
 }
 
 /*** floater ***/
