@@ -38,11 +38,11 @@
         delay: 0,
         caseSensitive: false,
         highlightTitles: true,
+        highlightSelection: true,
         showArrows: true,
         exactMatch: false,
         title: null,
         placeholderText: 'Type to search...',
-        emptyText: 'No results.',
         reformClass: 'reform-autocomplete',
         uiClass: 'reform-autocomplete-ui',
         fakeClass: 'reform-autocomplete-fake',
@@ -52,10 +52,10 @@
         listClass: 'reform-autocomplete-list',
         itemClass: 'reform-autocomplete-item',
         hoverClass: 'reform-autocomplete-hover',
-        arrowDownClass: 'reform-autocomplete-arrowDown',
-        arrowUpClass: 'reform-autocomplete-arrowUp',
+        selectedClass: 'reform-autocomplete-selected',
+        arrowDownClass: 'reform-autocomplete-arrow-down',
+        arrowUpClass: 'reform-autocomplete-arrow-up',
         emptyClass: 'reform-autocomplete-empty',
-        placeholderClass: 'placeholder',
         disabledClass: 'disabled'
       };
       this.orig = $(this.select);
@@ -91,7 +91,7 @@
       }
       if (this.orig.val().length === 0) {
         this.selectedItem = {
-          value: 0,
+          value: null,
           title: ''
         };
       } else {
@@ -216,16 +216,9 @@
         _this = this;
       $filter = $("<input/>");
       $filter.addClass(this.options.filterClass);
-      $filter.addClass(this.options.placeholderClass);
       if (this.options.placeholderText != null) {
-        $filter.val(this.options.placeholderText);
+        $filter.attr('placeholder', this.options.placeholderText);
       }
-      $filter.on('focus', function(e) {
-        if ($filter.val() === _this.options.placeholderText) {
-          $filter.val('');
-          return $filter.removeClass(_this.options.placeholderClass);
-        }
-      });
       $filter.on('blur', function() {
         return _this.handleFilterBlur();
       });
@@ -238,12 +231,7 @@
       return $filter;
     };
 
-    AutocompleteAbstract.prototype.handleFilterBlur = function() {
-      if (this.filter.val().length === 0) {
-        this.filter.val(this.options.placeholderText);
-        return this.filter.addClass(this.options.placeholderClass);
-      }
-    };
+    AutocompleteAbstract.prototype.handleFilterBlur = function() {};
 
     AutocompleteAbstract.prototype.createEmptyList = function() {
       var $list;
@@ -264,28 +252,32 @@
         if (this.options.max > count) {
           $item = this.createItem(item);
           $item.appendTo($list);
-          count++;
         }
+        count++;
       }
       return $list;
     };
 
     AutocompleteAbstract.prototype.createItem = function(item) {
-      var $item, highlightedText,
+      var $item, highlightedText, position, text,
         _this = this;
       $item = $('<div></div>');
       $item.addClass(this.options.itemClass);
       $item.attr('title', item.title);
       $item.attr('value', item.value);
       $item.data('value', item.value);
-      if (item.value === this.selectedItem.value) {
-        $item.addClass(this.options.hoverClass);
-      }
-      if (this.options.highlightTitles) {
-        highlightedText = "<strong>" + this.filterValue + "</strong>";
-        $item.html(item.title.toLowerCase().replace(this.filterValue.toLowerCase(), highlightedText));
+      position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
+      if (this.options.highlightTitles && this.filterValue.length !== 0 && position !== -1) {
+        text = item.title.substring(position, position + this.filterValue.length);
+        highlightedText = "<strong>" + text + "</strong>";
+        $item.html(item.title.replace(text, highlightedText));
       } else {
         $item.text(item.title);
+      }
+      if (this.options.highlightSelection && (this.selectedItem.value != null)) {
+        if (item.value === this.selectedItem.value) {
+          $item.addClass(this.options.selectedClass);
+        }
       }
       $item.on('mousedown', function(e) {
         return e.preventDefault();
@@ -302,6 +294,10 @@
     AutocompleteAbstract.prototype.handleItemSelect = function($item) {
       if ($item.length === 0) {
         return;
+      }
+      if (this.options.highlightSelection) {
+        this.list.children().removeClass(this.options.selectedClass);
+        $item.addClass(this.options.selectedClass);
       }
       this.setSelectedItem({
         value: $item.data('value'),
@@ -383,6 +379,7 @@
         case this.KEY.UP:
           return this.moveHover('up');
         case this.KEY.RETURN:
+        case this.KEY.ESC:
           if (this.floater != null) {
             return e.preventDefault();
           }
@@ -512,15 +509,16 @@
     };
 
     AutocompleteAbstract.prototype.loadDataFromUrl = function(callback) {
-      var customParams, data, fetchDataCallback, key, param, params, _i, _len, _ref1,
+      var currentFilter, customParams, data, fetchDataCallback, key, param, params, _i, _len, _ref1,
         _this = this;
-      data = this.cache.load(this.filterValue);
+      currentFilter = this.filterValue;
+      data = this.cache.load(currentFilter);
       if (data != null) {
         callback(data);
         return;
       }
       params = {
-        q: this.filterValue,
+        q: currentFilter,
         matchCase: this.options.caseSensitive,
         limit: this.options.max,
         timeStamp: new Date()
@@ -538,7 +536,7 @@
         return _this.fetchData(params, function(data) {
           var parsedData, _base;
           parsedData = (typeof (_base = _this.options).parse === "function" ? _base.parse(data) : void 0) || _this.parse(data);
-          _this.cache.add(_this.filterValue, parsedData);
+          _this.cache.add(currentFilter, parsedData);
           if (callback != null) {
             return callback(parsedData);
           }
@@ -602,20 +600,18 @@
       this.select = select;
       this.handleDisabledToggle = __bind(this.handleDisabledToggle, this);
 
-      this.options = $.extend(this.options, {
-        minChars: 2,
-        delay: 300,
+      this.options = $.extend({
+        showArrows: false,
         reformClass: 'reform-autocompletebox',
         uiClass: 'reform-autocompletebox-ui'
-      });
+      }, options);
       AutocompleteBox.__super__.constructor.call(this, this.select, this.options);
       if (!this.el) {
         return;
       }
       this.filter = this.createFilter();
-      if (this.selectedItem.value !== 0) {
+      if (this.selectedItem.value != null) {
         this.filter.val(this.selectedItem.title);
-        this.filter.removeClass(this.options.placeholderClass);
       }
       this.el.append(this.filter);
     }
@@ -654,18 +650,21 @@
       var title,
         _this = this;
       if (this.selectedItem.title !== this.filter.val()) {
-        if (this.filter.val() === this.options.placeholderText) {
-          title = '';
-        } else {
-          title = this.filter.val();
-        }
+        title = this.filter.val();
         this.getData(function(data) {
-          var item, matchingItem, _i, _len;
+          var item, itemTitle, matchingItem, searchTitle, _i, _len;
           matchingItem = null;
           if (title.length !== 0) {
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               item = data[_i];
-              if (!matchingItem && item.title === title) {
+              if (_this.options.caseSensitive) {
+                itemTitle = item.title;
+                searchTitle = title;
+              } else {
+                itemTitle = item.title.toLowerCase();
+                searchTitle = title.toLowerCase();
+              }
+              if (!matchingItem && itemTitle === searchTitle) {
                 matchingItem = item;
               }
             }
@@ -677,7 +676,7 @@
             });
           } else {
             return _this.setSelectedItem({
-              value: 0,
+              value: null,
               title: title
             });
           }
@@ -685,6 +684,13 @@
       }
       this.close();
       return AutocompleteBox.__super__.handleFilterBlur.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.handleItemSelect = function($item) {
+      if ($item.length === 0) {
+        this.close();
+      }
+      return AutocompleteBox.__super__.handleItemSelect.apply(this, arguments);
     };
 
     AutocompleteBox.prototype.open = function() {
@@ -763,20 +769,22 @@
     function AutocompleteCombobox(select, options) {
       var $title;
       this.select = select;
-      this.options = $.extend(this.options, {
-        placeholderText: 'Select an item...',
+      this.options = $.extend({
+        emptySelectionText: 'Select an item...',
+        emptyText: 'No results.',
         reformClass: 'reform-autocompletecombobox',
         uiClass: 'reform-autocompletecombobox-ui',
-        titleClass: 'reform-autocompletecombobox-selected',
-        floaterLabelClass: 'reform-autocompletecombobox-floaterLabel'
-      });
+        titleClass: 'reform-autocomplete-selected-label',
+        floaterLabelClass: 'reform-autocomplete-floater-label',
+        placeholderClass: 'placeholder'
+      }, options);
       AutocompleteCombobox.__super__.constructor.call(this, this.select, this.options);
       if (!this.el) {
         return;
       }
       this.filterValue = '';
       $title = this.createTitle();
-      if (this.selectedItem.value !== 0) {
+      if (this.selectedItem.value != null) {
         $title.text(this.selectedItem.title);
         $title.removeClass(this.options.placeholderClass);
       }
@@ -786,7 +794,7 @@
     AutocompleteCombobox.prototype.handleSelectionChanged = function() {
       var $title;
       $title = this.el.find('span');
-      if (this.selectedItem.value !== 0) {
+      if (this.selectedItem.value != null) {
         $title.text(this.selectedItem.title);
         $title.removeClass(this.options.placeholderClass);
       }
@@ -807,8 +815,10 @@
       var $title;
       $title = $('<span></span>');
       $title.addClass(this.options.titleClass);
-      $title.addClass(this.options.placeholderClass);
-      $title.text(this.options.placeholderText);
+      if ($title.text(this.options.emptySelectionText != null)) {
+        $title.addClass(this.options.placeholderClass);
+        $title.text(this.options.emptySelectionText);
+      }
       return $title;
     };
 
@@ -820,10 +830,10 @@
       if (this.options.showArrows) {
         $title.addClass(this.options.arrowUpClass);
       }
-      if (this.selectedItem.value === 0) {
-        $title.text(this.options.placeholderText);
-      } else {
+      if (this.selectedItem.value) {
         $title.text(this.selectedItem.title);
+      } else {
+        $title.text(this.options.emptySelectionText);
       }
       $title.one('click', function() {
         return _this.close();
@@ -1353,7 +1363,7 @@
     });
     return test("Selected title created", 1, function() {
       setup();
-      return ok($fake.find('span').hasClass("reform-autocompletecombobox-selected"), "Fake should have selected title");
+      return ok($fake.find('span').hasClass("reform-autocomplete-selected-label"), "Fake should have selected title");
     });
   };
 
