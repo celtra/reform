@@ -76,6 +76,10 @@ class AutocompleteBox extends AutocompleteAbstract
         @close()
         super
 
+    handleItemSelect: ($item) ->
+        @close() if $item.length is 0
+        super
+
     open: ->
         @filterValue = @filter.val()
         super
