@@ -83,6 +83,8 @@ class AutocompleteBox extends AutocompleteAbstract
             @el.addClass @options.arrowDownClass
 
     handleKeyUp: (e) ->
+        return if e.keyCode is @KEY.RETURN
+
         if @filter.val().length > @options.minChars
             @open() unless @floater?
         else if @floater?
