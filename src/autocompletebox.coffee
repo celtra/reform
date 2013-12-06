@@ -21,7 +21,6 @@ class AutocompleteBox extends AutocompleteAbstract
 
         if @selectedItem.value?
             @filter.val @selectedItem.title
-            @filter.removeClass @options.placeholderClass
 
         @el.append @filter
 
@@ -52,10 +51,7 @@ class AutocompleteBox extends AutocompleteAbstract
     handleFilterBlur: ->
         if @selectedItem.title isnt @filter.val()
 
-            if @filter.val() is @options.placeholderText
-                title = ''
-            else
-                title = @filter.val()
+            title = @filter.val()
             
             @getData (data) =>
                 matchingItem = null

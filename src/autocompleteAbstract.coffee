@@ -28,7 +28,6 @@ class AutocompleteAbstract
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
             placeholderText     : 'Type to search...'
-            emptyText           : 'No results.'
 
             # custom classes
             reformClass         : 'reform-autocomplete'
@@ -170,15 +169,9 @@ class AutocompleteAbstract
     createFilter: ->
         $filter = $ "<input/>"
         $filter.addClass @options.filterClass
-        $filter.addClass @options.placeholderClass
 
         if @options.placeholderText?
-            $filter.val @options.placeholderText
-
-        $filter.on 'focus', (e) =>
-            if $filter.val() == @options.placeholderText
-                $filter.val ''
-                $filter.removeClass @options.placeholderClass
+            $filter.attr 'placeholder', @options.placeholderText
 
         $filter.on 'blur', () => @handleFilterBlur()
 
@@ -189,9 +182,6 @@ class AutocompleteAbstract
         $filter
 
     handleFilterBlur: ->
-        if @filter.val().length is 0
-            @filter.val @options.placeholderText
-            @filter.addClass @options.placeholderClass
 
     createEmptyList: ->
         $list = $ '<div></div>'

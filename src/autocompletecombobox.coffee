@@ -4,12 +4,14 @@ AutocompleteAbstract  = require "./autocompleteAbstract"
 class AutocompleteCombobox extends AutocompleteAbstract
     constructor: (@select, options) ->
         @options = $.extend {
-            placeholderText     : 'Select an item...'
+            emptySelectionText  : 'Select an item...'
+            emptyText           : 'No results.'
 
             reformClass         : 'reform-autocompletecombobox'
             uiClass             : 'reform-autocompletecombobox-ui'
             titleClass          : 'reform-autocomplete-selected-label'
             floaterLabelClass   : 'reform-autocomplete-floater-label'
+            placeholderClass    : 'placeholder'
         }, options
         
         super @select, @options
@@ -44,8 +46,10 @@ class AutocompleteCombobox extends AutocompleteAbstract
     createTitle: ->
         $title = $ '<span></span>'
         $title.addClass @options.titleClass
-        $title.addClass @options.placeholderClass
-        $title.text @options.placeholderText 
+
+        if $title.text @options.emptySelectionText?
+            $title.addClass @options.placeholderClass
+            $title.text @options.emptySelectionText 
 
         $title
 
@@ -56,10 +60,10 @@ class AutocompleteCombobox extends AutocompleteAbstract
         if @options.showArrows
             $title.addClass @options.arrowUpClass
 
-        if !@selectedItem.value
-            $title.text @options.placeholderText
-        else
+        if @selectedItem.value
             $title.text @selectedItem.title
+        else
+            $title.text @options.emptySelectionText
 
         $title.one 'click', () => @close()
 

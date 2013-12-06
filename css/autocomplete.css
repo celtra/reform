@@ -20,10 +20,6 @@
     user-select: none;
 }
 
-.reform-autocomplete-fake.disabled .reform-autocomplete-filter {
-    background-color: #eee;
-}
-
 .reform-autocomplete-arrow-up:after, .reform-autocomplete-arrow-down:after {
     position: absolute;
     top: 50%;
@@ -74,10 +70,11 @@ input.reform-autocomplete-filter {
     padding: 10px 30px 10px 10px;
     font-size: 14px;
     font-family: "Tahoma";
+    border: 1px solid #ccc;
 }
 
-input.reform-autocomplete-filter.placeholder {
-    color: #aaa;
+.reform-autocomplete-fake.disabled .reform-autocomplete-filter {
+    background-color: #eee;
 }
 
 /*** list ***/
