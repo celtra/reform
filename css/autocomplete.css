@@ -11,6 +11,13 @@
     text-overflow: ellipsis;
     line-height: 18px;
     vertical-align: middle;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .reform-autocomplete-fake.disabled .reform-autocomplete-filter {
