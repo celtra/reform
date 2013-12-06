@@ -1,24 +1,10 @@
 .reform-autocompletecombobox-ui.reform-autocomplete-fake {
-    position: relative;
-    display: inline-block;
     width: 200px;
     height: 18px;
     border: solid 1px #ccc;
     padding: 10px 30px 10px 10px;
-    cursor: pointer;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     line-height: 18px;
-    vertical-align: middle;
     outline: none;
-    
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
 }
 
 .reform-autocompletecombobox-ui.reform-autocomplete-fake.disabled {
@@ -26,15 +12,15 @@
     cursor: default;
 }
 
-.reform-autocompletecombobox-ui .reform-autocompletecombobox-selected {
+.reform-autocompletecombobox-ui .reform-autocomplete-selected-label {
     display: block;
 }
 
-.reform-autocompletecombobox-ui span.reform-autocompletecombobox-selected.placeholder {
+.reform-autocompletecombobox-ui span.reform-autocomplete-selected-label.placeholder {
     color: #aaa;
 }
 
-.reform-autocompletecombobox-ui span.reform-autocompletecombobox-floaterLabel {
+.reform-autocompletecombobox-ui span.reform-autocomplete-floater-label {
     position: relative;
     display: block;
     width: 200px;

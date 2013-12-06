@@ -3,14 +3,17 @@ AutocompleteAbstract  = require "./autocompleteAbstract"
 
 class AutocompleteCombobox extends AutocompleteAbstract
     constructor: (@select, options) ->
-        @options = $.extend @options, {
-            placeholderText     : 'Select an item...'
+        @options = $.extend {
+            emptySelectionText  : 'Select an item...'
+            emptyText           : 'No results.'
 
             reformClass         : 'reform-autocompletecombobox'
             uiClass             : 'reform-autocompletecombobox-ui'
-            titleClass          : 'reform-autocompletecombobox-selected'
-            floaterLabelClass   : 'reform-autocompletecombobox-floaterLabel'
-        }
+            titleClass          : 'reform-autocomplete-selected-label'
+            floaterLabelClass   : 'reform-autocomplete-floater-label'
+            placeholderClass    : 'placeholder'
+        }, options
+        
         super @select, @options
 
         return if !@el
@@ -19,7 +22,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
         $title = @createTitle()
 
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             $title.text @selectedItem.title
             $title.removeClass @options.placeholderClass
 
@@ -27,7 +30,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
     handleSelectionChanged: ->
         $title = @el.find 'span'
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             $title.text @selectedItem.title
             $title.removeClass @options.placeholderClass
 
@@ -43,8 +46,10 @@ class AutocompleteCombobox extends AutocompleteAbstract
     createTitle: ->
         $title = $ '<span></span>'
         $title.addClass @options.titleClass
-        $title.addClass @options.placeholderClass
-        $title.text @options.placeholderText 
+
+        if $title.text @options.emptySelectionText?
+            $title.addClass @options.placeholderClass
+            $title.text @options.emptySelectionText 
 
         $title
 
@@ -55,10 +60,10 @@ class AutocompleteCombobox extends AutocompleteAbstract
         if @options.showArrows
             $title.addClass @options.arrowUpClass
 
-        if @selectedItem.value is 0
-            $title.text @options.placeholderText
-        else
+        if @selectedItem.value
             $title.text @selectedItem.title
+        else
+            $title.text @options.emptySelectionText
 
         $title.one 'click', () => @close()
 

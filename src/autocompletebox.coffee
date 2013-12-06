@@ -7,22 +7,20 @@ class AutocompleteBox extends AutocompleteAbstract
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
 
-        @options = $.extend @options, {
-            minChars           : 2
-            delay              : 300
+        @options = $.extend {
+            showArrows         : no
             reformClass        : 'reform-autocompletebox'
             uiClass            : 'reform-autocompletebox-ui'
-        }
-        
+        }, options
+
         super @select, @options
 
         return if !@el
 
         @filter = @createFilter()
 
-        if @selectedItem.value isnt 0
+        if @selectedItem.value?
             @filter.val @selectedItem.title
-            @filter.removeClass @options.placeholderClass
 
         @el.append @filter
 
@@ -53,25 +51,33 @@ class AutocompleteBox extends AutocompleteAbstract
     handleFilterBlur: ->
         if @selectedItem.title isnt @filter.val()
 
-            if @filter.val() is @options.placeholderText
-                title = ''
-            else
-                title = @filter.val()
+            title = @filter.val()
             
             @getData (data) =>
                 matchingItem = null
 
                 if title.length isnt 0
                     for item in data
-                        if !matchingItem and item.title is title
+                        if @options.caseSensitive
+                            itemTitle = item.title
+                            searchTitle = title
+                        else 
+                            itemTitle = item.title.toLowerCase()
+                            searchTitle = title.toLowerCase()
+
+                        if !matchingItem and itemTitle is searchTitle
                             matchingItem = item
 
                 if matchingItem?
                     @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
                 else
-                    @setSelectedItem { value: 0, title: title }
+                    @setSelectedItem { value: null, title: title }
 
         @close()
+        super
+
+    handleItemSelect: ($item) ->
+        @close() if $item.length is 0
         super
 
     open: ->

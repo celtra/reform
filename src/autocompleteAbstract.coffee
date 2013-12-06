@@ -23,11 +23,11 @@ class AutocompleteAbstract
             delay               : 0
             caseSensitive       : no
             highlightTitles     : yes
+            highlightSelection  : yes
             showArrows          : yes
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
             placeholderText     : 'Type to search...'
-            emptyText           : 'No results.'
 
             # custom classes
             reformClass         : 'reform-autocomplete'
@@ -39,10 +39,10 @@ class AutocompleteAbstract
             listClass           : 'reform-autocomplete-list'
             itemClass           : 'reform-autocomplete-item'
             hoverClass          : 'reform-autocomplete-hover'
-            arrowDownClass      : 'reform-autocomplete-arrowDown'
-            arrowUpClass        : 'reform-autocomplete-arrowUp'
+            selectedClass       : 'reform-autocomplete-selected'
+            arrowDownClass      : 'reform-autocomplete-arrow-down'
+            arrowUpClass        : 'reform-autocomplete-arrow-up'
             emptyClass          : 'reform-autocomplete-empty'
-            placeholderClass    : 'placeholder'
             disabledClass       : 'disabled'
         }
         
@@ -69,7 +69,7 @@ class AutocompleteAbstract
         @data = []
         if @options.title? then @filterValue = @options.title else @filterValue = ''
         if @orig.val().length is 0 
-            @selectedItem = { value: 0, title: '' }
+            @selectedItem = { value: null, title: '' }
         else
             @selectedItem = { value: @orig.val(), title: @options.title }
 
@@ -168,15 +168,9 @@ class AutocompleteAbstract
     createFilter: ->
         $filter = $ "<input/>"
         $filter.addClass @options.filterClass
-        $filter.addClass @options.placeholderClass
 
         if @options.placeholderText?
-            $filter.val @options.placeholderText
-
-        $filter.on 'focus', (e) =>
-            if $filter.val() == @options.placeholderText
-                $filter.val ''
-                $filter.removeClass @options.placeholderClass
+            $filter.attr 'placeholder', @options.placeholderText
 
         $filter.on 'blur', () => @handleFilterBlur()
 
@@ -187,9 +181,6 @@ class AutocompleteAbstract
         $filter
 
     handleFilterBlur: ->
-        if @filter.val().length is 0
-            @filter.val @options.placeholderText
-            @filter.addClass @options.placeholderClass
 
     createEmptyList: ->
         $list = $ '<div></div>'
@@ -209,7 +200,7 @@ class AutocompleteAbstract
                 $item = @createItem item
                 $item.appendTo $list
 
-                count++
+            count++
 
         $list
 
@@ -220,14 +211,16 @@ class AutocompleteAbstract
         $item.attr 'value', item.value # obsolete - use data-value
         $item.data 'value', item.value
         
-        if item.value is @selectedItem.value
-            $item.addClass @options.hoverClass
-
-        if @options.highlightTitles
-            highlightedText = "<strong>#{@filterValue}</strong>"
-            $item.html item.title.toLowerCase().replace @filterValue.toLowerCase(), highlightedText
+        position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
+        if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
+            text = item.title.substring position, position + @filterValue.length # extract text with original casing
+            highlightedText = "<strong>#{text}</strong>"
+            $item.html item.title.replace text, highlightedText
         else 
             $item.text item.title
+
+        if @options.highlightSelection and @selectedItem.value?
+            $item.addClass @options.selectedClass if item.value is @selectedItem.value
         
         # Prevent text selection
         $item.on 'mousedown', (e) ->  e.preventDefault()
@@ -242,6 +235,11 @@ class AutocompleteAbstract
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
+
+        if @options.highlightSelection
+            @list.children().removeClass @options.selectedClass
+            $item.addClass @options.selectedClass
+
         @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
         @close()
 
@@ -314,7 +312,7 @@ class AutocompleteAbstract
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
-            when @KEY.RETURN
+            when @KEY.RETURN, @KEY.ESC
                 e.preventDefault() if @floater?
             else
                 return
@@ -415,13 +413,15 @@ class AutocompleteAbstract
         filteredData
 
     loadDataFromUrl: (callback) ->
-        data = @cache.load @filterValue
+        currentFilter = @filterValue
+
+        data = @cache.load currentFilter
         if data?
             callback data
             return
 
         params = {
-            q           : @filterValue
+            q           : currentFilter
             matchCase   : @options.caseSensitive
             limit       : @options.max
             timeStamp   : new Date()
@@ -438,7 +438,7 @@ class AutocompleteAbstract
         fetchDataCallback = () =>
             @fetchData params, (data) =>
                 parsedData = @options.parse?(data) || @parse data
-                @cache.add @filterValue, parsedData
+                @cache.add currentFilter, parsedData
                 if callback? then callback parsedData
 
         clearTimeout @fetchTimeout

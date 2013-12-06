@@ -31,7 +31,7 @@
     });
     return test("Selected title created", 1, function() {
       setup();
-      return ok($fake.find('span').hasClass("reform-autocompletecombobox-selected"), "Fake should have selected title");
+      return ok($fake.find('span').hasClass("reform-autocomplete-selected-label"), "Fake should have selected title");
     });
   };
 
