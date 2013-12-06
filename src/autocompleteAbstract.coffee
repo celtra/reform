@@ -312,8 +312,11 @@ class AutocompleteAbstract
                 @moveHover 'down'
             when @KEY.UP
                 @moveHover 'up'
-            when @KEY.RETURN, @KEY.ESC
+            when @KEY.ESC
                 e.preventDefault() if @floater?
+            when @KEY.RETURN
+                e.preventDefault() if @floater?
+                @handleReturnKeyPress()
             else
                 return
 
@@ -321,15 +324,20 @@ class AutocompleteAbstract
         return if @orig.is ':disabled'
 
         switch e.keyCode
-            when @KEY.DOWN, @KEY.UP
+            when @KEY.DOWN, @KEY.UP, @KEY.RETURN
                 return
-            when @KEY.RETURN
-                @handleItemSelect @list.find '.' + @options.hoverClass unless !@floater
             when @KEY.ESC
                 @cancelChanges()
                 @close()
             else
                 @setFilterValue @filter.val()
+
+    handleReturnKeyPress: ->
+        if @floater?
+            $item = @list.find '.' + @options.hoverClass
+            @handleItemSelect $item
+
+        $item
 
     moveHover: (direction = 'down') ->
         return if !@floater

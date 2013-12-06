@@ -378,12 +378,16 @@
           return this.moveHover('down');
         case this.KEY.UP:
           return this.moveHover('up');
-        case this.KEY.RETURN:
         case this.KEY.ESC:
           if (this.floater != null) {
             return e.preventDefault();
           }
           break;
+        case this.KEY.RETURN:
+          if (this.floater != null) {
+            e.preventDefault();
+          }
+          return this.handleReturnKeyPress();
       }
     };
 
@@ -394,11 +398,7 @@
       switch (e.keyCode) {
         case this.KEY.DOWN:
         case this.KEY.UP:
-          break;
         case this.KEY.RETURN:
-          if (!!this.floater) {
-            return this.handleItemSelect(this.list.find('.' + this.options.hoverClass));
-          }
           break;
         case this.KEY.ESC:
           this.cancelChanges();
@@ -406,6 +406,15 @@
         default:
           return this.setFilterValue(this.filter.val());
       }
+    };
+
+    AutocompleteAbstract.prototype.handleReturnKeyPress = function() {
+      var $item;
+      if (this.floater != null) {
+        $item = this.list.find('.' + this.options.hoverClass);
+        this.handleItemSelect($item);
+      }
+      return $item;
     };
 
     AutocompleteAbstract.prototype.moveHover = function(direction) {
@@ -647,11 +656,77 @@
     };
 
     AutocompleteBox.prototype.handleFilterBlur = function() {
+      this.setSelectedItemByCurrentFilterValue();
+      this.close();
+      return AutocompleteBox.__super__.handleFilterBlur.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.open = function() {
+      this.filterValue = this.filter.val();
+      AutocompleteBox.__super__.open.apply(this, arguments);
+      return this.handleArrowsToggle();
+    };
+
+    AutocompleteBox.prototype.close = function() {
+      AutocompleteBox.__super__.close.apply(this, arguments);
+      return this.handleArrowsToggle();
+    };
+
+    AutocompleteBox.prototype.handleReturnKeyPress = function() {
+      var $item;
+      $item = AutocompleteBox.__super__.handleReturnKeyPress.apply(this, arguments);
+      if (!$item || $item.length === 0) {
+        this.setSelectedItemByCurrentFilterValue();
+        return this.close();
+      }
+    };
+
+    AutocompleteBox.prototype.handleArrowsToggle = function() {
+      if (!this.options.showArrows) {
+        return;
+      }
+      if (this.floater != null) {
+        this.el.removeClass(this.options.arrowDownClass);
+        return this.el.addClass(this.options.arrowUpClass);
+      } else {
+        this.el.removeClass(this.options.arrowUpClass);
+        return this.el.addClass(this.options.arrowDownClass);
+      }
+    };
+
+    AutocompleteBox.prototype.handleKeyUp = function(e) {
+      if (e.keyCode === this.KEY.RETURN) {
+        return;
+      }
+      if (this.filter.val().length > this.options.minChars) {
+        if (this.floater == null) {
+          this.open();
+        }
+      } else if (this.floater != null) {
+        this.close();
+        return;
+      } else {
+        if (e.keyCode === this.KEY.ESC) {
+          this.cancelChanges();
+        }
+        return;
+      }
+      return AutocompleteBox.__super__.handleKeyUp.apply(this, arguments);
+    };
+
+    AutocompleteBox.prototype.getFloaterPosition = function() {
+      var position;
+      position = AutocompleteBox.__super__.getFloaterPosition.apply(this, arguments);
+      position.top += this.el.outerHeight();
+      return position;
+    };
+
+    AutocompleteBox.prototype.setSelectedItemByCurrentFilterValue = function() {
       var title,
         _this = this;
       if (this.selectedItem.title !== this.filter.val()) {
         title = this.filter.val();
-        this.getData(function(data) {
+        return this.getData(function(data) {
           var item, itemTitle, matchingItem, searchTitle, _i, _len;
           matchingItem = null;
           if (title.length !== 0) {
@@ -682,63 +757,6 @@
           }
         });
       }
-      this.close();
-      return AutocompleteBox.__super__.handleFilterBlur.apply(this, arguments);
-    };
-
-    AutocompleteBox.prototype.handleItemSelect = function($item) {
-      if ($item.length === 0) {
-        this.close();
-      }
-      return AutocompleteBox.__super__.handleItemSelect.apply(this, arguments);
-    };
-
-    AutocompleteBox.prototype.open = function() {
-      this.filterValue = this.filter.val();
-      AutocompleteBox.__super__.open.apply(this, arguments);
-      return this.handleArrowsToggle();
-    };
-
-    AutocompleteBox.prototype.close = function() {
-      AutocompleteBox.__super__.close.apply(this, arguments);
-      return this.handleArrowsToggle();
-    };
-
-    AutocompleteBox.prototype.handleArrowsToggle = function() {
-      if (!this.options.showArrows) {
-        return;
-      }
-      if (this.floater != null) {
-        this.el.removeClass(this.options.arrowDownClass);
-        return this.el.addClass(this.options.arrowUpClass);
-      } else {
-        this.el.removeClass(this.options.arrowUpClass);
-        return this.el.addClass(this.options.arrowDownClass);
-      }
-    };
-
-    AutocompleteBox.prototype.handleKeyUp = function(e) {
-      if (this.filter.val().length > this.options.minChars) {
-        if (this.floater == null) {
-          this.open();
-        }
-      } else if (this.floater != null) {
-        this.close();
-        return;
-      } else {
-        if (e.keyCode === this.KEY.ESC) {
-          this.cancelChanges();
-        }
-        return;
-      }
-      return AutocompleteBox.__super__.handleKeyUp.apply(this, arguments);
-    };
-
-    AutocompleteBox.prototype.getFloaterPosition = function() {
-      var position;
-      position = AutocompleteBox.__super__.getFloaterPosition.apply(this, arguments);
-      position.top += this.el.outerHeight();
-      return position;
     };
 
     return AutocompleteBox;

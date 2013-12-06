@@ -49,6 +49,59 @@ class AutocompleteBox extends AutocompleteAbstract
         $el
 
     handleFilterBlur: ->
+        @setSelectedItemByCurrentFilterValue()
+
+        @close()
+        super
+
+    open: ->
+        @filterValue = @filter.val()
+        super
+
+        @handleArrowsToggle()
+
+    close: ->
+        super
+
+        @handleArrowsToggle()
+
+    handleReturnKeyPress: ->
+        $item = super
+
+        if !$item || $item.length is 0
+            @setSelectedItemByCurrentFilterValue()
+            @close()
+
+    handleArrowsToggle: ->
+        return if !@options.showArrows
+
+        if @floater? 
+            @el.removeClass @options.arrowDownClass
+            @el.addClass @options.arrowUpClass
+        else
+            @el.removeClass @options.arrowUpClass
+            @el.addClass @options.arrowDownClass
+
+    handleKeyUp: (e) ->
+        return if e.keyCode is @KEY.RETURN
+
+        if @filter.val().length > @options.minChars
+            @open() unless @floater?
+        else if @floater?
+            @close() 
+            return
+        else
+            @cancelChanges() if e.keyCode is @KEY.ESC
+            return
+
+        super
+
+    getFloaterPosition: ->
+        position = super
+        position.top += @el.outerHeight()
+        position
+
+    setSelectedItemByCurrentFilterValue: ->
         if @selectedItem.title isnt @filter.val()
 
             title = @filter.val()
@@ -72,50 +125,5 @@ class AutocompleteBox extends AutocompleteAbstract
                     @setSelectedItem { value: matchingItem.value, title: matchingItem.title }
                 else
                     @setSelectedItem { value: null, title: title }
-
-        @close()
-        super
-
-    handleItemSelect: ($item) ->
-        @close() if $item.length is 0
-        super
-
-    open: ->
-        @filterValue = @filter.val()
-        super
-
-        @handleArrowsToggle()
-
-    close: ->
-        super
-
-        @handleArrowsToggle()
-
-    handleArrowsToggle: ->
-        return if !@options.showArrows
-
-        if @floater? 
-            @el.removeClass @options.arrowDownClass
-            @el.addClass @options.arrowUpClass
-        else
-            @el.removeClass @options.arrowUpClass
-            @el.addClass @options.arrowDownClass
-
-    handleKeyUp: (e) ->
-        if @filter.val().length > @options.minChars
-            @open() unless @floater?
-        else if @floater?
-            @close() 
-            return
-        else
-            @cancelChanges() if e.keyCode is @KEY.ESC
-            return
-
-        super
-
-    getFloaterPosition: ->
-        position = super
-        position.top += @el.outerHeight()
-        position
 
 module.exports = AutocompleteBox
