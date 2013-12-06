@@ -43,7 +43,6 @@ class AutocompleteAbstract
             arrowDownClass      : 'reform-autocomplete-arrow-down'
             arrowUpClass        : 'reform-autocomplete-arrow-up'
             emptyClass          : 'reform-autocomplete-empty'
-            placeholderClass    : 'placeholder'
             disabledClass       : 'disabled'
         }
         
@@ -212,9 +211,6 @@ class AutocompleteAbstract
         $item.attr 'value', item.value # obsolete - use data-value
         $item.data 'value', item.value
         
-        if item.value is @selectedItem.value
-            $item.addClass @options.hoverClass
-
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
         if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
             text = item.title.substring position, position + @filterValue.length # extract text with original casing
