@@ -21,4 +21,4 @@ module.exports = ->
 
     test "Selected title created", 1, ->
         setup()
-        ok $fake.find('span').hasClass("reform-autocompletecombobox-selected"), "Fake should have selected title"
+        ok $fake.find('span').hasClass("reform-autocomplete-selected-label"), "Fake should have selected title"
