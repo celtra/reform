@@ -97,7 +97,7 @@ class AutocompleteAbstract
         @orig.on "reform.close", (e) => @close()
 
         # set inline data
-        @orig.on "reform.fill", (e, data) => @handleDataFill(data)
+        @orig.on "reform.fill", (e, data) => @handleDataFill data
 
         # reform events
         @el.on 'filterChanged', => @handleFilterChanged()
@@ -115,7 +115,7 @@ class AutocompleteAbstract
         return if @options.url
 
         @close()
-        @data = @parse(data)
+        @data = @parse data 
 
     handleFilterChanged: ->
         return if !@floater
@@ -382,10 +382,10 @@ class AutocompleteAbstract
         parsed = []
 
         $.each data, (num, item) =>
-            parsed.push({
+            parsed.push {
                 value: item.value
                 title: @options.formatResult and @options.formatResult(item) or item.title
-            })
+            }
 
         parsed
 
@@ -445,7 +445,7 @@ class AutocompleteAbstract
 
         fetchDataCallback = () =>
             @fetchData params, (data) =>
-                parsedData = @options.parse?(data) || @parse data
+                parsedData = @parse data
                 @cache.add currentFilter, parsedData
                 if callback? then callback parsedData
 
