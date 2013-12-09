@@ -77,7 +77,7 @@ Once the fake element is clicked, the options container is populated and shown:
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
-Autocompletebox
+Autocomplete box
 ----------
 
 Original:
@@ -86,18 +86,21 @@ Original:
 
 Will become:
 
-      <div class="reform-autocompletebox-fake">
-        <input class="reform-autocompletebox-input">
+      <div class="reform-autocompletebox-ui reform-autocomplete-fake">
         <input class="reformed" type="text" style="display: none;">
+        <input class="reform-autocomplete-filter">
       </div>
 
 Optional input field parameters:
 
 * data-url
-* data-placeholder
-* data-matchCase
-* data-colorTitle
-* data-minChars
+* data-placeholder-text
+* data-case-sensitive
+* data-highlight-titles
+* data-highlight-selection
+* data-min-chars
+* data-delay
+* data-show-arrows
 
 Default json format is:
 
@@ -112,21 +115,76 @@ Default json format is:
         ...
       ]
 
-For performance reasons results are cached. Also keyup delay is used if dooing ajax requests.
+For performance reasons results retrieved from a server are cached. Also keyup delay is used if dooing ajax requests.
 
 Once autocomplete detects results the options container is shown:
 
-      <div class="reform-autocompletebox-options">
-        <div class="reform-autocompletebox-list">
-          <div class="reform-autocompletebox-item" title="example1" value="4">
+      <div class="reform-autocompletebox-ui reform-autocomplete-floater">
+        <div class="reform-autocomplete-list">
+          <div class="reform-autocomplete-item" value="4">
             <strong>exam</strong>ple1
           </div>
-          <div class="reform-autocompletebox-item" title="example2" value="40">
+          <div class="reform-autocomplete-item" value="40">
             <strong>exam</strong>ple2
           </div>
           ...
         </div>
       </div>
+
+Autocomplete combobox
+----------
+
+Original:
+
+      <input class="reform-autocompletecombobox" type="text" />
+
+Will become:
+
+      <div class="reform-autocompletecombobox-ui reform-autocomplete-fake reform-autocomplete-arrow-down">
+        <input class="reformed" style="display: none;">
+        <span class="reform-autocomplete-selected-label placeholder">Select an item...</span>
+      </div>
+
+Optional input field parameters:
+
+* data-url
+* data-placeholder-text
+* data-case-sensitive
+* data-highlight-titles
+* data-highlight-selection
+* data-min-chars
+* data-delay
+* data-show-arrows
+* data-empty-selection-text
+* data-emty-text
+
+Default json format is:
+
+      [{
+          "title": 'example1',
+          "value": '1'
+        },
+        {
+          "title": 'example2',
+          "value": '2'
+        },
+        ...
+      ]
+
+Once autocomplete detects results the options container is shown:
+
+      <div class="reform-autocompletecombobox-ui reform-autocomplete-floater">
+        <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
+        <input class="reform-autocomplete-filter" placeholder="Type to search...">
+        <div class="reform-autocomplete-list">
+          <div class="reform-autocomplete-item" value="4"><strong>f</strong>our</div>
+          <div class="reform-autocomplete-item" value="40"><strong>F</strong>ourty</div>
+          <div class="reform-autocomplete-item" value="14"><strong>f</strong>ourteen</div>
+          <div class="reform-autocomplete-item" value="49"><strong>f</strong>ourtynine</div>
+          <div class="reform-autocomplete-item" value="48"><strong>f</strong>ourtyeight</div>
+          <div class="reform-autocomplete-item" value="50"><strong>f</strong>ifty</div></div>
+      </div>
+
 
 NPM package
 ----------
