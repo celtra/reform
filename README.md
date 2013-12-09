@@ -177,14 +177,15 @@ Once autocomplete detects results the options container is shown:
         <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
         <input class="reform-autocomplete-filter" placeholder="Type to search...">
         <div class="reform-autocomplete-list">
-          <div class="reform-autocomplete-item" value="4"><strong>f</strong>our</div>
-          <div class="reform-autocomplete-item" value="40"><strong>F</strong>ourty</div>
-          <div class="reform-autocomplete-item" value="14"><strong>f</strong>ourteen</div>
-          <div class="reform-autocomplete-item" value="49"><strong>f</strong>ourtynine</div>
-          <div class="reform-autocomplete-item" value="48"><strong>f</strong>ourtyeight</div>
-          <div class="reform-autocomplete-item" value="50"><strong>f</strong>ifty</div></div>
+          <div class="reform-autocomplete-item" value="1">
+            <strong>ex</strong>ample1
+          </div>
+          <div class="reform-autocomplete-item" value="2">
+            <strong>ex</strong>ample2
+          </div>
       </div>
 
+The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
 NPM package
 ----------
