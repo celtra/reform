@@ -13,6 +13,8 @@ All the files you need are in the `build` folder.
  3. Whenever you want custom form elements, do this:
    - Add `reform-checkbox` class to `input[type=checkbox]` elements
    - Add `reform-selectbox` class to `select` elements
+   - Add `reform-autocompletebox` class to `input[type=text]` elements
+   - Add `reform-autocompletecombobox` class to `input[type=text]` elements
  4. Define your own CSS for "reformed" form elements or override the defaults in `reform.css`
 
 Dependencies
@@ -88,7 +90,7 @@ Will become:
 
       <div class="reform-autocompletebox-ui reform-autocomplete-fake">
         <input class="reformed" type="text" style="display: none;">
-        <input class="reform-autocomplete-filter">
+        <input class="reform-autocomplete-filter" placeholder="Type to search...">
       </div>
 
 Optional input field parameters:
@@ -115,7 +117,7 @@ Default json format is:
         ...
       ]
 
-For performance reasons results retrieved from a server are cached. Also keyup delay is used if dooing ajax requests.
+For performance reasons results retrieved from a server are cached. Also delay is used if dooing ajax requests.
 
 Once autocomplete detects results the options container is shown:
 
