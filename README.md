@@ -158,7 +158,7 @@ Optional input field parameters:
 * data-delay
 * data-show-arrows
 * data-empty-selection-text
-* data-emty-text
+* data-empty-text
 
 Default json format is:
 
