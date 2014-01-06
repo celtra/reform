@@ -2,10 +2,11 @@ window.$ ?= require "jquery-commonjs"
 
 # Implements custom select boxes
 class SelectBox
-    
+
     # Generating a fake select box from a real one
     constructor: (@select) ->
         @orig = $ @select
+        @isRequired = @orig.is ':required'
         
         # Don't do this twice
         return if @orig.is ".reformed"
@@ -131,24 +132,29 @@ class SelectBox
         # List container
         @$list = $("<div/>").appendTo @floater
         @$list.attr "class", "reform-selectbox-list"
-        
+
+        self = @
         # Filling options
         @orig.find("option").each (i, option) =>
             $option = $ option
+
+            # Remove placeholder (<option value=null ...>) text if required (<select required ...>)
+            return if not $option.val() and self.isRequired
+            
             $item = $ "<div/>"
             $item.attr "class", "reform-selectbox-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.addClass "disabled" if $option.is ":disabled"
             $item.attr "title", $option.attr("title")
             $item.attr "value", $option.val()
-            $item.text $option.text()
+            # Change text to "None" for (<option value=null ...>) if select is not required
+            $item.text if not $option.val() then "None" else $option.text()
             $item.appendTo @$list
             
             # Prevent text selection
             $item.on "mousedown", (e) -> e.preventDefault()
             
             $item.hover => @hover $item unless @ignoreMouse
-            
             
             # Option selection
             $item.on "click", (e) =>
