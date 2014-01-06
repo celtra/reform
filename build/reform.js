@@ -107,6 +107,8 @@
       this.floater = null;
       this.list = null;
       this.filter = null;
+      this.customClass = null;
+      this.initCustomClass();
       this.el = this.createClosed();
       this.orig.hide().attr("class", "reformed");
       this.orig.after(this.el).appendTo(this.el);
@@ -132,6 +134,13 @@
       });
       this.refreshState();
     }
+
+    AutocompleteAbstract.prototype.initCustomClass = function() {
+      var origClass;
+      origClass = this.orig.attr('class');
+      this.customClass = origClass.replace(this.options.reformClass, '');
+      return this.customClass = this.customClass.trim();
+    };
 
     AutocompleteAbstract.prototype.handleSelectionChanged = function() {
       this.orig.val(this.selectedItem.value);
@@ -190,8 +199,7 @@
     AutocompleteAbstract.prototype.createClosed = function() {
       var $el;
       $el = $("<div/>");
-      $el.attr("class", this.orig.attr("class"));
-      $el.removeClass(this.options.reformClass);
+      $el.addClass(this.customClass);
       $el.addClass(this.options.uiClass);
       $el.addClass(this.options.fakeClass);
       if (this.orig.is(":disabled")) {
@@ -206,6 +214,7 @@
     AutocompleteAbstract.prototype.createFloater = function() {
       var $floater;
       $floater = $("<div/>");
+      $floater.addClass(this.customClass);
       $floater.addClass(this.options.uiClass);
       $floater.addClass(this.options.floaterClass);
       return $floater.css("min-width", this.el.outerWidth() - 2);
