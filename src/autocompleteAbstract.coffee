@@ -113,7 +113,7 @@ class AutocompleteAbstract
     initCustomClass: ->
         origClass = @orig.attr 'class'
         @customClass = origClass.replace @options.reformClass, ''
-        @customClass.trim()
+        @customClass = @customClass.trim()
 
     handleSelectionChanged: ->
         @orig.val @selectedItem.value
