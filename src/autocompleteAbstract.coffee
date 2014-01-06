@@ -76,10 +76,14 @@ class AutocompleteAbstract
         # clear delay if data is local
         @cache = new Cache(@options) if @options.url?
 
-        @el      = null
-        @floater = null
-        @list    = null
-        @filter  = null
+        @el             = null
+        @floater        = null
+        @list           = null
+        @filter         = null
+        @customClass    = null
+
+        # extract custom classes from orig
+        @initCustomClass()
 
         @el = @createClosed()
 
@@ -105,6 +109,11 @@ class AutocompleteAbstract
         @el.on 'selectedItemChanged', => @handleSelectionChanged()
 
         @refreshState()
+
+    initCustomClass: ->
+        origClass = @orig.attr 'class'
+        @customClass = origClass.replace @options.reformClass, ''
+        @customClass.trim()
 
     handleSelectionChanged: ->
         @orig.val @selectedItem.value
@@ -148,8 +157,7 @@ class AutocompleteAbstract
 
     createClosed: ->
         $el = $ "<div/>"
-        $el.attr "class", @orig.attr "class"
-        $el.removeClass @options.reformClass
+        $el.addClass @customClass
         $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
         $el.addClass @options.disabledClass if @orig.is ":disabled"
@@ -161,6 +169,7 @@ class AutocompleteAbstract
 
     createFloater: ->
         $floater = $ "<div/>"
+        $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
         $floater.css "min-width", @el.outerWidth() - 2
