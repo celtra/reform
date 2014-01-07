@@ -40,6 +40,7 @@
         highlightTitles: true,
         highlightSelection: true,
         showArrows: true,
+        hyphenate: true,
         exactMatch: false,
         title: null,
         placeholderText: 'Type to search...',
@@ -268,20 +269,21 @@
     };
 
     AutocompleteAbstract.prototype.createItem = function(item) {
-      var $item, highlightedText, position, text,
+      var $item, highlightedText, leadingString, position, text, trailingString,
         _this = this;
       $item = $('<div></div>');
       $item.addClass(this.options.itemClass);
-      $item.attr('title', item.title);
-      $item.attr('value', item.value);
+      $item.data('title', item.title);
       $item.data('value', item.value);
       position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
       if (this.options.highlightTitles && this.filterValue.length !== 0 && position !== -1) {
         text = item.title.substring(position, position + this.filterValue.length);
-        highlightedText = "<strong>" + text + "</strong>";
-        $item.html(item.title.replace(text, highlightedText));
+        leadingString = item.title.substring(0, position);
+        trailingString = item.title.substring(position + this.filterValue.length, item.title.length);
+        highlightedText = "<strong>" + (this.hyphenate(text)) + "</strong>";
+        $item.html(this.hyphenate(leadingString) + highlightedText + this.hyphenate(trailingString));
       } else {
-        $item.text(item.title);
+        $item.html(this.hyphenate(item.title));
       }
       if (this.options.highlightSelection && (this.selectedItem.value != null)) {
         if (item.value === this.selectedItem.value) {
@@ -304,13 +306,16 @@
       if ($item.length === 0) {
         return;
       }
+      if ($item.is('strong')) {
+        $item = $item.closest('div');
+      }
       if (this.options.highlightSelection) {
         this.list.children().removeClass(this.options.selectedClass);
         $item.addClass(this.options.selectedClass);
       }
       this.setSelectedItem({
         value: $item.data('value'),
-        title: $item.text()
+        title: $item.data('title')
       });
       return this.close();
     };
@@ -475,6 +480,25 @@
 
     AutocompleteAbstract.prototype.getFloaterPosition = function() {
       return this.el.offset();
+    };
+
+    AutocompleteAbstract.prototype.hyphenate = function(value) {
+      var char, chars, hyphenatedValue, seperator, _i, _len;
+      if (!this.options.hyphenate) {
+        return value;
+      }
+      seperator = '&shy;';
+      chars = value.split('');
+      hyphenatedValue = '';
+      for (_i = 0, _len = chars.length; _i < _len; _i++) {
+        char = chars[_i];
+        if (hyphenatedValue.length === 0 || (char === ' ' || char === '-')) {
+          hyphenatedValue += char;
+        } else {
+          hyphenatedValue += seperator + char;
+        }
+      }
+      return hyphenatedValue;
     };
 
     AutocompleteAbstract.prototype.parse = function(data) {
