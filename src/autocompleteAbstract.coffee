@@ -25,6 +25,7 @@ class AutocompleteAbstract
             highlightTitles     : yes
             highlightSelection  : yes
             showArrows          : yes
+            hyphenate           : yes       # will break long strings if true
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
             placeholderText     : 'Type to search...'
@@ -216,17 +217,19 @@ class AutocompleteAbstract
     createItem: (item) ->
         $item = $ '<div></div>'
         $item.addClass @options.itemClass
-        $item.attr 'title', item.title # obsolete - use text
-        $item.attr 'value', item.value # obsolete - use data-value
+        $item.data 'title', item.title
         $item.data 'value', item.value
         
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
         if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
-            text = item.title.substring position, position + @filterValue.length # extract text with original casing
-            highlightedText = "<strong>#{text}</strong>"
-            $item.html item.title.replace text, highlightedText
+            text           = item.title.substring position, position + @filterValue.length # extract text with original casing
+            leadingString  = item.title.substring 0, position
+            trailingString = item.title.substring position + @filterValue.length, item.title.length
+            
+            highlightedText = "<strong>#{@hyphenate( text )}</strong>"
+            $item.html @hyphenate( leadingString ) + highlightedText + @hyphenate( trailingString )
         else 
-            $item.text item.title
+            $item.html @hyphenate( item.title )
 
         if @options.highlightSelection and @selectedItem.value?
             $item.addClass @options.selectedClass if item.value is @selectedItem.value
@@ -245,11 +248,14 @@ class AutocompleteAbstract
     handleItemSelect: ($item) ->
         return if $item.length is 0
 
+        if $item.is 'strong'
+            $item = $item.closest 'div'
+
         if @options.highlightSelection
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
-
-        @setSelectedItem { value: $item.data( 'value' ), title: $item.text() }
+        
+        @setSelectedItem { value: $item.data( 'value' ), title: $item.data( 'title' ) }
         @close()
 
     insertList: ($list) ->
@@ -386,6 +392,21 @@ class AutocompleteAbstract
 
     getFloaterPosition: ->
         @el.offset()
+
+    hyphenate: (value) ->
+        return value unless @options.hyphenate
+
+        seperator       = '&shy;'
+        chars           = value.split ''
+        hyphenatedValue = ''
+
+        for char in chars
+            if hyphenatedValue.length is 0 or char in [' ', '-']
+                hyphenatedValue += char
+            else 
+                hyphenatedValue += seperator + char
+
+        hyphenatedValue
 
     parse: (data) ->
         parsed = []
