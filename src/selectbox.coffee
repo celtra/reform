@@ -147,8 +147,7 @@ class SelectBox
             $item.addClass "disabled" if $option.is ":disabled"
             $item.attr "title", $option.attr("title")
             $item.attr "value", $option.val()
-            # Change text to "None" for (<option value=null ...>) if select is not required
-            $item.text if not $option.val() then "None" else $option.text()
+            $item.text $option.text()
             $item.appendTo @$list
             
             # Prevent text selection
