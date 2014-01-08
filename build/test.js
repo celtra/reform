@@ -40,6 +40,7 @@
         highlightTitles: true,
         highlightSelection: true,
         showArrows: true,
+        hyphenate: true,
         exactMatch: false,
         title: null,
         placeholderText: 'Type to search...',
@@ -107,6 +108,8 @@
       this.floater = null;
       this.list = null;
       this.filter = null;
+      this.customClass = null;
+      this.initCustomClass();
       this.el = this.createClosed();
       this.orig.hide().attr("class", "reformed");
       this.orig.after(this.el).appendTo(this.el);
@@ -132,6 +135,13 @@
       });
       this.refreshState();
     }
+
+    AutocompleteAbstract.prototype.initCustomClass = function() {
+      var origClass;
+      origClass = this.orig.attr('class');
+      this.customClass = origClass.replace(this.options.reformClass, '');
+      return this.customClass = this.customClass.trim();
+    };
 
     AutocompleteAbstract.prototype.handleSelectionChanged = function() {
       this.orig.val(this.selectedItem.value);
@@ -190,8 +200,7 @@
     AutocompleteAbstract.prototype.createClosed = function() {
       var $el;
       $el = $("<div/>");
-      $el.attr("class", this.orig.attr("class"));
-      $el.removeClass(this.options.reformClass);
+      $el.addClass(this.customClass);
       $el.addClass(this.options.uiClass);
       $el.addClass(this.options.fakeClass);
       if (this.orig.is(":disabled")) {
@@ -206,6 +215,7 @@
     AutocompleteAbstract.prototype.createFloater = function() {
       var $floater;
       $floater = $("<div/>");
+      $floater.addClass(this.customClass);
       $floater.addClass(this.options.uiClass);
       $floater.addClass(this.options.floaterClass);
       return $floater.css("min-width", this.el.outerWidth() - 2);
@@ -259,20 +269,21 @@
     };
 
     AutocompleteAbstract.prototype.createItem = function(item) {
-      var $item, highlightedText, position, text,
+      var $item, highlightedText, leadingString, position, text, trailingString,
         _this = this;
       $item = $('<div></div>');
       $item.addClass(this.options.itemClass);
-      $item.attr('title', item.title);
-      $item.attr('value', item.value);
+      $item.data('title', item.title);
       $item.data('value', item.value);
       position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
       if (this.options.highlightTitles && this.filterValue.length !== 0 && position !== -1) {
         text = item.title.substring(position, position + this.filterValue.length);
-        highlightedText = "<strong>" + text + "</strong>";
-        $item.html(item.title.replace(text, highlightedText));
+        leadingString = item.title.substring(0, position);
+        trailingString = item.title.substring(position + this.filterValue.length, item.title.length);
+        highlightedText = "<strong>" + (this.hyphenate(text)) + "</strong>";
+        $item.html(this.hyphenate(leadingString) + highlightedText + this.hyphenate(trailingString));
       } else {
-        $item.text(item.title);
+        $item.html(this.hyphenate(item.title));
       }
       if (this.options.highlightSelection && (this.selectedItem.value != null)) {
         if (item.value === this.selectedItem.value) {
@@ -295,13 +306,16 @@
       if ($item.length === 0) {
         return;
       }
+      if ($item.is('strong')) {
+        $item = $item.closest('div');
+      }
       if (this.options.highlightSelection) {
         this.list.children().removeClass(this.options.selectedClass);
         $item.addClass(this.options.selectedClass);
       }
       this.setSelectedItem({
         value: $item.data('value'),
-        title: $item.text()
+        title: $item.data('title')
       });
       return this.close();
     };
@@ -466,6 +480,25 @@
 
     AutocompleteAbstract.prototype.getFloaterPosition = function() {
       return this.el.offset();
+    };
+
+    AutocompleteAbstract.prototype.hyphenate = function(value) {
+      var char, chars, hyphenatedValue, seperator, _i, _len;
+      if (!this.options.hyphenate) {
+        return value;
+      }
+      seperator = '&shy;';
+      chars = value.split('');
+      hyphenatedValue = '';
+      for (_i = 0, _len = chars.length; _i < _len; _i++) {
+        char = chars[_i];
+        if (hyphenatedValue.length === 0 || (char === ' ' || char === '-')) {
+          hyphenatedValue += char;
+        } else {
+          hyphenatedValue += seperator + char;
+        }
+      }
+      return hyphenatedValue;
     };
 
     AutocompleteAbstract.prototype.parse = function(data) {
