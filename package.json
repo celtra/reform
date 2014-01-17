@@ -11,12 +11,13 @@
     "url": "https://github.com/celtra/reform.git"
   },
   "dependencies": {
-    "jquery-commonjs": ">= 1.7.1"
+    "jquery-commonjs"   : ">= 1.7.1",
+    "less"              : ">=1.6.0"
   },
   "devDependencies": {
-    "coffee-script": ">=1.2.0",
-    "browserify": ">=1.9.2",
-    "uglify-js": ">=1.2.5"
+    "coffee-script"     : ">=1.2.0",
+    "browserify"        : ">=1.9.2",
+    "uglify-js"         : ">=1.2.5"
   },
   "license": "MIT",
   "engine": {
