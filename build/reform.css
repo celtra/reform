@@ -1,3 +1,9 @@
+.reform-autocomplete {
+  /*** arrows ***/
+  /*** floater ***/
+  /*** filter input ***/
+  /*** list ***/
+}
 .reform-autocomplete-fake {
   position: relative;
   display: inline-block;
@@ -18,10 +24,14 @@
   -o-user-select: none;
   user-select: none;
 }
-.reform-autocomplete-fake.disabled {
+.reform-autocomplete-fake .disabled {
   cursor: default;
 }
-/*** arrows ***/
+.reform-autocomplete-fake .disabled.reform-autocomplete-arrow-up:after,
+.reform-autocomplete-fake .disabled.reform-autocomplete-arrow-down:after {
+  border-top-color: #aaa;
+  border-bottom-color: #aaa;
+}
 .reform-autocomplete-arrow-up:after,
 .reform-autocomplete-arrow-down:after {
   position: absolute;
@@ -40,12 +50,6 @@
 .reform-autocomplete-arrow-down:after {
   border-top: 8px solid #333;
 }
-.reform-autocomplete-fake.disabled.reform-autocomplete-arrow-up:after,
-.reform-autocomplete-fake.disabled.reform-autocomplete-arrow-down:after {
-  border-top-color: #aaa;
-  border-bottom-color: #aaa;
-}
-/*** floater ***/
 .reform-autocomplete-floater {
   z-index: 20;
   position: absolute;
@@ -61,8 +65,7 @@
   position: fixed;
   z-index: 10;
 }
-/*** filter input ***/
-input.reform-autocomplete-filter {
+.reform-autocomplete-filter {
   width: 100%;
   height: 40px;
   padding: 10px 30px 10px 10px;
@@ -73,7 +76,6 @@ input.reform-autocomplete-filter {
 .reform-autocomplete-fake.disabled .reform-autocomplete-filter {
   background-color: #eee;
 }
-/*** list ***/
 .reform-autocomplete-list {
   min-width: 50px;
   max-height: 300px;
@@ -112,6 +114,10 @@ input.reform-autocomplete-filter {
 .reform-autocompletecombobox-ui .reform-autocomplete-selected-label {
   display: block;
 }
+.reform-autocompletecombobox-ui .reform-autocomplete-empty {
+  padding: 10px;
+  color: #aaa;
+}
 .reform-autocompletecombobox-ui span.reform-autocomplete-selected-label.placeholder {
   color: #aaa;
 }
@@ -129,12 +135,8 @@ input.reform-autocomplete-filter {
   outline: none;
   cursor: pointer;
 }
-.reform-autocompletecombobox-ui input.reform-autocomplete-filter:focus {
+.reform-autocompletecombobox-ui span.reform-autocomplete-filter:focus {
   outline: none;
-}
-.reform-autocompletecombobox-ui .reform-autocomplete-empty {
-  padding: 10px;
-  color: #aaa;
 }
 .reform-checkbox {
   display: none;

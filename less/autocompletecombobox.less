@@ -1,45 +1,51 @@
-.reform-autocompletecombobox-ui.reform-autocomplete-fake {
-    width: 200px;
-    height: 18px;
-    border: solid 1px #ccc;
-    padding: 10px 30px 10px 10px;
-    line-height: 18px;
-    outline: none;
-}
+.reform-autocompletecombobox-ui {
+    &.reform-autocomplete-fake {
+        width: 200px;
+        height: 18px;
+        border: solid 1px #ccc;
+        padding: 10px 30px 10px 10px;
+        line-height: 18px;
+        outline: none;
 
-.reform-autocompletecombobox-ui.reform-autocomplete-fake.disabled {
-    background-color: #eee;
-    cursor: default;
-}
+        &.disabled {
+            background-color: #eee;
+            cursor: default;
+        }
+    }
 
-.reform-autocompletecombobox-ui .reform-autocomplete-selected-label {
-    display: block;
-}
+    .reform-autocomplete {
+        &-selected-label {
+            display: block;        
+        }
 
-.reform-autocompletecombobox-ui span.reform-autocomplete-selected-label.placeholder {
-    color: #aaa;
-}
+        &-empty {
+            padding: 10px;
+            color: #aaa;
+        }
+    }
 
-.reform-autocompletecombobox-ui span.reform-autocomplete-floater-label {
-    position: relative;
-    display: block;
-    width: 200px;
-    height: 18px;
-    padding: 10px 30px 10px 10px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    line-height: 18px;
-    vertical-align: middle;
-    outline: none;
-    cursor: pointer;
-}
+    span.reform-autocomplete {
+        &-selected-label.placeholder {
+            color: #aaa;        
+        } 
 
-.reform-autocompletecombobox-ui input.reform-autocomplete-filter:focus {
-    outline: none;
-}
+        &-floater-label {
+            position: relative;
+            display: block;
+            width: 200px;
+            height: 18px;
+            padding: 10px 30px 10px 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 18px;
+            vertical-align: middle;
+            outline: none;
+            cursor: pointer;
+        }
 
-.reform-autocompletecombobox-ui .reform-autocomplete-empty {
-    padding: 10px;
-    color: #aaa;
+        &-filter:focus {
+            outline: none;
+        }
+    }
 }
