@@ -1,7 +1,11 @@
 #!/bin/bash
 
-cat css/*.css > build/reform.css
-echo "Merged CSS"
+rm -r build/*
+rm -r lib/*
+echo "Cleared old builds"
+
+lessc less/all.less > build/reform.css
+echo "Compiled LESS"
 
 coffee -o lib src
 echo "Compiled lib"

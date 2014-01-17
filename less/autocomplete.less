@@ -1,0 +1,117 @@
+.reform-autocomplete {
+    &-fake {
+        position: relative;
+        display: inline-block;
+        width: auto;
+        height: auto;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 18px;
+        vertical-align: middle;
+
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+
+        .disabled {
+            cursor: default;
+
+            &.reform-autocomplete-arrow-up:after, &.reform-autocomplete-arrow-down:after {
+                border-top-color: #aaa;
+                border-bottom-color: #aaa;
+            }
+        }
+    }
+
+    /*** arrows ***/
+    &-arrow {
+        &-up:after, &-down:after {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            content: "";
+            width: 0;
+            height: 0;
+            margin: -4px 0 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+        }
+
+        &-up:after {
+            border-bottom: 8px solid #333;
+        }
+
+        &-down:after {
+            border-top: 8px solid #333;
+        }
+    }
+
+    /*** floater ***/
+    &-floater {
+        z-index: 20;
+        position: absolute;
+        border: solid 1px #ccc;
+        background: #fff;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    &-overlay {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: fixed;
+        z-index: 10
+    }
+
+    /*** filter input ***/
+    &-filter {
+        width: 100%;
+        height: 40px;
+        padding: 10px 30px 10px 10px;
+        font-size: 14px;
+        font-family: "Tahoma";
+        border: 1px solid #ccc;
+    }
+
+    &-fake.disabled &-filter {
+        background-color: #eee;
+    }
+
+    /*** list ***/
+    &-list {
+        min-width: 50px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    &-item {
+        border-bottom: solid 1px #eee;
+        padding: 10px;
+        cursor: pointer;
+
+        strong{
+            background: inherit;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &-hover {
+        background: #eee;
+    }
+
+    &-selected {
+        background: #333;
+        color: #fff;
+    }
+}

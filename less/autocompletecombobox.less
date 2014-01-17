@@ -1,0 +1,51 @@
+.reform-autocompletecombobox-ui {
+    &.reform-autocomplete-fake {
+        width: 200px;
+        height: 18px;
+        border: solid 1px #ccc;
+        padding: 10px 30px 10px 10px;
+        line-height: 18px;
+        outline: none;
+
+        &.disabled {
+            background-color: #eee;
+            cursor: default;
+        }
+    }
+
+    .reform-autocomplete {
+        &-selected-label {
+            display: block;        
+        }
+
+        &-empty {
+            padding: 10px;
+            color: #aaa;
+        }
+    }
+
+    span.reform-autocomplete {
+        &-selected-label.placeholder {
+            color: #aaa;        
+        } 
+
+        &-floater-label {
+            position: relative;
+            display: block;
+            width: 200px;
+            height: 18px;
+            padding: 10px 30px 10px 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            line-height: 18px;
+            vertical-align: middle;
+            outline: none;
+            cursor: pointer;
+        }
+
+        &-filter:focus {
+            outline: none;
+        }
+    }
+}

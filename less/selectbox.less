@@ -1,0 +1,81 @@
+.reform-selectbox {
+    display: none;
+
+    &-fake {
+        position: relative;
+        display: inline-block;
+        width: 200px;
+        height: 18px;
+        border: solid 1px #ccc;
+        padding: 10px 30px 10px 10px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 18px;
+        vertical-align: middle;
+        outline: none;
+        
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        
+        &:after {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            content: "";
+            width: 0;
+            height: 0;
+            margin: -4px 0 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+
+            border-top: 8px solid #333;
+        }
+        &.disabled {
+            background-color: #eee;
+        }
+    }
+    &-options {
+        display: none;
+        position: absolute;
+        border: solid 1px #ccc;
+        background: #fff;
+        box-shadow: 0 0 10px #ccc;
+    }
+    &-list {
+        min-width: 180px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    &-item {
+        border-bottom: solid 1px #eee;
+        padding: 10px;
+        cursor: pointer;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &.hover {
+            background: #eee;
+        }
+
+        &.selected {
+            background: #333;
+            color: #fff;
+        }
+
+        &.disabled {
+            color: #ccc;
+
+            &.hover {
+                background: inherit;
+            }
+        }
+    }
+}
