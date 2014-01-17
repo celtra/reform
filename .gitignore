@@ -1,6 +1,11 @@
 /node_modules
 /.project
 /.settings
-/lib
-/lib_test
-/build
+/lib/*
+/lib_test/*
+/build/*
+npm-debug.log
+
+!/lib/_placeholder
+!/lib_test/_placeholder
+!/build/_placeholder
