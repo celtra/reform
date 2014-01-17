@@ -1,3 +1,6 @@
 /node_modules
 /.project
 /.settings
+/lib
+/lib_test
+/build

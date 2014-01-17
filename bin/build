@@ -2,6 +2,10 @@
 
 rm -r build/*
 rm -r lib/*
+rm -r lib_test/*
+touch build/_placeholder
+touch lib/_placeholder
+touch lib_test/_placeholder
 echo "Cleared old builds"
 
 lessc less/all.less > build/reform.css
