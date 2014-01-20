@@ -1,5 +1,5 @@
 window.$             ?= require "jquery-commonjs"
-AutocompleteAbstract  = require "./autocompleteAbstract"
+AutocompleteAbstract  = require "./autocomplete_abstract"
 
 class AutocompleteCombobox extends AutocompleteAbstract
     constructor: (@select, options) ->
