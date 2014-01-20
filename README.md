@@ -13,6 +13,7 @@ All the files you need are in the `build` folder.
  3. Whenever you want custom form elements, do this:
    - Add `reform-checkbox` class to `input[type=checkbox]` elements
    - Add `reform-selectbox` class to `select` elements
+   - Add `reform-multilineselectbox` class to `select` elements
    - Add `reform-autocompletebox` class to `input[type=text]` elements
    - Add `reform-autocompletecombobox` class to `input[type=text]` elements
  4. Define your own CSS for "reformed" form elements or override the defaults in `reform.css`
@@ -78,6 +79,11 @@ Once the fake element is clicked, the options container is populated and shown:
     </div>
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
+
+Multiline select box
+--------------------
+
+The multiline select box is basically a select box with support for a description line in the list of options. Simply add a data-desc attribute to the option tag.
 
 Autocomplete box
 ----------
