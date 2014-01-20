@@ -1,5 +1,5 @@
 window.$             ?= require "jquery-commonjs"
-AutocompleteAbstract  = require "./autocompleteAbstract"
+AutocompleteAbstract  = require "./autocomplete_abstract"
 
 # Implements custom autocomplete box
 class AutocompleteBox extends AutocompleteAbstract
