@@ -107,7 +107,7 @@ class SelectBoxBase
         @body.on "reform.open", (e) => @close() unless e.target is @select
 
         # Clean up orphaned options containers
-        $('.reform-selectbox-options').remove()
+        $('.reform-selectbox-floater').remove()
     
     hover: ($item) ->
         $item.siblings().andSelf().removeClass "hover"
@@ -186,9 +186,9 @@ class SelectBoxBase
 
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "reform-selectbox-options"
+        @floater.attr "class", "reform-selectbox-floater"
         @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass @orig.data "options-class"
+        @floater.addClass @orig.data "floater-class"
         @body.append @floater
         
         @createOptions()
