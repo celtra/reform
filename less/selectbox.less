@@ -4,118 +4,69 @@
 @selectboxItemHeight          : 30px;
 @selectboxItemPaddingVertical : (@selectboxItemHeight - @baseLineHeight) / 2;
 
-.reform-selectbox {
-    &-fake {
-        position : relative;
-        display  : inline-block;
-        
-        font-family   : @baseFontFamily;
-        font-size     : @baseFontSize;
-        color         : @baseColor;
+.reform-selectbox-fake {
+    position       : relative;
+    display        : inline-block;
+    
+    font-family    : @baseFontFamily;
+    font-size      : @baseFontSize;
+    color          : @baseColor;
 
-        box-sizing  : border-box;
-        line-height : @baseLineHeight;
-        padding     : @selectboxPaddingVertical (@paddingHorizontal + 4) @selectboxPaddingVertical @paddingHorizontal;
-        margin      : 0 9px 9px 0;
-        min-width   : @baseWidth;
-        height      : @selectboxHeight;
-        max-width   : @baseWidth;
+    box-sizing     : border-box;
+    line-height    : @baseLineHeight;
+    padding        : @selectboxPaddingVertical (@paddingHorizontal + 4) @selectboxPaddingVertical @paddingHorizontal;
+    margin         : 0 9px 9px 0;
+    height         : @selectboxHeight;
+    max-width      : @baseWidth;
+    min-width      : @baseWidth;
 
-        cursor         : pointer;
-        
-        vertical-align : middle;
-        outline        : none;
-        
-        .select-disabled;
-        .rounded-corners;
+    cursor         : pointer;
+    vertical-align : middle;
+    outline        : none;
+    
+    .select-disabled;
+    .rounded-corners;
 
-        .selected-item {
-            overflow      : hidden;    
-            white-space   : nowrap;
-            text-overflow : ellipsis;
+    .selected-item {
+        overflow      : hidden;    
+        white-space   : nowrap;
+        text-overflow : ellipsis;
+    }
+
+    &:after {
+        position : absolute;
+        top      : 50%;
+        right    : 16px;
+
+        .arrow;
+    }
+
+    &:hover {
+        .outline;
+    }
+
+    &.disabled {
+        cursor : default;
+        color  : @disabledColor;
+
+        &:hover {
+            box-shadow: none;
         }
 
         &:after {
-            position : absolute;
-            top      : 50%;
-            right    : 16px;
-
-            .arrow;
-        }
-
-        &:hover {
-            .outline;
-        }
-
-        &.disabled {
-            cursor : default;
-            color  : @disabledColor;
-
-            &:hover {
-                box-shadow: none;
-            }
-
-            &:after {
-                .arrow(@grayColor);
-            }
+            .arrow(@grayColor);
         }
     }
-    &-floater {
-        display  : block;
-        position : absolute;
+}
 
-        font-family : @baseFontFamily;
-        font-size   : @baseFontSize;
-        color       : @baseColor;
+.reform-selectbox-list .reform-selectbox-item {
+    padding       : @selectboxItemPaddingVertical @paddingHorizontal; 
 
-        max-width   : @baseWidth;
-        box-sizing  : border-box;  
-        line-height : @baseLineHeight;
-        overflow    : hidden;
-        background  : @backgroundColor;
-
-        .outline;
-        .rounded-corners;
+    &:first-child {
+        padding-top: @selectboxPaddingVertical;
     }
-    &-list {
-        min-width  : 180px;
-        max-height : 300px;
-        overflow-y : auto;
-    }
-    &-item {
-        cursor      : pointer;
-        padding     : @selectboxItemPaddingVertical @paddingHorizontal; 
 
-        height        : @selectboxItemHeight;
-        box-sizing    : border-box;
-        white-space   : nowrap;
-        text-overflow : ellipsis;
-        overflow      : hidden;
-
-        &:first-child {
-            padding-top: @selectboxPaddingVertical;
-        }
-
-        &:last-child {
-            padding-bottom: @selectboxPaddingVertical;
-        }
-
-        &.hover {
-            background: @hoverColor;
-        }
-
-        &.selected {
-            background : @selectedColor;
-            color      : @backgroundColor;
-        }
-
-        &.disabled {
-            cursor : default;
-            color  : @disabledColor;
-
-            &.hover {
-                background: inherit;
-            }
-        }
+    &:last-child {
+        padding-bottom: @selectboxPaddingVertical;
     }
 }

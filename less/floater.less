@@ -1,0 +1,59 @@
+.reform-selectbox-floater {
+    display     : block;
+    position    : absolute;
+
+    font-family : @baseFontFamily;
+    font-size   : @baseFontSize;
+    color       : @baseColor;
+
+    max-width   : @baseWidth;
+    box-sizing  : border-box;  
+    line-height : @baseLineHeight;
+    overflow    : hidden;
+    background  : @backgroundColor;
+
+    .outline;
+    .rounded-corners;
+}
+
+.reform-selectbox-list {
+    min-width  : 180px;
+    max-height : 300px;
+    overflow-y : auto;
+
+    .reform-selectbox-item {
+        cursor        : pointer;
+        padding       : @paddingVertical @paddingHorizontal; 
+
+        box-sizing    : border-box;
+        white-space   : nowrap;
+        text-overflow : ellipsis;
+        overflow      : hidden;
+
+        &:first-child {
+            padding-top: @paddingVertical;
+        }
+
+        &:last-child {
+            padding-bottom: @paddingVertical;
+        }
+
+        &.hover {
+            background: @hoverColor;
+        }
+
+        &.selected {
+            background : @selectedColor;
+            color      : @backgroundColor;
+        }
+
+        &.disabled {
+            cursor : default;
+            color  : @disabledColor;
+
+            &.hover {
+                background: inherit;
+            }
+        }
+    }
+}

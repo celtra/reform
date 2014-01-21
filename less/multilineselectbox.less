@@ -7,6 +7,7 @@
 @multilinePaddingVertical : (@multilineHeight - @multilineTitleFontSize - @multilineDescFontSize) / 2;
 
 .reform-multilineselectbox-ui {
+    
     &.reform-selectbox-fake {
         height      : @multilineHeight;
         max-width   : @baseWidth;
@@ -36,18 +37,6 @@
         }
     }
 
-    .reform-selectbox-item {
-        height: @multilineHeight;
-
-        &:first-child {
-            padding-top: @multilinePaddingVertical;
-        }
-
-        &:last-child {
-            padding-bottom: @multilinePaddingVertical;
-        }
-    }
-
     .reform-selectbox-item, &.reform-selectbox-fake .selected-item {
         p, span {
             white-space   : nowrap;
@@ -66,8 +55,20 @@
             color       : @multilineDescColor;
         }
 
-        &.disabled span {
+        &.disabled span, &.disabled p {
             color: @disabledColor;
+        }
+    }
+
+    .reform-selectbox-list .reform-selectbox-item {
+        height: @multilineHeight;
+
+        &:first-child {
+            padding-top: @multilinePaddingVertical;
+        }
+
+        &:last-child {
+            padding-bottom: @multilinePaddingVertical;
         }
     }
 }
