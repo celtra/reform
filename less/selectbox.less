@@ -26,6 +26,7 @@
     
     .select-disabled;
     .rounded-corners;
+    .outline;
 
     .selected-item {
         overflow      : hidden;    
@@ -42,7 +43,7 @@
     }
 
     &:hover {
-        .outline;
+        .outline(@grayColor);
     }
 
     &.disabled {
@@ -50,7 +51,7 @@
         color  : @disabledColor;
 
         &:hover {
-            box-shadow: none;
+            .outline;
         }
 
         &:after {

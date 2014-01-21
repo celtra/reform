@@ -1,20 +1,17 @@
-@multilineTitleFontFamily : 'Avenir Next LT Pro Medium';
+@multilineTitleFontFamily : @baseFontFamily;
 @multilineTitleFontSize   : @baseFontSize + 3;
 @multilineDescFontSize    : @baseFontSize - 1;
 @multilineDescColor       : #aaa;
-@multilineBorderColor     : #ddd;
 @multilineHeight          : 50px;
 @multilinePaddingVertical : (@multilineHeight - @multilineTitleFontSize - @multilineDescFontSize) / 2;
 
 .reform-multilineselectbox-ui {
-    
+
     &.reform-selectbox-fake {
         height      : @multilineHeight;
         max-width   : @baseWidth;
         padding     : @multilinePaddingVertical (@paddingHorizontal + 4) @multilinePaddingVertical @paddingHorizontal;
         min-width   : 390px;
-
-        .outline(@multilineBorderColor);
 
         &:after {
             right: 10px;
@@ -28,7 +25,7 @@
 
         &.disabled {
             &:hover {
-                .outline(@multilineBorderColor);
+                .outline;
             }
 
             &:after {
