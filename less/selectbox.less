@@ -1,4 +1,8 @@
-@height: 2 * @paddingVertical + @baseLineHeight;
+@selectboxHeight              : 38px;
+@selectboxPaddingVertical     : (@selectboxHeight - @baseLineHeight) / 2;
+
+@selectboxItemHeight          : 30px;
+@selectboxItemPaddingVertical : (@selectboxItemHeight - @baseLineHeight) / 2;
 
 .reform-selectbox {
     &-fake {
@@ -8,23 +12,28 @@
         font-family   : @baseFontFamily;
         font-size     : @baseFontSize;
         color         : @baseColor;
-        white-space   : nowrap;
-        text-overflow : ellipsis;
 
         box-sizing  : border-box;
         line-height : @baseLineHeight;
-        padding     : @paddingVertical @paddingHorizontal;
+        padding     : @selectboxPaddingVertical (@paddingHorizontal + 4) @selectboxPaddingVertical @paddingHorizontal;
         margin      : 0 9px 9px 0;
         min-width   : @baseWidth;
-        height      : @height;
+        height      : @selectboxHeight;
+        max-width   : @baseWidth;
 
         cursor         : pointer;
-        overflow       : hidden;
+        
         vertical-align : middle;
         outline        : none;
         
         .select-disabled;
         .rounded-corners;
+
+        .selected-item {
+            overflow      : hidden;    
+            white-space   : nowrap;
+            text-overflow : ellipsis;
+        }
 
         &:after {
             position : absolute;
@@ -47,7 +56,7 @@
             }
 
             &:after {
-                .arrow(4px, @grayColor);
+                .arrow(@grayColor);
             }
         }
     }
@@ -59,9 +68,11 @@
         font-size   : @baseFontSize;
         color       : @baseColor;
 
-        box-sizing : border-box;        
-        overflow   : hidden;
-        background : @backgroundColor;
+        max-width   : @baseWidth;
+        box-sizing  : border-box;  
+        line-height : @baseLineHeight;
+        overflow    : hidden;
+        background  : @backgroundColor;
 
         .outline;
         .rounded-corners;
@@ -72,15 +83,21 @@
         overflow-y : auto;
     }
     &-item {
-        cursor  : pointer;
-        padding : (@paddingVertical - 3) @paddingHorizontal;
+        cursor      : pointer;
+        padding     : @selectboxItemPaddingVertical @paddingHorizontal; 
+
+        height        : @selectboxItemHeight;
+        box-sizing    : border-box;
+        white-space   : nowrap;
+        text-overflow : ellipsis;
+        overflow      : hidden;
 
         &:first-child {
-            padding-top: @paddingVertical;
+            padding-top: @selectboxPaddingVertical;
         }
 
         &:last-child {
-            padding-bottom: @paddingVertical;
+            padding-bottom: @selectboxPaddingVertical;
         }
 
         &.hover {

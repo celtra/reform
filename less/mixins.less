@@ -19,13 +19,14 @@
     box-shadow: 0 0 0 1px @color;
 }
 
-.arrow (@size: 4px, @color: @baseColor) {
+.arrow (@color: @baseColor, @height: 4px, @width: 8px) {
     content: "";
     width: 0;
     height: 0;
-    margin: -(@size/2) 0 0;
-    border-left: @size solid transparent;
-    border-right: @size solid transparent;
+    margin: -(@height/2) 0 0;
 
-    border-top: @size solid @color;
+    border-left: (@width/2) solid transparent;
+    border-right: (@width/2) solid transparent;
+
+    border-top: @height solid @color;
 }

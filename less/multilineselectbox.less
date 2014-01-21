@@ -1,22 +1,74 @@
+@multilineTitleFontFamily : 'Avenir Next LT Pro Medium';
+@multilineTitleFontSize   : @baseFontSize + 3;
+@multilineDescFontSize    : @baseFontSize - 1;
+@multilineDescColor       : #aaa;
+@multilineBorderColor     : #ddd;
+@multilineHeight          : 50px;
+@multilinePaddingVertical : (@multilineHeight - @multilineTitleFontSize - @multilineDescFontSize) / 2;
+
 .reform-multilineselectbox-ui {
-    .reform-selectbox-item, &.reform-selectbox-fake {
-        p {
-            margin: 0;
+    &.reform-selectbox-fake {
+        height      : @multilineHeight;
+        max-width   : @baseWidth;
+        padding     : @multilinePaddingVertical (@paddingHorizontal + 4) @multilinePaddingVertical @paddingHorizontal;
+        min-width   : 390px;
+
+        .outline(@multilineBorderColor);
+
+        &:after {
+            right: 10px;
+
+            .arrow(@baseColor, 7px, 12px);
         }
 
-        span {
-            color: #aaa;
-            font-size: 12px;
+        &:hover {
+            .outline(@grayColor);
         }
 
-        &.disabled span {
-            color: #ccc;
+        &.disabled {
+            &:hover {
+                .outline(@multilineBorderColor);
+            }
+
+            &:after {
+                .arrow(@disabledColor, 7px, 12px);
+            }
         }
     }
 
-    &.reform-selectbox-fake {
-        line-height: 17px;
-        height: 33px;
+    .reform-selectbox-item {
+        height: @multilineHeight;
+
+        &:first-child {
+            padding-top: @multilinePaddingVertical;
+        }
+
+        &:last-child {
+            padding-bottom: @multilinePaddingVertical;
+        }
+    }
+
+    .reform-selectbox-item, &.reform-selectbox-fake .selected-item {
+        p, span {
+            white-space   : nowrap;
+            text-overflow : ellipsis;
+            overflow      : hidden;
+        }
+
+        p {
+            font-family : @multilineTitleFontFamily;
+            font-size   : @multilineTitleFontSize;
+            margin      : 0;
+        }
+
+        span {
+            font-size   : @multilineDescFontSize;
+            color       : @multilineDescColor;
+        }
+
+        &.disabled span {
+            color: @disabledColor;
+        }
     }
 }
 
