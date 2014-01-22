@@ -19,13 +19,17 @@ class SelectBoxBase
         # Fake select box
         @fake = $ "<div/>"
         @fake.attr "tabindex", 0
-        @fake.attr "class", @orig.attr "class"
-        @orig.hide().attr "class", "reformed"
-        # @fake.removeClass("reform-selectbox").addClass "reform-selectbox-fake"
-        @fake.removeClass @options.reformClass
+        
+        origClass = @orig.attr 'class'
+        @customClass = origClass.replace @options.reformClass, ''
+        @customClass = @customClass.trim()
+        @fake.addClass @customClass
+
         @fake.addClass    @options.fakeClass
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass @options.uiClass
+
+        @orig.hide().attr "class", "reformed"
 
         $selectedItem = $ '<div></div>'
         $selectedItem.addClass 'selected-item'
@@ -188,6 +192,7 @@ class SelectBoxBase
         @floater = $ "<div/>"
         @floater.attr "class", "reform-floater"
         @floater.css "min-width", @fake.outerWidth()
+        @floater.addClass @customClass
         @floater.addClass @orig.data "floater-class"
         @floater.addClass @options.uiClass
         @body.append @floater
