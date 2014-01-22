@@ -34,17 +34,17 @@ class AutocompleteAbstract
             reformClass         : 'reform-autocomplete'
             uiClass             : 'reform-autocomplete-ui'
             fakeClass           : 'reform-autocomplete-fake'
-            floaterClass        : 'reform-autocomplete-floater'
-            overlayClass        : 'reform-autocomplete-overlay'
             filterClass         : 'reform-autocomplete-filter'
-            listClass           : 'reform-autocomplete-list'
-            itemClass           : 'reform-autocomplete-item'
-            hoverClass          : 'reform-autocomplete-hover'
-            selectedClass       : 'reform-autocomplete-selected'
-            arrowDownClass      : 'reform-autocomplete-arrow-down'
-            arrowUpClass        : 'reform-autocomplete-arrow-up'
             emptyClass          : 'reform-autocomplete-empty'
             disabledClass       : 'disabled'
+            arrowDownClass      : 'arrow-down'
+            arrowUpClass        : 'arrow-up'
+            hoverClass          : 'hover'
+            selectedClass       : 'selected'
+            floaterClass        : 'reform-floater'
+            listClass           : 'reform-floater-list'
+            itemClass           : 'reform-floater-item'
+            overlayClass        : 'reform-floater-overlay'
         }
         
         @orig    = $ @select
@@ -173,11 +173,14 @@ class AutocompleteAbstract
         $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
-        $floater.css "min-width", @el.outerWidth() - 2
+        $floater.css "min-width", @el.outerWidth()
 
     createFilter: ->
         $filter = $ "<input/>"
         $filter.addClass @options.filterClass
+
+        if @orig.is ':disabled'
+            $filter.attr 'disabled', 'disabled'
 
         if @options.placeholderText?
             $filter.attr 'placeholder', @options.placeholderText

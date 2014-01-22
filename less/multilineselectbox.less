@@ -29,12 +29,12 @@
             }
 
             &:after {
-                .arrow(@disabledColor, 7px, 12px);
+                .arrow-down(@disabledColor, 7px, 12px);
             }
         }
     }
 
-    .reform-selectbox-item, &.reform-selectbox-fake .selected-item {
+    &.reform-selectbox-fake .selected-item, .reform-floater-item {
         p, span {
             white-space   : nowrap;
             text-overflow : ellipsis;
@@ -57,7 +57,7 @@
         }
     }
 
-    .reform-selectbox-list .reform-selectbox-item {
+    &.reform-floater-list .reform-floater-item {
         height: @multilineHeight;
 
         &:first-child {

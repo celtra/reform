@@ -1,4 +1,5 @@
-.reform-selectbox-floater {
+.reform-floater {
+    z-index     : 20;
     display     : block;
     position    : absolute;
 
@@ -16,12 +17,12 @@
     .rounded-corners;
 }
 
-.reform-selectbox-list {
+.reform-floater-list {
     min-width  : 180px;
     max-height : 300px;
     overflow-y : auto;
 
-    .reform-selectbox-item {
+    .reform-floater-item {
         cursor        : pointer;
         padding       : @paddingVertical @paddingHorizontal; 
 
@@ -56,4 +57,13 @@
             }
         }
     }
+}
+
+.reform-floater-overlay {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 10
 }

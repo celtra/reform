@@ -19,7 +19,23 @@
     box-shadow: 0 0 0 1px @color;
 }
 
+.arrow-up (@color: @baseColor, @height: 4px, @width: 8px) {
+    .arrow(@color, @height, @width);
+
+    border-bottom: @height solid @color;
+}
+
+.arrow-down (@color: @baseColor, @height: 4px, @width: 8px) {
+    .arrow(@color, @height, @width);
+
+    border-top: @height solid @color;
+}
+
 .arrow (@color: @baseColor, @height: 4px, @width: 8px) {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    
     content: "";
     width: 0;
     height: 0;
@@ -27,6 +43,11 @@
 
     border-left: (@width/2) solid transparent;
     border-right: (@width/2) solid transparent;
+}
 
-    border-top: @height solid @color;
+.placeholder (@color: @grayColor) {
+    &::-webkit-input-placeholder { color:@color; }
+    &::-moz-placeholder          { color:@color; } /* firefox 19+ */
+    &:-ms-input-placeholder      { color:@color; } /* ie */
+    &:-moz-placeholder           { color:@color; }
 }
