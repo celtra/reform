@@ -16,7 +16,7 @@
         &:after {
             right: 10px;
 
-            .arrow(@baseColor, 7px, 12px);
+            .arrow-down(@baseColor, 7px, 12px);
         }
 
         &:hover {
@@ -30,6 +30,12 @@
 
             &:after {
                 .arrow-down(@disabledColor, 7px, 12px);
+            }
+
+            .selected-item {
+                span, p {
+                    color: @disabledColor;        
+                }
             }
         }
     }
@@ -50,10 +56,6 @@
         span {
             font-size   : @multilineDescFontSize;
             color       : @multilineDescColor;
-        }
-
-        &.disabled span, &.disabled p {
-            color: @disabledColor;
         }
     }
 

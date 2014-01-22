@@ -1,43 +1,44 @@
-.reform-checkbox {
-    display: none;
+@checkboxHeight: @baseHeight;
 
-    &-fake {
-        position: relative;
-        display: inline-block;
-        width: 38px;
-        height: 38px;
-        border: solid 1px #ccc;
-        cursor: pointer;
-        vertical-align: middle;    
+.reform-checkbox-fake {
+    position       : relative;
+    display        : inline-block;
+    height         : @checkboxHeight;
+    width          : @baseHeight;
+    cursor         : pointer;
+    vertical-align : middle;
+    box-sizing     : border-box;
 
-        &:focus {
-            background: red;
-        }        
+    .outline;
 
-        &.radio,
-        &.radio.checked:before {
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            border-radius: 50%;
-        }
+    &:hover {
+        .outline(@grayColor);
+    }
+
+    &.radio,
+    &.radio.checked:before {
+        .rounded-corners(50%);
+    }
+
+    &.checked:before {
+        position   : absolute;
+        top        : 50%;
+        left       : 50%;
+        content    : "";
+        width      : 50%;
+        height     : 50%;
+        margin     : -25% 0 0 -25%;
+        background : @selectedColor;
+    }
+
+    &.disabled {
+        cursor           : default;
+        background-color : lighten(@disabledColor, 10%);
+
+        .outline(@disabledColor);
 
         &.checked:before {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            content: "";
-            width: 50%;
-            height: 50%;
-            margin: -25% 0 0 -25%;
-            background: #333;
-        }
-
-        &.disabled {
-            background-color: #eee;
-
-            &.checked:before {
-                background-color: #ccc;
-            }
+            background-color: @disabledColor;
         }
     }
 }
