@@ -7,6 +7,12 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../build/reform.js"></script>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCobVik6xLVkJ5r2NQAWX6zcjxppo6fcao"></script>
+        <style type="text/css">
+            h3 {
+                font-family: Arial;
+                font-weight: normal;
+            }
+        </style>
         <script>
             var inlineData = [
                 {
@@ -46,6 +52,10 @@
                     "value": "39"
                 },
                 {
+                    "title": "thirtynineandahuderttenthousandandseventynine",
+                    "value": "390"
+                },
+                {
                     "title": "fifty",
                     "value": "50"
                 },
@@ -72,7 +82,7 @@
     </head>
     <body>
         
-        <h2>Check boxes</h2>
+        <h3>Check boxes</h3>
         
         <div>
             <input class="reform-checkbox" type="checkbox">
@@ -81,7 +91,9 @@
             <input class="reform-checkbox tmp" type="checkbox" checked disabled>
         </div>
         
-        <h2>Radio boxes</h2>
+        <br/><br/>
+        
+        <h3>Radio boxes</h3>
         
         <div>
             <input id="radio-1" class="reform-checkbox" type="radio" name="test-radio">
@@ -90,7 +102,9 @@
             <input class="reform-checkbox radio" type="radio" checked disabled>
         </div>
         
-        <h2>Select boxes</h2>
+        <br/><br/>
+
+        <h3>Select boxes</h3>
         
         <div>
             <select class="reform-selectbox" title="Pick a number">
@@ -150,29 +164,9 @@
             <select class="reform-selectbox" title=""></select>
         </div>
         
-        <h2>Custom style</h2>
-        
-        <input id="demo-checkbox" class="reform-checkbox demo-checkbox" type="checkbox">
-        <label for="demo-checkbox">Check this</label>
-        
         <br><br>
         
-        <select class="reform-selectbox" data-options-class="demo-selectbox-options" title="Select this" multiple>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-            <option value="4">Four</option>
-            <option value="5">Five</option>
-            <option value="6">Six</option>
-            <option value="7">Seven</option>
-            <option value="8">Eight</option>
-            <option value="9">Nine</option>
-            <option value="10">Ten</option>
-        </select>
-        
-        <br><br>
-        
-        <h2>Multiline Select box</h2>
+        <h3>Multiline Select box</h3>
         
         <div>
             <select class="reform-multilineselectbox">
@@ -187,9 +181,7 @@
                 <option value="9" data-desc="Number nine is the nineth number">Nine</option>
                 <option value="10" data-desc="Number ten is the tenth number">Ten</option>
             </select>
-        </div>
 
-        <div>
             <select class="reform-multilineselectbox" disabled>
                 <option value="1" title="First tooltip" data-desc="Number one is the first number">One</option>
                 <option value="2" data-desc="Number two is the second number">Two</option>
@@ -198,17 +190,47 @@
 
         <br><br>
 
-        <h2>Autocomplete Inline</h2>
+        <h3>Autocomplete Inline</h3>
+
+        <div>
         
-        <input id="autocomplete-inline" class="reform-autocompletebox" type="text" />
+            <input id="autocomplete-inline" class="reform-autocompletebox" type="text" />
 
-        <h2>Autocomplete (will not work if opened via file://)</h2>
-        <input id="autocompletebox" class="reform-autocompletebox" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
+            <input class="reform-autocompletebox" type="text" disabled />
 
-        <br><br>
+            <h3>Autocomplete (will not work if opened via file://)</h3>
+            <input id="autocompletebox" class="reform-autocompletebox" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
 
-        <h2>Autocomplete Combobox</h2>
-        <input id="autocompletecombobox" class="reform-autocompletecombobox" />
+            <h3>Autocomplete Combobox</h3>
+            <input id="autocompletecombobox" class="reform-autocompletecombobox" />
+
+            <input class="reform-autocompletecombobox" disabled />
+
+        </div>
+
+        <br/><br/>
+
+        <h3>Custom style</h3>
+        
+        <div>
+            <input id="demo-checkbox" class="reform-checkbox demo-checkbox" type="checkbox">
+            <label for="demo-checkbox">Check this</label>
+            
+            <br><br>
+            
+            <select class="reform-selectbox" data-options-class="demo-selectbox-options" title="Select this" multiple>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+        </div>
 
     </body>
 </html>
