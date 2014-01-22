@@ -9,8 +9,8 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
             reformClass         : 'reform-autocompletecombobox'
             uiClass             : 'reform-autocompletecombobox-ui'
-            titleClass          : 'reform-autocomplete-selected-label'
             floaterLabelClass   : 'reform-autocomplete-floater-label'
+            titleClass          : 'selected-item'
             placeholderClass    : 'placeholder'
         }, options
         

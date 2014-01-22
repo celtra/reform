@@ -1,51 +1,65 @@
 .reform-autocompletecombobox-ui {
     &.reform-autocomplete-fake {
-        width: 200px;
-        height: 18px;
-        border: solid 1px #ccc;
-        padding: 10px 30px 10px 10px;
-        line-height: 18px;
-        outline: none;
+        height      : @autocompleteHeight;
+        padding     : @autocompletePaddingVertical @paddingHorizontal;
 
         &.disabled {
-            background-color: #eee;
             cursor: default;
-        }
-    }
 
-    .reform-autocomplete {
-        &-selected-label {
-            display: block;        
+            .outline(@disabledColor);
         }
 
-        &-empty {
-            padding: 10px;
-            color: #aaa;
+        .selected-item {
+            overflow      : hidden;    
+            white-space   : nowrap;
+            text-overflow : ellipsis;
         }
-    }
 
-    span.reform-autocomplete {
-        &-selected-label.placeholder {
-            color: #aaa;        
+        .placeholder {
+            color: @darkGrayColor;
+        }
+
+        &.disabled .placeholder {
+            color: @disabledColor;
         } 
+    }
 
-        &-floater-label {
-            position: relative;
-            display: block;
-            width: 200px;
-            height: 18px;
-            padding: 10px 30px 10px 10px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            line-height: 18px;
-            vertical-align: middle;
-            outline: none;
-            cursor: pointer;
+    &.reform-floater {
+        .reform-autocomplete-floater-label {
+            position       : relative;
+            display        : block;
+            box-sizing     : border-box;
+            height         : @autocompleteHeight;
+            padding        : @autocompletePaddingVertical @paddingHorizontal;
+         
+            overflow       : hidden;   
+            white-space    : nowrap;
+            text-overflow  : ellipsis;
+            vertical-align : middle;
+            cursor         : pointer;
+            outline        : none;
+
+            &.arrow-up:after {
+                .arrow-up;
+            }
         }
 
-        &-filter:focus {
-            outline: none;
+        .reform-autocomplete-filter {
+            width         : 100%;
+            border-top    : 1px solid @grayColor;
+            border-bottom : 1px solid @grayColor;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .reform-autocomplete-empty {
+            color      : @darkGrayColor;
+            box-sizing : border-box;
+            height     : @autocompleteHeight;
+            padding    : @autocompletePaddingVertical @paddingHorizontal;
+
         }
     }
 }

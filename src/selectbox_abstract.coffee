@@ -107,7 +107,7 @@ class SelectBoxBase
         @body.on "reform.open", (e) => @close() unless e.target is @select
 
         # Clean up orphaned options containers
-        $('.reform-selectbox-options').remove()
+        $('.reform-floater').remove()
     
     hover: ($item) ->
         $item.siblings().andSelf().removeClass "hover"
@@ -141,14 +141,14 @@ class SelectBoxBase
 
         # List container
         @$list = $("<div/>").appendTo @floater
-        @$list.attr "class", "reform-selectbox-list"
+        @$list.attr "class", "reform-floater-list"
         @$list.addClass @options.uiClass
         
         # Filling options
         @orig.find("option").each (i, option) =>
             $option = $ option
             $item = $ "<div/>"
-            $item.attr "class", "reform-selectbox-item"
+            $item.attr "class", "reform-floater-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.addClass "disabled" if $option.is ":disabled"
             $item.attr "title", $option.attr("title")
@@ -177,7 +177,7 @@ class SelectBoxBase
                 @orig.val(@value()).trigger "change"
     
     value: ->
-        @$list.find(".reform-selectbox-item.selected").map -> $(@).val()
+        @$list.find(".reform-floater-item.selected").map -> $(@).val()
     
     # Generates and opens the options container
     open: =>
@@ -186,9 +186,10 @@ class SelectBoxBase
 
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "reform-selectbox-options"
+        @floater.attr "class", "reform-floater"
         @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass @orig.data "options-class"
+        @floater.addClass @orig.data "floater-class"
+        @floater.addClass @options.uiClass
         @body.append @floater
         
         @createOptions()
