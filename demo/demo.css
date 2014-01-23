@@ -1,7 +1,8 @@
 body { margin: 30px; font: 14px Tahoma; }
 
-.reform-selectbox-fake {
+.reform-selectbox-fake, .reform-autocomplete-fake {
     margin-bottom: 5px;
+    width: 200px;
 }
 
 .demo-checkbox {
