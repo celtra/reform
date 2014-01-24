@@ -1,7 +1,7 @@
 window.$ ?= require "jquery-commonjs"
 
 # Implements custom select boxes
-class SelectBoxBase
+class SelectBoxAbstract
     
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
@@ -109,9 +109,6 @@ class SelectBoxBase
         
         # Close any other open options containers
         @body.on "reform.open", (e) => @close() unless e.target is @select
-
-        # Clean up orphaned options containers
-        $('.reform-floater').remove()
     
     hover: ($item) ->
         $item.siblings().andSelf().removeClass "hover"
@@ -236,4 +233,4 @@ class SelectBoxBase
         
         @createOptions()
 
-module.exports = SelectBoxBase
+module.exports = SelectBoxAbstract

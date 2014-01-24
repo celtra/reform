@@ -1,6 +1,6 @@
-SelectBoxBase = require './selectbox_abstract'
+SelectBoxAbstract = require './selectbox_abstract'
 
-class SelectBox extends SelectBoxBase
+class SelectBox extends SelectBoxAbstract
     constructor: (@select, options) ->
         @options = $.extend {
             reformClass : 'reform-selectbox'

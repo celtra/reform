@@ -1,7 +1,7 @@
-window.$     ?= require "jquery-commonjs"
-SelectBoxBase = require './selectbox_abstract'
+window.$         ?= require "jquery-commonjs"
+SelectBoxAbstract = require './selectbox_abstract'
 
-class MultilineSelectBox extends SelectBoxBase
+class MultilineSelectBox extends SelectBoxAbstract
     constructor: ($select, options) ->
         @options = $.extend {
             noSelectionText   : 'Select an item'
