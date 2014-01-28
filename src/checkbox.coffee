@@ -4,8 +4,12 @@ window.$ ?= require "jquery-commonjs"
 class CheckBox
     
     # Generating a fake check/radio box from a real one
-    constructor: (input) ->
+    constructor: (input, options) ->
+
         @orig = $ input
+        @options = $.extend {
+            theme : 'pure'
+        }, options, @orig.data()
         
         # Don't do this twice
         return if @orig.is ".reformed"
@@ -18,6 +22,11 @@ class CheckBox
         @fake.attr "class", @orig.attr "class"
         @orig.hide().attr "class", "reformed"
         @fake.removeClass("reform-checkbox").addClass "reform-checkbox-fake"
+
+        # todo: make it setteble
+        @fake.addClass 'reform'
+        @fake.addClass 'reform-' + @options.theme
+        @fake.addClass 'reform-checkbox-ui'        
         @fake.addClass "checked"  if @orig.is ":checked"
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass "radio"    if @orig.is ":radio"

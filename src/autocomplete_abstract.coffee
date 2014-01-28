@@ -29,6 +29,7 @@ class AutocompleteAbstract
             exactMatch          : no        # will not filter dropdown data if true
             title               : null      # preset selected title
             placeholderText     : 'Type to search...'
+            theme               : 'pure'
 
             # custom classes
             reformClass         : 'reform-autocomplete'
@@ -116,6 +117,9 @@ class AutocompleteAbstract
         @customClass = origClass.replace @options.reformClass, ''
         @customClass = @customClass.trim()
 
+    setTheme: ($el) ->
+        $el.addClass 'reform-' + @options.theme
+
     handleSelectionChanged: ->
         @orig.val @selectedItem.value
         @orig.data 'title', @selectedItem.title
@@ -158,10 +162,13 @@ class AutocompleteAbstract
 
     createClosed: ->
         $el = $ "<div/>"
+        $el.addClass 'reform'           # todo: do it better
         $el.addClass @customClass
         $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
         $el.addClass @options.disabledClass if @orig.is ":disabled"
+
+        @setTheme $el
 
         if @options.showArrows
             $el.addClass @options.arrowDownClass
@@ -170,10 +177,13 @@ class AutocompleteAbstract
 
     createFloater: ->
         $floater = $ "<div/>"
+        $floater.addClass 'reform'                  # todo: do it better
         $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
         $floater.css "min-width", @el.outerWidth()
+
+        @setTheme $floater
 
     createFilter: ->
         $filter = $ "<input/>"
@@ -283,7 +293,10 @@ class AutocompleteAbstract
         @floater = @createFloater()
 
         $overlay = $ '<div></div>'
+        $overlay.addClass 'reform'          # todo: do it better
         $overlay.addClass @options.overlayClass
+
+        @setTheme $overlay
 
         $overlay.one 'click', () => @close()
 

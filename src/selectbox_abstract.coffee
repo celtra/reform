@@ -5,11 +5,12 @@ class SelectBoxAbstract
     
     # Generating a fake select box from a real one
     constructor: (@select, options) ->
-        @options = $.extend {
-            fakeClass : 'reform-selectbox-fake'
-        }, options
-
         @orig = $ @select
+
+        @options = $.extend {
+            theme     : 'pure'
+            fakeClass : 'reform-selectbox-fake'
+        }, options, @orig.data()
         
         # Don't do this twice
         return if @orig.is ".reformed"
@@ -23,11 +24,12 @@ class SelectBoxAbstract
         origClass = @orig.attr 'class'
         @customClass = origClass.replace @options.reformClass, ''
         @customClass = @customClass.trim()
+        @fake.addClass 'reform'                         # todo: move to base
         @fake.addClass @customClass
-
-        @fake.addClass    @options.fakeClass
+        @fake.addClass @options.fakeClass
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass @options.uiClass
+        @fake.addClass 'reform-' + @options.theme
 
         @orig.hide().attr "class", "reformed"
 
@@ -189,9 +191,12 @@ class SelectBoxAbstract
         @floater = $ "<div/>"
         @floater.attr "class", "reform-floater"
         @floater.css "min-width", @fake.outerWidth()
+        @floater.addClass 'reform'              # todo: do it better
         @floater.addClass @customClass
         @floater.addClass @orig.data "floater-class"
         @floater.addClass @options.uiClass
+        @floater.addClass 'reform-floater-ui'   # todo: do it better
+        @floater.addClass 'reform-' + @options.theme
         @body.append @floater
         
         @createOptions()
