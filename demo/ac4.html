@@ -1,0 +1,212 @@
+<html>
+    <head>
+        <title>Custom forms with Reform</title>
+        <link rel="stylesheet" type="text/css" href="../build/reform.css">
+        <link rel="stylesheet" type="text/css" href="demo.css">
+        
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="../build/reform.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCobVik6xLVkJ5r2NQAWX6zcjxppo6fcao"></script>
+        <style type="text/css">
+            h3 {
+                font-family: Arial;
+                font-weight: normal;
+            }
+        </style>
+        <script>
+            var inlineData = [
+                {
+                    "title": "one",
+                    "value": "1"
+                },
+                {
+                    "title": "two",
+                    "value": "2"
+                }, 
+                {
+                    "title": "three",
+                    "value": "3"
+                },                
+                {
+                    "title": "four",
+                    "value": "4"
+                },
+                {
+                    "title": "Fourty",
+                    "value": "40"
+                },
+                {
+                    "title": "fourteen",
+                    "value": "14"
+                },
+                {
+                    "title": "fourtynine",
+                    "value": "49"
+                },
+                {
+                    "title": "fourtyeight",
+                    "value": "48"
+                },
+                {
+                    "title": "thirtynine",
+                    "value": "39"
+                },
+                {
+                    "title": "thirtynineandahuderttenthousandandseventynine",
+                    "value": "390"
+                },
+                {
+                    "title": "fifty",
+                    "value": "50"
+                },
+                {
+                    "title": "sixty",
+                    "value": "60"
+                },
+                {
+                    "title": "seventy",
+                    "value": "70"
+                },
+                {
+                    "title": "eighty",
+                    "value": "80"
+                }
+            ];
+
+            $(document).ready(function() {
+                $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
+                $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+            });
+        </script>
+
+    </head>
+    <body>
+        
+        <h3>Check boxes</h3>
+        
+        <div>
+            <input class="reform-checkbox" data-theme="ac4" type="checkbox">
+            <input class="reform-checkbox" data-theme="ac4" type="checkbox" checked>
+            <input class="reform-checkbox" data-theme="ac4" type="checkbox" disabled>
+            <input class="reform-checkbox tmp" data-theme="ac4" type="checkbox" checked disabled>
+        </div>
+        
+        <br/><br/>
+        
+        <h3>Radio boxes</h3>
+        
+        <div>
+            <input id="radio-1" class="reform-checkbox" data-theme="ac4" type="radio" name="test-radio">
+            <input id="radio-2" class="reform-checkbox" data-theme="ac4" type="radio" name="test-radio" checked="checked">
+            <input id="radio-3" class="reform-checkbox" data-theme="ac4" type="radio" name="test-radio" disabled>
+            <input class="reform-checkbox radio" data-theme="ac4" type="radio" checked disabled>
+        </div>
+        
+        <br/><br/>
+
+        <h3>Select boxes</h3>
+        
+        <div>
+            <select class="reform-selectbox" data-theme="ac4" title="Pick a number">
+                <option value="1" title="First tooltip">One</option>
+                <option value="2" selected>Two</option>
+                <option value="3" title="Tooltip for three">Three</option>
+                <option value="4" disabled>Four</option>
+                <option value="5">Five</option>
+                <option value="6" title="Tooltip for six">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+        
+            <select class="reform-selectbox" data-theme="ac4" disabled>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+
+            <select class="reform-selectbox" data-theme="ac4" multiple data-title="This is title. This.">
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+        
+            <select class="reform-selectbox" data-theme="ac4" multiple data-plural="numbers" title="Second doesn't count">
+                <option value="1">One</option>
+                <option value="2" data-count-option="no">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+            
+            <select class="reform-selectbox" data-theme="ac4" title="I feel empty inside"></select>
+            
+            <select class="reform-selectbox" data-theme="ac4" title=""></select>
+        </div>
+        
+        <br><br>
+        
+        <h3>Multiline Select box</h3>
+        
+        <div>
+            <select class="reform-multilineselectbox" data-theme="ac4">
+                <option value="1" title="First tooltip" data-desc="Number one is the first number">One</option>
+                <option value="2" data-desc="Number two is the second number">Two</option>
+                <option value="3" title="Tooltip for three" data-desc="Number three is the third number">Three</option>
+                <option value="4" disabled data-desc="Number four is the forth number">Four</option>
+                <option value="5" data-desc="Number five is the fifth number.">Five</option>
+                <option value="6" title="Tooltip for six" data-desc="Number six is the sixth number">Six</option>
+                <option value="7" data-desc="Number seven is the seventh number">Seven</option>
+                <option value="8" data-desc="Number eight is the eight number">Eight</option>
+                <option value="9" data-desc="Number nine is the nineth number">Nine</option>
+                <option value="10" data-desc="Number ten is the tenth number">Ten</option>
+            </select>
+
+            <select class="reform-multilineselectbox" data-theme="ac4" disabled>
+                <option value="1" title="First tooltip" data-desc="Number one is the first number">One</option>
+                <option value="2" data-desc="Number two is the second number">Two</option>
+            </select>
+        </div>
+
+        <br><br>
+
+        <h3>Autocomplete Inline</h3>
+
+        <div>
+        
+            <input id="autocomplete-inline" class="reform-autocompletebox" data-theme="ac4" type="text" />
+
+            <input class="reform-autocompletebox" data-theme="ac4" type="text" disabled />
+
+            <h3>Autocomplete (will not work if opened via file://)</h3>
+            <input id="autocompletebox" class="reform-autocompletebox" data-theme="ac4" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
+
+            <h3>Autocomplete Combobox</h3>
+            <input id="autocompletecombobox" class="reform-autocompletecombobox" data-theme="ac4" />
+
+            <input class="reform-autocompletecombobox" data-theme="ac4" disabled />
+
+        </div>
+
+    </body>
+</html>

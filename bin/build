@@ -8,6 +8,10 @@ touch lib/_placeholder
 touch lib_test/_placeholder
 echo "Cleared old builds"
 
+mkdir build/fonts
+cp -r public/fonts build
+echo "Copied fonts"
+
 lessc less/all.less > build/reform.css
 echo "Compiled LESS"
 
