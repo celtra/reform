@@ -1,0 +1,42 @@
+.setDefaults(
+    @_baseColor                : #1f1f1f,
+    @_backgroundColor          : #fff,
+    @_fontColor                : #1f1f1f,
+    @_borderColor              : #ddd,
+    @_placeholderColor         : #aaa,
+    @_disabledColor            : #ddd,
+    @_disabledPlaceholderColor : #ddd, 
+    @_selectedBackgroundColor  : #1f1f1f,
+    @_selectedFontColor        : #fff,
+    @_hoverBackgroundColor     : #eee,
+    @_hoverFontColor           : #1f1f1f,
+    @_height                   : 30px,
+    @_fontSize                 : 13px,
+    @_lineHeight               : 16px,
+    @_paddingHorizontal        : 16px,
+    @_fontFamily               : inherit) {
+
+    @baseColor                : @_baseColor;
+    @backgroundColor          : @_backgroundColor;
+    @fontColor                : @_fontColor;
+    @borderColor              : @_borderColor;
+    @placeholderColor         : @_placeholderColor;
+    @disabledColor            : @_disabledColor;
+    @disabledPlaceholderColor : @_disabledPlaceholderColor;
+    @selectedBackgroundColor  : @_selectedBackgroundColor;
+    @selectedFontColor        : @_selectedFontColor;
+    @hoverBackgroundColor     : @_hoverBackgroundColor;
+    @hoverFontColor           : @_hoverFontColor;
+    @height                   : @_height;
+    @fontSize                 : @_fontSize;
+    @lineHeight               : @_lineHeight;
+    @paddingHorizontal        : @_paddingHorizontal;
+    @paddingVertical          : @_paddingVertical;
+    @fontFamily               : @_fontFamily;
+
+    .getPaddingVertical(@height, @lineHeight);
+}
+
+.getPaddingVertical(@height, @lineHeight) {
+    @_paddingVertical : (@height - @lineHeight) / 2;
+}
