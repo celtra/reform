@@ -7,9 +7,6 @@ class CheckBox
     constructor: (input, options) ->
 
         @orig = $ input
-        @options = $.extend {
-            theme : 'pure'
-        }, options, @orig.data()
         
         # Don't do this twice
         return if @orig.is ".reformed"
@@ -25,7 +22,6 @@ class CheckBox
 
         # todo: make it setteble
         @fake.addClass 'reform'
-        @fake.addClass 'reform-' + @options.theme
         @fake.addClass 'reform-checkbox-ui'        
         @fake.addClass "checked"  if @orig.is ":checked"
         @fake.addClass "disabled" if @orig.is ":disabled"
