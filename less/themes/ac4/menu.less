@@ -1,0 +1,30 @@
+&.menu {
+    @height          : 38px;
+    @paddingVertical : (@height - @lineHeight) / 2;
+
+    &.reform-selectbox-fake {
+
+        height     : @height;
+        padding    : @paddingVertical @paddingHorizontal;
+        box-shadow : none;
+
+        &:hover {
+            .outline(@borderColor);
+        }
+
+        &.disabled:hover {
+            box-shadow: none;
+        }
+    }
+
+    &.reform-selectbox-ui .reform-floater-list .reform-floater-item {
+
+        &:first-child {
+            padding-top: @paddingVertical;
+        }
+
+        &:last-child {
+            padding-bottom: @paddingVertical;
+        }
+    }
+}
