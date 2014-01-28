@@ -1,25 +1,11 @@
-@selectboxHeight              : @baseHeight;
-@selectboxPaddingVertical     : (@selectboxHeight - @baseLineHeight) / 2;
-
-@selectboxItemHeight          : @baseHeight;
-@selectboxItemPaddingVertical : (@selectboxItemHeight - @baseLineHeight) / 2;
-
-.reform-selectbox-fake {
+&.reform-selectbox-fake {
     position       : relative;
     display        : inline-block;
-    
-    font-family    : @baseFontFamily;
-    font-size      : @baseFontSize;
-    color          : @baseColor;
-
     box-sizing     : border-box;
-    line-height    : @baseLineHeight;
-    padding        : @selectboxPaddingVertical (@paddingHorizontal + 4) @selectboxPaddingVertical @paddingHorizontal;
-    min-height     : @selectboxHeight;
-
     cursor         : pointer;
-    vertical-align : middle;
     outline        : none;
+
+    vertical-align : middle;
     
     .select-disabled;
     .rounded-corners;
@@ -35,32 +21,11 @@
         .arrow-down;
     }
 
-    &:hover {
-        .outline(@grayColor);
-    }
-
     &.disabled {
         cursor : default;
-        color  : @disabledColor;
 
         &:hover {
             .outline;
         }
-
-        &:after {
-            .arrow-down(@grayColor);
-        }
-    }
-}
-
-.reform-selectbox-ui.reform-floater-list .reform-floater-item {
-    padding       : @selectboxItemPaddingVertical @paddingHorizontal; 
-
-    &:first-child {
-        padding-top: @selectboxPaddingVertical;
-    }
-
-    &:last-child {
-        padding-bottom: @selectboxPaddingVertical;
     }
 }

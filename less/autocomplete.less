@@ -1,27 +1,16 @@
-@autocompleteHeight          : @baseHeight;
-@autocompletePaddingVertical : (@autocompleteHeight - @baseLineHeight) / 2;
-
-.reform-autocomplete-fake {
-    font-family   : @baseFontFamily;
-    font-size     : @baseFontSize;
-
+&.reform-autocomplete-fake {
     position      : relative;
     display       : inline-block;
-
     box-sizing    : border-box;
     cursor        : pointer;
     overflow      : hidden;
+    
     white-space   : nowrap;
     text-overflow : ellipsis;
-    line-height   : @baseLineHeight;
 
     .select-disabled;
     .outline;
     .rounded-corners;
-
-    &:hover {
-        .outline(@grayColor);
-    }
 
     &.arrow-down:after {
         .arrow-down;
@@ -33,27 +22,11 @@
 
     &.disabled {
         cursor: default;
-
-        .outline(@disabledColor);
-
-        .reform-autocomplete-filter {
-            .placeholder(@disabledColor);
-        }
-
-        &.arrow-down:after {
-            .arrow-down(@disabledColor);
-        }
     }
 }
 
 .reform-autocomplete-filter {
-    height      : @autocompleteHeight;
-    padding     : @autocompletePaddingVertical @paddingHorizontal;
-    line-height : @baseLineHeight;
-
-    font-family : @baseFontFamily;
-    font-size   : @baseFontSize;
-
     border      : none;
     outline     : none;
+    margin      : 0;
 }

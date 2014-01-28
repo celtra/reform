@@ -15,23 +15,23 @@
     user-select: none;
 }
 
-.outline (@color: @borderColor) {
+.outline (@color: #000) {
     box-shadow: 0 0 0 1px @color;
 }
 
-.arrow-up (@color: @baseColor, @height: 4px, @width: 8px) {
+.arrow-up (@color: #000, @height: 4px, @width: 8px) {
     .arrow(@color, @height, @width);
 
     border-bottom: @height solid @color;
 }
 
-.arrow-down (@color: @baseColor, @height: 4px, @width: 8px) {
+.arrow-down (@color: #000, @height: 4px, @width: 8px) {
     .arrow(@color, @height, @width);
 
     border-top: @height solid @color;
 }
 
-.arrow (@color: @baseColor, @height: 4px, @width: 8px) {
+.arrow (@color: #000, @height: 4px, @width: 8px) {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -45,7 +45,7 @@
     border-right: (@width/2) solid transparent;
 }
 
-.placeholder (@color: @grayColor) {
+.placeholder (@color: inherit) {
     &::-webkit-input-placeholder { color:@color; }
     &::-moz-placeholder          { color:@color; } /* firefox 19+ */
     &:-ms-input-placeholder      { color:@color; } /* ie */

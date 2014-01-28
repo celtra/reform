@@ -1,0 +1,32 @@
+&.reform-floater {
+    font-size   : @fontSize;
+    color       : @fontColor;
+    line-height : @lineHeight;
+
+    max-width   : 200px;
+    background  : @backgroundColor;
+
+    .outline(@borderColor);
+
+    .reform-floater-list {
+
+        .reform-floater-item {
+            padding       : @paddingVertical @paddingHorizontal; 
+
+            &.hover {
+                background : @hoverBackgroundColor;
+                color      : @hoverFontColor;
+            }
+
+            &.selected {
+                background : @selectedBackgroundColor;
+                color      : @selectedFontColor;
+            }
+
+            &.disabled {
+                color      : @disabledFontColor;
+                background : @disabledBackgroundColor;
+            }
+        }
+    }
+}
