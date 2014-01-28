@@ -8,9 +8,8 @@ class SelectBoxAbstract
         @orig = $ @select
 
         @options = $.extend {
-            theme     : 'pure'
             fakeClass : 'reform-selectbox-fake'
-        }, options, @orig.data()
+        }, options
         
         # Don't do this twice
         return if @orig.is ".reformed"
@@ -29,7 +28,6 @@ class SelectBoxAbstract
         @fake.addClass @options.fakeClass
         @fake.addClass "disabled" if @orig.is ":disabled"
         @fake.addClass @options.uiClass
-        @fake.addClass 'reform-' + @options.theme
 
         @orig.hide().attr "class", "reformed"
 
