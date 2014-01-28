@@ -1,15 +1,22 @@
 &.reform-selectbox-fake {
+    
+    min-height     : @height;
+    padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
     position       : relative;
     display        : inline-block;
-    box-sizing     : border-box;
     cursor         : pointer;
+
+    box-sizing     : border-box;
     outline        : none;
 
+    font-size      : @fontSize;
+    color          : @fontColor;
+    line-height    : @lineHeight;
     vertical-align : middle;
-    
+
+    .outline(@borderColor);
     .select-disabled;
     .rounded-corners;
-    .outline;
 
     .selected-item {
         overflow      : hidden;    
@@ -18,14 +25,15 @@
     }
 
     &:after {
-        .arrow-down;
+        .arrow-down(@fontColor);
     }
 
     &.disabled {
         cursor : default;
+        color  : @disabledFontColor;
 
-        &:hover {
-            .outline;
+        &:after {
+            .arrow-down(@disabledFontColor);
         }
     }
 }
