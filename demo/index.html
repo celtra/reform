@@ -85,10 +85,10 @@
         <h3>Check boxes</h3>
         
         <div>
-            <input class="reform-checkbox" type="checkbox">
-            <input class="reform-checkbox" type="checkbox" checked>
-            <input class="reform-checkbox" type="checkbox" disabled>
-            <input class="reform-checkbox tmp" type="checkbox" checked disabled>
+            <input class="reform-checkbox reform-pure" type="checkbox">
+            <input class="reform-checkbox reform-pure" type="checkbox" checked>
+            <input class="reform-checkbox reform-pure" type="checkbox" disabled>
+            <input class="reform-checkbox tmp reform-pure" type="checkbox" checked disabled>
         </div>
         
         <br/><br/>
@@ -96,10 +96,10 @@
         <h3>Radio boxes</h3>
         
         <div>
-            <input id="radio-1" class="reform-checkbox" type="radio" name="test-radio">
-            <input id="radio-2" class="reform-checkbox" type="radio" name="test-radio" checked="checked">
-            <input id="radio-3" class="reform-checkbox" type="radio" name="test-radio" disabled>
-            <input class="reform-checkbox radio" type="radio" checked disabled>
+            <input id="radio-1" class="reform-checkbox reform-pure" type="radio" name="test-radio">
+            <input id="radio-2" class="reform-checkbox reform-pure" type="radio" name="test-radio" checked="checked">
+            <input id="radio-3" class="reform-checkbox reform-pure" type="radio" name="test-radio" disabled>
+            <input class="reform-checkbox radio reform-pure" type="radio" checked disabled>
         </div>
         
         <br/><br/>
@@ -107,7 +107,7 @@
         <h3>Select boxes</h3>
         
         <div>
-            <select class="reform-selectbox" title="Pick a number">
+            <select class="reform-selectbox reform-pure" title="Pick a number">
                 <option value="1" title="First tooltip">One</option>
                 <option value="2" selected>Two</option>
                 <option value="3" title="Tooltip for three">Three</option>
@@ -120,7 +120,7 @@
                 <option value="10">Ten</option>
             </select>
         
-            <select class="reform-selectbox" disabled>
+            <select class="reform-selectbox reform-pure" disabled>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
@@ -133,7 +133,7 @@
                 <option value="10">Ten</option>
             </select>
 
-            <select class="reform-selectbox" multiple data-title="This is title. This.">
+            <select class="reform-selectbox reform-pure" multiple data-title="This is title. This.">
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
@@ -146,7 +146,7 @@
                 <option value="10">Ten</option>
             </select>
         
-            <select class="reform-selectbox" multiple data-plural="numbers" title="Second doesn't count">
+            <select class="reform-selectbox reform-pure" multiple data-plural="numbers" title="Second doesn't count">
                 <option value="1">One</option>
                 <option value="2" data-count-option="no">Two</option>
                 <option value="3">Three</option>
@@ -159,9 +159,9 @@
                 <option value="10">Ten</option>
             </select>
             
-            <select class="reform-selectbox" title="I feel empty inside"></select>
+            <select class="reform-selectbox reform-pure" title="I feel empty inside"></select>
             
-            <select class="reform-selectbox" title=""></select>
+            <select class="reform-selectbox reform-pure" title=""></select>
         </div>
         
         <br><br>
@@ -169,7 +169,7 @@
         <h3>Multiline Select box</h3>
         
         <div>
-            <select class="reform-multilineselectbox">
+            <select class="reform-multilineselectbox reform-pure">
                 <option value="1" title="First tooltip" data-desc="Number one is the first number">One</option>
                 <option value="2" data-desc="Number two is the second number">Two</option>
                 <option value="3" title="Tooltip for three" data-desc="Number three is the third number">Three</option>
@@ -182,7 +182,7 @@
                 <option value="10" data-desc="Number ten is the tenth number">Ten</option>
             </select>
 
-            <select class="reform-multilineselectbox" disabled>
+            <select class="reform-multilineselectbox reform-pure" disabled>
                 <option value="1" title="First tooltip" data-desc="Number one is the first number">One</option>
                 <option value="2" data-desc="Number two is the second number">Two</option>
             </select>
@@ -194,17 +194,17 @@
 
         <div>
         
-            <input id="autocomplete-inline" class="reform-autocompletebox" type="text" />
+            <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
 
-            <input class="reform-autocompletebox" type="text" disabled />
+            <input class="reform-autocompletebox reform-pure" type="text" disabled />
 
             <h3>Autocomplete (will not work if opened via file://)</h3>
-            <input id="autocompletebox" class="reform-autocompletebox" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
+            <input id="autocompletebox" class="reform-autocompletebox reform-pure" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
 
             <h3>Autocomplete Combobox</h3>
-            <input id="autocompletecombobox" class="reform-autocompletecombobox" />
+            <input id="autocompletecombobox" class="reform-autocompletecombobox reform-pure" />
 
-            <input class="reform-autocompletecombobox" disabled />
+            <input class="reform-autocompletecombobox reform-pure" disabled />
 
         </div>
 
