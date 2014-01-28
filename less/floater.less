@@ -1,65 +1,38 @@
-.reform-floater {
+&.reform-floater {
     z-index     : 20;
     display     : block;
     position    : absolute;
-
-    font-family : @baseFontFamily;
-    font-size   : @baseFontSize;
-    color       : @baseColor;
-
-    max-width   : @baseWidth;
     box-sizing  : border-box;  
-    line-height : @baseLineHeight;
     overflow    : hidden;
-    background  : @backgroundColor;
 
     .outline;
     .rounded-corners;
-}
 
-.reform-floater-list {
-    min-width  : 180px;
-    max-height : 300px;
-    overflow-y : auto;
+    .reform-floater-list {
+        min-width  : 180px;
+        max-height : 300px;
+        overflow-y : auto;
 
-    .reform-floater-item {
-        cursor        : pointer;
-        padding       : @paddingVertical @paddingHorizontal; 
+        .reform-floater-item {
+            cursor        : pointer;
+            box-sizing    : border-box;
+            overflow      : hidden;
 
-        box-sizing    : border-box;
-        white-space   : nowrap;
-        text-overflow : ellipsis;
-        overflow      : hidden;
+            white-space   : nowrap;
+            text-overflow : ellipsis;
 
-        &:first-child {
-            padding-top: @paddingVertical;
-        }
+            &.disabled {
+                cursor: default;
 
-        &:last-child {
-            padding-bottom: @paddingVertical;
-        }
-
-        &.hover {
-            background: @hoverColor;
-        }
-
-        &.selected {
-            background : @selectedColor;
-            color      : @backgroundColor;
-        }
-
-        &.disabled {
-            cursor : default;
-            color  : @disabledColor;
-
-            &.hover {
-                background: inherit;
+                &.hover {
+                    background: inherit;
+                }
             }
         }
     }
 }
 
-.reform-floater-overlay {
+&.reform-floater-overlay {
     top: 0;
     bottom: 0;
     left: 0;

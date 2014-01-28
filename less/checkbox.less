@@ -1,20 +1,11 @@
-@checkboxHeight: @baseHeight;
-
-.reform-checkbox-fake {
+&.reform-checkbox-fake {
     position         : relative;
     display          : inline-block;
-    height           : @checkboxHeight;
-    width            : @checkboxHeight;
     cursor           : pointer;
     vertical-align   : middle;
     box-sizing       : border-box;
-    background-color : @backgroundColor;
 
     .outline;
-
-    &:hover {
-        .outline(@grayColor);
-    }
 
     &.radio,
     &.radio.checked:before {
@@ -29,17 +20,9 @@
         width      : 50%;
         height     : 50%;
         margin     : -25% 0 0 -25%;
-        background : @selectedColor;
     }
 
     &.disabled {
-        cursor           : default;
-        background-color : lighten(@disabledColor, 10%);
-
-        .outline(@disabledColor);
-
-        &.checked:before {
-            background-color: @disabledColor;
-        }
+        cursor: default;
     }
 }

@@ -1,27 +1,11 @@
-.reform-autocompletecombobox-ui {
+&.reform-autocompletecombobox-ui {
     &.reform-autocomplete-fake {
-        height      : @autocompleteHeight;
-        padding     : @autocompletePaddingVertical @paddingHorizontal;
-
-        &.disabled {
-            cursor: default;
-
-            .outline(@disabledColor);
-        }
 
         .selected-item {
             overflow      : hidden;    
             white-space   : nowrap;
             text-overflow : ellipsis;
         }
-
-        .placeholder {
-            color: @darkGrayColor;
-        }
-
-        &.disabled .placeholder {
-            color: @disabledColor;
-        } 
     }
 
     &.reform-floater {
@@ -29,15 +13,13 @@
             position       : relative;
             display        : block;
             box-sizing     : border-box;
-            height         : @autocompleteHeight;
-            padding        : @autocompletePaddingVertical @paddingHorizontal;
-         
             overflow       : hidden;   
+            cursor         : pointer;
+            outline        : none;
+
             white-space    : nowrap;
             text-overflow  : ellipsis;
             vertical-align : middle;
-            cursor         : pointer;
-            outline        : none;
 
             &.arrow-up:after {
                 .arrow-up;
@@ -45,9 +27,7 @@
         }
 
         .reform-autocomplete-filter {
-            width         : 100%;
-            border-top    : 1px solid @grayColor;
-            border-bottom : 1px solid @grayColor;
+            width: 100%;
 
             &:focus {
                 outline: none;
@@ -55,11 +35,7 @@
         }
 
         .reform-autocomplete-empty {
-            color      : @darkGrayColor;
             box-sizing : border-box;
-            height     : @autocompleteHeight;
-            padding    : @autocompletePaddingVertical @paddingHorizontal;
-
         }
     }
 }

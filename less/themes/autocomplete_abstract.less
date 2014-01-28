@@ -1,0 +1,33 @@
+&.reform-autocomplete-fake {
+    font-size     : @fontSize;
+    line-height   : @lineHeight;
+
+    .outline(@borderColor);
+
+    &.arrow-down:after {
+        .arrow-down(@fontColor);
+    }
+
+    &.arrow-up:after {
+        .arrow-up(@fontColor);
+    }
+
+    &.disabled {
+
+        .reform-autocomplete-filter {
+            .placeholder(@disabledPlaceholderColor);
+        }
+
+        &.arrow-down:after {
+            .arrow-down(@disabledFontColor);
+        }
+    }
+}
+
+.reform-autocomplete-filter {
+    padding     : @paddingVertical @paddingHorizontal;
+    line-height : @lineHeight;
+    
+    font-family : @fontFamily;
+    font-size   : @fontSize;
+}
