@@ -1,5 +1,14 @@
 &.reform-autocompletecombobox-ui {
     &.reform-autocomplete-fake {
+        padding     : @paddingVertical @paddingHorizontal;
+
+        .placeholder {
+            color: @placeholderColor;
+        }
+
+        &.disabled .placeholder {
+            color: @disabledPlaceholderColor;
+        } 
 
         .selected-item {
             overflow      : hidden;    
@@ -10,6 +19,7 @@
 
     &.reform-floater {
         .reform-autocomplete-floater-label {
+            padding        : @paddingVertical @paddingHorizontal;
             position       : relative;
             display        : block;
             box-sizing     : border-box;
@@ -22,12 +32,14 @@
             vertical-align : middle;
 
             &.arrow-up:after {
-                .arrow-up;
+                .arrow-up(@fontColor);
             }
         }
 
         .reform-autocomplete-filter {
-            width: 100%;
+            width         : 100%;
+            border-top    : 1px solid @borderColor;
+            border-bottom : 1px solid @borderColor;
 
             &:focus {
                 outline: none;
@@ -35,6 +47,8 @@
         }
 
         .reform-autocomplete-empty {
+            color      : @placeholderColor;
+            padding    : @paddingVertical @paddingHorizontal;
             box-sizing : border-box;
         }
     }

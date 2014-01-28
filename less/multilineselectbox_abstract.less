@@ -1,18 +1,36 @@
 &.reform-multilineselectbox-ui {
 
     &.reform-selectbox-fake {
-        padding: 11px (@paddingHorizontal + 4) 11px @paddingHorizontal;
+        min-width : 390px; /* !!! */
+        padding   : 11px (@paddingHorizontal + 4) 11px @paddingHorizontal;
+
+        &:after {
+            right: 10px;
+
+            .arrow-down(@fontColor, 7px, 12px);
+        }
 
         &.disabled {
             span, p {
                 color: @disabledFontColor !important;
             }
+
+            &:after {
+                .arrow-down(@disabledFontColor, 7px, 12px);
+            }
         }
     }
 
     &.reform-selectbox-fake .selected-item, .reform-floater-item {
+        p, span {
+            white-space   : nowrap;
+            text-overflow : ellipsis;
+            overflow      : hidden;
+        }
+
         p {
             font-size   : @fontSize + 3;
+            margin      : 0;
         }
 
         span {

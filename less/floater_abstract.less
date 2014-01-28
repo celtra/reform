@@ -2,10 +2,16 @@
     z-index     : 20;
     display     : block;
     position    : absolute;
-    box-sizing  : border-box;  
     overflow    : hidden;
+    max-width   : 200px;
+    background  : @backgroundColor;
+    box-sizing  : border-box;  
 
-    .outline;
+    font-size   : @fontSize;
+    color       : @fontColor;
+    line-height : @lineHeight;
+
+    .outline(@borderColor);
     .rounded-corners;
 
     .reform-floater-list {
@@ -14,6 +20,7 @@
         overflow-y : auto;
 
         .reform-floater-item {
+            padding       : @paddingVertical @paddingHorizontal; 
             cursor        : pointer;
             box-sizing    : border-box;
             overflow      : hidden;
@@ -21,8 +28,20 @@
             white-space   : nowrap;
             text-overflow : ellipsis;
 
+            &.hover {
+                background : @hoverBackgroundColor;
+                color      : @hoverFontColor;
+            }
+
+            &.selected {
+                background : @selectedBackgroundColor;
+                color      : @selectedFontColor;
+            }
+
             &.disabled {
-                cursor: default;
+                cursor     : default;
+                color      : @disabledFontColor;
+                background : @disabledBackgroundColor;
 
                 &.hover {
                     background: inherit;
