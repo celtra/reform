@@ -1,0 +1,34 @@
+#abstracts > .multilineselectbox;
+
+&.reform-multilineselectbox-ui {
+    &.reform-selectbox-fake {
+        padding: 7px @paddingHorizontal;
+        
+        &:after {
+            right: 5px;
+        }
+
+        &:hover {
+            .outline;
+        }
+
+        &.disabled {
+            &:after {
+                right: 5px;
+            }
+        }
+    }
+
+    &.reform-floater .reform-floater-list .reform-floater-item {
+        padding : 7px @paddingHorizontal;
+    }
+
+    &.reform-floater .reform-floater-list .reform-floater-item, &.reform-selectbox-fake {
+        &.disabled {
+            span, p {
+                color: #ccc;
+            }
+        }  
+    } 
+
+}

@@ -1,0 +1,32 @@
+#abstracts > .floater;
+
+&.reform-floater {
+    z-index     : 1000;
+    border      : solid 1px @baseColor;
+    line-height : 13px;
+
+    .shadow-outline;
+    .no-rounded-corners;
+
+    .reform-floater-list {
+        padding: 5px;
+
+        .reform-floater-item {
+            border-bottom : solid 1px #eee;
+            white-space   : normal;
+
+            &:first-child {
+                border-top: solid 1px #eee;
+            }
+
+            &.disabled {
+                color: #ccc;
+                background-color: #fff;
+
+                &:hover {
+                    background-color: inherit;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,51 @@
+#abstracts > .autocompletecombobox;
+
+&.reform-autocompletecombobox-ui { 
+    &.reform-autocomplete-fake {
+        box-sizing : content-box;
+        padding    : 0 17px 0 4px;
+
+        &:after {
+            right: 5px;
+        }
+
+        &.disabled {
+            .outline;
+
+            &:after {
+                right: 5px;
+            }
+        }
+    }
+
+    &.reform-floater {
+        padding     : 0 8px;
+        margin-left : 1px;
+
+        .reform-floater-list {
+            padding : 0 5px;
+            margin  : 10px -8px 0 -8px;
+        }
+
+        .reform-autocomplete-filter {
+            height            : 16px;
+            padding           : 0 4px 0 20px;
+            background-image  : url('img/magnifier.gif');
+            background-repeat : no-repeat;
+            background-size   : 16px 16px;
+            box-sizing        : border-box;
+
+            .outline;
+        }
+
+        .reform-autocomplete-floater-label {
+            margin     : 4px -7px 7px 0;
+            padding    : 0 20px 0 0;
+            box-sizing : content-box;
+
+            &.arrow-up:after {
+                right: 5px;
+            }
+        }
+    }
+}

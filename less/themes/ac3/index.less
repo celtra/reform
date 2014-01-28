@@ -1,0 +1,29 @@
+&.reform-ac3 {
+
+    .setDefaults(
+        @_height                  : 16px,
+        @_fontSize                : 11px,
+        @_baseColor               : #000,
+        @_borderColor             : #bbb,
+        @_disabledColor           : #000,
+        @_hoverBackgroundColor    : #ffd,
+        @_selectedBackgroundColor : #000,
+        @_paddingHorizontal       : 4px,
+        @_disabledPlaceholderColor: #000
+
+    );
+
+    @disabledFontColor       : @disabledColor;
+    @disabledBackgroundColor : #ddd;
+
+    @paddingHorizontal       : 4px;
+    @paddingVertical         : 7px;
+
+    @import 'mixins';
+    @import 'checkbox';
+    @import 'selectbox';
+    @import 'multilineselectbox';
+    @import 'floater';
+    @import 'autocomplete';
+    @import 'autocompletecombobox';
+}

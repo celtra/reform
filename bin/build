@@ -12,6 +12,10 @@ mkdir build/fonts
 cp -r public/fonts build
 echo "Copied fonts"
 
+mkdir build/img
+cp -r public/img build
+echo "Copied images"
+
 lessc less/all.less > build/reform.css
 echo "Compiled LESS"
 
