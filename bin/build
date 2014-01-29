@@ -11,6 +11,9 @@ echo "Cleared old builds"
 lessc less/all.less > build/reform.css
 echo "Compiled LESS"
 
+lessc less/theme-pure.less > build/reform-pure.css
+echo "Compiled Pure LESS"
+
 coffee -o lib src
 echo "Compiled lib"
 
