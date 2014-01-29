@@ -19,14 +19,8 @@ echo "Copied images"
 lessc less/all.less > build/reform.css
 echo "Compiled LESS"
 
-lessc less/themes/pure/pure.less > build/reform-pure.css
+lessc less/theme-pure.less > build/reform-pure.css
 echo "Compiled Pure LESS"
-
-lessc less/themes/ac4/ac4.less > build/reform-ac4.css
-echo "Compiled AC4 LESS"
-
-lessc less/themes/ac3/ac3.less > build/reform-ac3.css
-echo "Compiled AC3 LESS"
 
 coffee -o lib src
 echo "Compiled lib"
