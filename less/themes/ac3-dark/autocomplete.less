@@ -1,0 +1,42 @@
+#abstracts > .autocomplete;
+
+@autocompleteHeight: 16px;
+
+&.reform-autocomplete-fake {
+    box-sizing      : content-box;    
+    // border          : 0;
+    padding         : 0 17px 0 1px;
+    margin          : 0;
+    // padding         : 0 17px 0 4px;
+    vertical-align  : middle;
+    background-color : #373737;
+    color            : @fontColor;
+
+    .no-rounded-corners;
+    .outline;
+
+    &.arrow-down:after, &.arrow-up:after {
+        right: 5px;
+    }
+
+    &.disabled {
+
+        .reform-autocomplete-filter {
+            color: #595959;
+        }
+
+        &.arrow-down:after {
+            right: 5px;
+        }
+    }
+}
+
+.reform-autocomplete-filter {
+    width            : 192px;
+    height           : 18px;
+    padding          : 0 17px 0 4px;
+    background-color : #373737;
+    
+    color            : #ffffff;
+    font-family: @inputFontFamily;
+}
