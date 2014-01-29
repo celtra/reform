@@ -22,6 +22,15 @@ echo "Compiled LESS"
 lessc less/theme-pure.less > build/reform-pure.css
 echo "Compiled Pure LESS"
 
+lessc less/theme-ac4.less > build/reform-ac4.css
+echo "Compiled AC4 LESS"
+
+lessc less/theme-ac3.less > build/reform-ac3.css
+echo "Compiled AC3 LESS"
+
+lessc less/theme-ac3-dark.less > build/reform-ac3-dark.css
+echo "Compiled AC3 Dark LESS"
+
 coffee -o lib src
 echo "Compiled lib"
 

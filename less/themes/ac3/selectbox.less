@@ -14,10 +14,6 @@
         right: 5px;
     }
 
-    &:hover {
-        .outline;
-    }
-
     &.disabled {
         background-color : @disabledBackgroundColor;
         color            : @disabledColor;
@@ -29,6 +25,10 @@
         }
     }
 
+    .selected-item {
+        font-family: @inputFontFamily;
+    }
+
     /* Custom */ 
     &.naked-selectbox {
         width        : auto;
@@ -36,8 +36,8 @@
         border       : none;
         padding-left : 0;
 
-        &:after {
-            right: 0;
+        .selected-item {
+            font-family: @fontFamily;
         }
     }
 
@@ -51,14 +51,11 @@
     }
 }
 
-.reform-autocomplete-filter {
-    font-family: @fontFamily;
-}
-
 &.reform-selectbox-ui {
 
     /* Custom */ 
     &.actions-btn {
+
         &.reform-selectbox-fake.disabled:hover {
             border: none;
         }
