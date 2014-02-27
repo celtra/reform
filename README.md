@@ -250,4 +250,5 @@ Development
     - Uglify.js 1.2.5 or up
   - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
   - Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
+  - Install `gulp` with `npm install -g gulp`
   - Run `gulp` to build `reform.js` and `reform.css`
