@@ -58,11 +58,15 @@ gulp.task('clean', function() {
 
 gulp.task('default', ['clean', 'scripts', 'less']);
 gulp.task('test',    ['default', 'test-scripts']);
-
-gulp.task('production', ['default', 'test'], function() {
+gulp.task('build',   ['default', 'test'], function() {
     // uglifyjs -o build/reform.min.js build/reform.js
     gulp.src('./build/reform.js')
         .pipe(rename('reform.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./build'));
+});
+
+gulp.task('watch', function() {
+    gulp.watch('src/*.coffee',   ['scripts']);
+    gulp.watch('less/**/*.less', ['less']);
 });
