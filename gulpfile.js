@@ -9,14 +9,14 @@ var clean       = require('gulp-clean');
 
 // coffee -o lib src
 gulp.task('coffee', function() {
-    gulp.src('./src/*.coffee')
+    return gulp.src('./src/*.coffee')
         .pipe(coffee())
         .pipe(gulp.dest('./lib'));
 });
 
 // browserify -e lib/init.js -o build/reform.js -i "jquery-commonjs"
 gulp.task('scripts', ['coffee'], function() {
-    gulp.src('./lib/init.js')
+    return gulp.src('./lib/init.js')
         .pipe(browserify({ignore: ['jquery-commonjs']}))
         .pipe(concat('reform.js'))
         .pipe(gulp.dest('./build'));
@@ -24,14 +24,14 @@ gulp.task('scripts', ['coffee'], function() {
 
 // coffee -o lib_test test
 gulp.task('test-coffee', function() {
-    gulp.src('./test/*.coffee')
+    return gulp.src('./test/*.coffee')
         .pipe(coffee())
         .pipe(gulp.dest('./lib_test'));
 });
 
 // browserify -e lib_test/test.js -o build/test.js -i "jquery-commonjs"
 gulp.task('test-scripts', ['test-coffee'], function() {
-    gulp.src('./lib_test/test.js')
+    return gulp.src('./lib_test/test.js')
         .pipe(browserify({ignore: ['jquery-commonjs']}))
         .pipe(concat('test.js'))
         .pipe(gulp.dest('./build'));
@@ -53,14 +53,13 @@ gulp.task('less', function() {
 });
 
 gulp.task('clean', function() {
-    gulp.src(['./build', './lib', './lib_test'], {read: false}).pipe(clean());
+    return gulp.src(['./build', './lib', './lib_test'], {read: false}).pipe(clean());
 });
 
 gulp.task('default', ['clean', 'scripts', 'less']);
 gulp.task('test',    ['default', 'test-scripts']);
 
-gulp.task('production', function () {
-    gulp.start('default');
+gulp.task('production', ['default', 'test'], function() {
     // uglifyjs -o build/reform.min.js build/reform.js
     gulp.src('./build/reform.js')
         .pipe(rename('reform.min.js'))
