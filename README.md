@@ -168,32 +168,36 @@ Optional input field parameters:
 
 Default json format is:
 
-      [{
-          "title": 'example1',
-          "value": '1'
-        },
-        {
-          "title": 'example2',
-          "value": '2'
-        },
-        ...
-      ]
+```json
+[{
+  "title": 'example1',
+  "value": '1'
+},
+{
+  "title": 'example2',
+  "value": '2'
+},
+...
+]
+```
 
 Once autocomplete detects results the options container is shown:
 
-      <div class="reform-autocompletecombobox-ui reform-autocomplete-floater">
-        <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
-        <input class="reform-autocomplete-filter" placeholder="Type to search...">
-        <div class="reform-autocomplete-list">
-          <div class="reform-autocomplete-item" value="1">
-            <strong>ex</strong>ample1
-          </div>
-          <div class="reform-autocomplete-item" value="2">
-            <strong>ex</strong>ample2
-          </div>
-          ...
-        </div>
-      </div>
+```html
+<div class="reform-autocompletecombobox-ui reform-autocomplete-floater">
+  <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
+  <input class="reform-autocomplete-filter" placeholder="Type to search...">
+  <div class="reform-autocomplete-list">
+    <div class="reform-autocomplete-item" value="1">
+      <strong>ex</strong>ample1
+    </div>
+    <div class="reform-autocomplete-item" value="2">
+      <strong>ex</strong>ample2
+    </div>
+    ...
+  </div>
+</div>
+```
 
 The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
@@ -202,27 +206,39 @@ NPM package
 
 To use Reform as a CommonJS module (e.g. to use some Node.js tool, such as Browserify, to package your app), you should install the NPM module:
 
-    npm install reform
+```bash
+npm install reform
+```
 
 You can then require Reform:
 
-    Reform = require("reform");
+```javascript
+Reform = require("reform");
+```
 
 To use it in your application, you should instantiate a Reform object:
 
-    reform = new Reform;
+```javascript
+reform = new Reform;
+```
 
 You can then either process nodes individually:
 
-    reform.process(document.body);
+```javascript
+reform.process(document.body);
+```
 
 The easy way is just to "observe" the DOM for any custom controls being inserted:
 
-    reform.observe();
+```javascript
+reform.observe();
+```
 
 You can register new extended component before observing:
 
-    reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
+```javascript
+reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
+```
 
 Development
 -----------
@@ -234,4 +250,4 @@ Development
     - Uglify.js 1.2.5 or up
   - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
   - Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
-  - Run `bin/build` to build `reform.js`, `reform.min.js` and `reform.css`
+  - Run `gulp` to build `reform.js` and `reform.css`
