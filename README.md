@@ -240,12 +240,22 @@ You can register new extended component before observing:
 reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 ```
 
-Development
------------
+## Development
 
-  - You need Node.js 0.4.12 or up and NPM 1.0.106 or up.
-  - Install `gulp` with `npm install -g gulp`
-  - Run `npm install` to install all the dependencies
-  - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
-  - Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
-  - Run `gulp watch` to build `reform.js` and `reform.css` and watch for changes
+- You need [Node.js](http://nodejs.org/)
+- Install `gulp` with `npm install -g gulp`
+- Run `npm install` to install all the dependencies
+- Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
+- Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
+- Run `gulp watch` to build `reform.js` and `reform.css` and watch for changes
+
+### Static Ruby server
+
+You can add this alias to your [dotfiles](http://dotfiles.github.io/).
+
+```
+alias server='ruby -run -e httpd . -p5000'
+```
+
+And from here you can run `server` from this directory and open
+[http://localhost:5000/demo/index.html](http://localhost:5000/demo/index.html) for Reform demo.
