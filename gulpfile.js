@@ -1,11 +1,11 @@
-var gulp        = require('gulp');
-var coffee      = require('gulp-coffee');
-var rename      = require('gulp-rename');
-var browserify  = require('gulp-browserify');
-var concat      = require('gulp-concat');
-var less        = require('gulp-less');
-var uglify      = require('gulp-uglify');
-var clean       = require('gulp-clean');
+var gulp        = require('gulp'),
+    coffee      = require('gulp-coffee'),
+    rename      = require('gulp-rename'),
+    browserify  = require('gulp-browserify'),
+    concat      = require('gulp-concat'),
+    less        = require('gulp-less'),
+    uglify      = require('gulp-uglify'),
+    clean       = require('gulp-clean');
 
 // coffee -o lib src
 gulp.task('coffee', function() {
