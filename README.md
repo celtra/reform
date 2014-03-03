@@ -122,12 +122,12 @@ Default json format is:
 
 ```json
 [{
-  "title": 'example1',
-  "value": '1'
+  "title": "example1",
+  "value": "1"
 },
 {
-  "title": 'example2',
-  "value": '2'
+  "title": "example2",
+  "value": "2"
 },
 ...
 ]
@@ -156,7 +156,7 @@ Once autocomplete detects results the options container is shown:
 Original:
 
 ```html
-    <input class="reform-autocompletecombobox" type="text" />
+<input class="reform-autocompletecombobox" type="text" />
 ```
 
 Will become:
@@ -185,12 +185,12 @@ Default json format is:
 
 ```json
 [{
-  "title": 'example1',
-  "value": '1'
+  "title": "example1",
+  "value": "1"
 },
 {
-  "title": 'example2',
-  "value": '2'
+  "title": "example2",
+  "value": "2"
 },
 ...
 ]
