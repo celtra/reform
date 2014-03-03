@@ -48,7 +48,7 @@ gulp.task 'less', ->
     .pipe(gulp.dest('./build'))
 
 gulp.task 'clean', ->
-  gulp.src ['./build', './lib', './lib_test'], read: false
+  gulp.src(['./build', './lib', './lib_test'], read: false)
     .pipe clean()
 
 gulp.task 'default', ['clean', 'scripts' ,'less']
