@@ -1,10 +1,8 @@
-Reform - HTML forms the way you want them
-=========================================
+# Reform - HTML forms the way you want them
 
 Have you spent the last 15 years wishing browsers wouldn't force their style on your HTML elements? How many times did you want to style a check box or a select box as if they were divs? I thought so.
 
-Instructions
-------------
+## Instructions
 
 All the files you need are in the `build` folder.
 
@@ -18,86 +16,96 @@ All the files you need are in the `build` folder.
    - Add `reform-autocompletecombobox` class to `input[type=text]` elements
  4. Define your own CSS for "reformed" form elements or override the defaults in `reform.css`
 
-Dependencies
-------------
+# Dependencies
 
   - jQuery 1.7+
 
-How it works
-------------
+# How it works
 
 Reform will hide original elements and wrap them in "fake" elements, which are just plain divs. It will copy all your classes from the original to the fake element and replicate the behavior of the original element by setting special classes on the fake element (e.g. `checked`, `selected`, `disabled`). The state is automatically synchronized between the fake and the original, so you can trigger events and set values on the original elements without worrying about the fake element.
 
-Check box
----------
+# Check box
 
 Original:
 
-    <input type="checkbox" class="reform-checkbox my-class">
+```html
+<input type="checkbox" class="reform-checkbox my-class">
+```
 
 will become:
 
-    <div class="reform-checkbox-fake my-class">
-      <input type="checkbox" style="display: none">
-    </div>
+```html
+<div class="reform-checkbox-fake my-class">
+  <input type="checkbox" style="display: none">
+</div>
+```
 
 For disabled original elements, fake elements will get the `disabled` class. For checked original elements, they will get the `checked` class.
 
-Select box
-----------
+## Select box
 
 Original:
 
-    <select class="reform-selectbox my-class" title="Pick a number" data-options-class="my-options">
-      <option value="1">One</option>
-      <option value="2">Two</option>
-    </select>
+```html
+<select class="reform-selectbox my-class" title="Pick a number" data-options-class="my-options">
+  <option value="1">One</option>
+  <option value="2">Two</option>
+</select>
+```
   
 will become:
 
-    <div class="reform-selectbox-fake my-class">
-      <select style="display: none" title="Pick a number" data-options-class="my-options">
-        <option value="1">One</option>
-        <option value="2">Two</option>
-      </select>
-      Pick a number
-    </div>
+```html
+<div class="reform-selectbox-fake my-class">
+  <select style="display: none" title="Pick a number" data-options-class="my-options">
+    <option value="1">One</option>
+    <option value="2">Two</option>
+  </select>
+  Pick a number
+</div>
+```
 
 Again, for disabled original elements, fake elements will get the `disabled` class.
 
 Another div -- options container -- is attached to the `body` element and initially hidden.
 
-    <div class="reform-options my-options"></div>
+```html
+<div class="reform-options my-options"></div>
+```
   
 Once the fake element is clicked, the options container is populated and shown:
 
-    <div class="reform-options my-options">
-      <div class="reform-list">
-        <div class="reform-item" value="1">One</div>
-        <div class="reform-item" value="2">Two</div>
-      </div>
-    </div>
+```html
+<div class="reform-options my-options">
+  <div class="reform-list">
+    <div class="reform-item" value="1">One</div>
+    <div class="reform-item" value="2">Two</div>
+  </div>
+</div>
+```
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
-Multiline select box
---------------------
+## Multiline select box
 
 The multiline select box is basically a select box with support for a description line in the list of options. Simply add a data-desc attribute to the option tag.
 
-Autocomplete box
-----------
+## Autocomplete box
 
 Original:
 
-      <input class="reform-autocompletebox" type="text" />
+```html
+<input class="reform-autocompletebox" type="text" />
+```
 
 Will become:
 
-      <div class="reform-autocompletebox-ui reform-autocomplete-fake">
-        <input class="reformed" type="text" style="display: none;">
-        <input class="reform-autocomplete-filter" placeholder="Type to search...">
-      </div>
+```html
+<div class="reform-autocompletebox-ui reform-autocomplete-fake">
+    <input class="reformed" type="text" style="display: none;">
+    <input class="reform-autocomplete-filter" placeholder="Type to search...">
+</div>
+```
 
 Optional input field parameters:
 
@@ -112,46 +120,53 @@ Optional input field parameters:
 
 Default json format is:
 
-      [{
-          "title": 'example1',
-          "value": '1'
-        },
-        {
-          "title": 'example2',
-          "value": '2'
-        },
-        ...
-      ]
+```json
+[{
+  "title": 'example1',
+  "value": '1'
+},
+{
+  "title": 'example2',
+  "value": '2'
+},
+...
+]
+```
 
 For performance reasons results retrieved from a server are cached. Also delay is used if dooing ajax requests.
 
 Once autocomplete detects results the options container is shown:
 
-      <div class="reform-autocompletebox-ui reform-autocomplete-floater">
-        <div class="reform-autocomplete-list">
-          <div class="reform-autocomplete-item" value="4">
+```html
+<div class="reform-autocompletebox-ui reform-autocomplete-floater">
+    <div class="reform-autocomplete-list">
+        <div class="reform-autocomplete-item" value="4">
             <strong>exam</strong>ple1
-          </div>
-          <div class="reform-autocomplete-item" value="40">
-            <strong>exam</strong>ple2
-          </div>
-          ...
         </div>
-      </div>
+        <div class="reform-autocomplete-item" value="40">
+            <strong>exam</strong>ple2
+        </div>
+        ...
+    </div>
+</div>
+```
 
-Autocomplete combobox
-----------
+## Autocomplete combobox
 
 Original:
 
-      <input class="reform-autocompletecombobox" type="text" />
+```html
+    <input class="reform-autocompletecombobox" type="text" />
+```
 
 Will become:
 
-      <div class="reform-autocompletecombobox-ui reform-autocomplete-fake reform-autocomplete-arrow-down">
-        <input class="reformed" style="display: none;">
-        <span class="reform-autocomplete-selected-label placeholder">Select an item...</span>
-      </div>
+```html
+<div class="reform-autocompletecombobox-ui reform-autocomplete-fake reform-autocomplete-arrow-down">
+    <input class="reformed" style="display: none;">
+    <span class="reform-autocomplete-selected-label placeholder">Select an item...</span>
+</div>
+```
 
 Optional input field parameters:
 
@@ -201,8 +216,7 @@ Once autocomplete detects results the options container is shown:
 
 The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
-NPM package
-----------
+## NPM package
 
 To use Reform as a CommonJS module (e.g. to use some Node.js tool, such as Browserify, to package your app), you should install the NPM module:
 
