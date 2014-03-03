@@ -36,6 +36,9 @@ gulp.task 'test-scripts', ['test-coffee'], ->
 # non dependent tasks can be in one task
 # lessc less/all.less > build/reform.css
 # lessc less/theme-pure.less > build/reform-pure.css
+# lessc less/theme-ac4.less > build/reform-ac4.css
+# lessc less/theme-ac3.less > build/reform-ac3.css
+# lessc less/theme-ac3-dark.less > build/reform-ac3-dark.css
 gulp.task 'less', ->
   gulp.src('./less/all.less')
     .pipe(less())
@@ -47,8 +50,23 @@ gulp.task 'less', ->
     .pipe(concat('reform-pure.css'))
     .pipe(gulp.dest('./build'))
 
+  gulp.src('./less/theme-ac4.less')
+    .pipe(less())
+    .pipe(concat('reform-ac4.css'))
+    .pipe(gulp.dest('./build'))
+
+  gulp.src('./less/theme-ac3.less')
+    .pipe(less())
+    .pipe(concat('reform-ac3.css'))
+    .pipe(gulp.dest('./build'))
+
+  gulp.src('./less/theme-ac3-dark.less')
+    .pipe(less())
+    .pipe(concat('reform-ac3-dark.css'))
+    .pipe(gulp.dest('./build'))
+
 gulp.task 'clean', ->
-  gulp.src ['./build', './lib', './lib_test'], read: false
+  gulp.src(['./build/*.js', './build/*.css', './lib', './lib_test'], read: false)
     .pipe clean()
 
 gulp.task 'default', ['clean', 'scripts' ,'less']
