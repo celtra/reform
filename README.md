@@ -40,6 +40,15 @@ will become:
 </div>
 ```
 
+### Handling `checked` state changes
+
+```javascript
+$('parent-element-of-checkboxes').on('reform-checkbox-attribute-change', function(e, checked) {
+    console.log('Checked? ', checked);
+    $(e.currentTarget).toggleClass('checked');
+});
+```
+
 For disabled original elements, fake elements will get the `disabled` class. For checked original elements, they will get the `checked` class.
 
 ## Select box
