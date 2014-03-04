@@ -3,10 +3,3 @@
 /lib_test/*
 /build/*
 npm-debug.log
-
-!/lib/_placeholder
-!/lib_test/_placeholder
-!/build/_placeholder
-
-# html file for development
-develop.html
