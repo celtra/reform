@@ -75,11 +75,11 @@ gulp.task 'clean', ->
     gulp.src(['./build', './lib', './lib_test'], read: false)
     .pipe clean()
 
-gulp.task 'default', ['clean', 'copy', 'scripts' , 'less']
-gulp.task 'test',    ['default', 'test-scripts']
-gulp.task 'build',   ['default', 'test'], ->
-    # uglifyjs -o build/reform.min.js build/reform.js
-    gulp.src('./build/reform.js')
+gulp.task 'default', ['clean', 'copy', 'scripts', 'less', 'watch']
+gulp.task 'test',    ['clean', 'copy', 'scripts', 'test-scripts']
+gulp.task 'build',   ['clean', 'copy', 'scripts', 'less'], ->
+  # uglifyjs -o build/reform.min.js build/reform.js
+  gulp.src('./build/reform.js')
     .pipe(rename('reform.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./build'))

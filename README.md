@@ -269,8 +269,10 @@ reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 - Install `gulp` with `npm install -g gulp`
 - Run `npm install` to install all the dependencies
 - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
-- Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
-- Run `gulp watch` to build `reform.js` and `reform.css` and watch for changes
+- Tests are located in `test`. You can run them by opening `test/index.html` in the browser. Before you'll ned to run
+`gulp test` to build test scripts.
+- Run `gulp` to build `reform.js` and `reform.css` and watch for changes
+- Before pushing new build to `npm` repository, run `gulp build`.
 
 ### Static Ruby server
 
