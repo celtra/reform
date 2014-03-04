@@ -68,7 +68,7 @@ gulp.task 'less', ->
 # cp -r public/fonts build
 # cp -r public/img build
 gulp.task 'copy', ->
-    gulp.src(['./public/fonts/**/*', './public/img/**/*'], { base: './public' })
+    gulp.src(['./public/fonts/*', './public/img/*'], { base: './public' })
     .pipe gulp.dest('./build')
 
 gulp.task 'clean', ->
