@@ -17,6 +17,7 @@
     "jquery-commonjs": ">=1.7.1"
   },
   "devDependencies": {
+    "coffee-script": "~1.7.1",
     "gulp": "~3.5.2",
     "gulp-browserify": "~0.4.6",
     "gulp-coffee": "~1.4.1",
