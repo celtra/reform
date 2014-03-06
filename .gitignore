@@ -1,5 +1,2 @@
 /node_modules
-/lib/*
-/lib_test/*
-/build/*
 npm-debug.log
