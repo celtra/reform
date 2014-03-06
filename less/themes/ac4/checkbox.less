@@ -49,4 +49,21 @@
             background: none;
         }
     }
+
+    &.radio {
+
+        &:before {
+            .rounded-corners(50%);
+        }
+
+        &:after {
+            .rounded-corners(50%);
+
+            width            : 4px;
+            height           : 4px;
+            margin           : -2px 0 0 -2px;
+            background-color : #000;
+            content          : "";
+        }
+    }
 }
