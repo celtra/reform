@@ -31,18 +31,22 @@
     border-top: @height solid @color;
 }
 
-.arrow (@color: #000, @height: 4px, @width: 8px) {
+.arrow (@color: #000, @height: 4px, @width: 8px, @right: 10px, @marginLeft: 0) {
     position: absolute;
     top: 50%;
-    right: 10px;
+    .align-right(@right);
     
     content: "";
     width: 0;
     height: 0;
-    margin: -(@height/2) 0 0;
+    margin: -(@height/2) 0 0 @marginLeft;
 
     border-left: (@width/2) solid transparent;
     border-right: (@width/2) solid transparent;
+}
+
+.align-right(@right) when (ispixel(@right)) {
+    right: @right;
 }
 
 .placeholder (@color: inherit) {
