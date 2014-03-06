@@ -1,12 +1,52 @@
-#abstracts > .checkbox();
+#abstracts > .checkbox;
+
+@checkboxBorderColor : #aaa;
 
 &.reform-checkbox-fake {
+    height           : 12px;
+    width            : 12px;
+    padding          : 1px;
+    box-sizing       : content-box;
 
-    &:hover {
-        .outline(@borderHoverColor);
+    &:after {
+        display    : none;
+        position   : absolute;
+        top        : 50%;
+        left       : 50%;
+        z-index    : 1;
+        width      : 10px;
+        height     : 10px;
+        margin     : -5px 0 0 -5px;
+        padding    : 0;
+        content    : "";
+        background : url('img/check.gif') no-repeat;
+    }
+
+    &.checked {
+        &:before {
+            top        : 1px;
+            left       : 1px;
+            width      : auto;
+            height     : auto;
+            margin     : 0;
+            background : none;
+        }
+
+        &:after {
+            display    : block;
+        }
+
+        box-shadow       : 0 0 0 1px #EEE;
+        background-color : #EEE;
     }
 
     &.disabled {
-        .outline(@disabledBorderColor);
+        background-color : @disabledBackgroundColor;
+
+        .outline(@checkboxBorderColor);
+
+        &.checked:before {
+            background: none;
+        }
     }
 }
