@@ -13,6 +13,10 @@
                 font-family: Arial;
                 font-weight: normal;
             }
+
+            div.checked {
+                background-color: #EEE;
+            }
         </style>
         <script>
             var inlineData = [
@@ -77,6 +81,10 @@
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+
+                $('.filter-checkboxes div').on('reform-checkbox-attribute-change', function(e, checked) {
+                    $(e.currentTarget).toggleClass('checked');
+                });
             });
         </script>
 
@@ -91,9 +99,29 @@
             <input class="reform-checkbox reform-ac4" type="checkbox" disabled>
             <input class="reform-checkbox tmp reform-ac4" type="checkbox" checked disabled>
         </div>
-        
-        <br/><br/>
-        
+
+        <h3>Filter check boxes</h3>
+        <ul class="filter-checkboxes">
+            <li>
+                <div>
+                    <input id="casual" class="reform-checkbox reform-ac4" type="checkbox" />
+                    <label class="caption" for="casual">Not checked</label>
+                </div>
+            </li>
+            <li>
+                <div class="checked">
+                    <input id="checked" class="reform-checkbox reform-ac4" type="checkbox" checked />
+                    <label class="caption" for="checked">Checked</label>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <input id="disabled" class="reform-checkbox reform-ac4" type="checkbox" disabled />
+                    <label class="caption" for="disabled">Disabled</label>
+                </div>
+            </li>
+        </ul>
+
         <h3>Radio boxes</h3>
         
         <div>
