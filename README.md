@@ -274,6 +274,17 @@ reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 - Run `gulp` to build `reform.js` and `reform.css` and watch for changes
 - Before pushing new build to `npm` repository, run `gulp build`.
 
+## Deploy new version to GitHub
+
+Workflow
+
+```bash
+git checkout npm
+git merge master # or the branch you want to deploy
+gulp build
+git push origin npm
+```
+
 ### Static Ruby server
 
 You can add this alias to your [dotfiles](http://dotfiles.github.io/).
