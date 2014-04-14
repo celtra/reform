@@ -2,15 +2,15 @@ window.$ ?= require "jquery-commonjs"
 
 # Implements custom check boxes and radio buttons
 class CheckBox
-    
+
     # Generating a fake check/radio box from a real one
     constructor: (input, options) ->
 
         @orig = $ input
-        
+
         # Don't do this twice
         return if @orig.is ".reformed"
-        
+
         # Other radio buttons
         @siblings = $("[name='#{@orig.attr "name"}']").not(@orig) if @orig.is ":radio"
         
@@ -33,12 +33,14 @@ class CheckBox
         
         # Replicate changes from the original check box to the fake one
         @orig.on "reform.sync change DOMSubtreeModified", => setTimeout @refresh, 0
-    
+
     # Replicate the original's state to the fake one
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
         @fake.removeClass "checked"
         @fake.addClass "checked" if @orig.is ":checked"
+
+        return unless @orig.is(':checked')
         @fake.trigger 'reform-checkbox-attribute-change', @fake.hasClass 'checked'
         @siblings?.each -> $(@).parent().removeClass "checked"
 
