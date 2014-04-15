@@ -12,12 +12,12 @@
     @paddingVertical : (@height - @lineHeight) / 2;
 
     &.reform-selectbox-fake {
-        height     : @height;
-        padding    : @paddingVertical @paddingHorizontal;
+        .border-box;
+        height  : @height;
+        padding : @paddingVertical @paddingHorizontal;
     }
 
     &.reform-selectbox-ui .reform-floater-list .reform-floater-item {
-
         &:first-child { padding-top: @paddingVertical;    }
         &:last-child  { padding-bottom: @paddingVertical; }
     }
