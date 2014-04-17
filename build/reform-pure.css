@@ -9,6 +9,16 @@
   -o-user-select: none;
   user-select: none;
 }
+.reform .border-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.reform .content-box {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
 .reform.reform-checkbox-fake {
   height: 30px;
   width: 30px;
@@ -16,6 +26,8 @@
   display: inline-block;
   cursor: pointer;
   background-color: #ffffff;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   vertical-align: middle;
   box-shadow: 0 0 0 1px #dddddd;
@@ -57,6 +69,8 @@
   position: relative;
   display: inline-block;
   cursor: pointer;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   outline: none;
   font-size: 13px;
@@ -182,6 +196,8 @@
   overflow: hidden;
   max-width: 200px;
   background: #ffffff;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 13px;
   color: #1f1f1f;
@@ -201,6 +217,8 @@
 .reform.reform-floater .reform-floater-list .reform-floater-item {
   padding: 7px 16px;
   cursor: pointer;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
   white-space: nowrap;
@@ -233,6 +251,8 @@
 .reform.reform-autocomplete-fake {
   position: relative;
   display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   cursor: pointer;
   overflow: hidden;
@@ -283,6 +303,7 @@
 .reform.reform-autocomplete-fake.disabled .reform-autocomplete-filter {
   /* firefox 19+ */
   /* ie */
+  background-color: #ffffff;
 }
 .reform.reform-autocomplete-fake.disabled .reform-autocomplete-filter::-webkit-input-placeholder {
   color: #dddddd;
@@ -341,6 +362,8 @@
   padding: 7px 16px;
   position: relative;
   display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
   cursor: pointer;
@@ -372,5 +395,7 @@
 .reform.reform-autocompletecombobox-ui.reform-floater .reform-autocomplete-empty {
   color: #aaaaaa;
   padding: 7px 16px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
