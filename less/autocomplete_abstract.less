@@ -1,7 +1,7 @@
 &.reform-autocomplete-fake {
     position      : relative;
     display       : inline-block;
-    box-sizing    : border-box;
+    .border-box;
     cursor        : pointer;
     overflow      : hidden;
 
@@ -27,6 +27,7 @@
 
         .reform-autocomplete-filter {
             .placeholder(@disabledPlaceholderColor);
+            background-color : @backgroundColor;
         }
 
         &.arrow-down:after {
