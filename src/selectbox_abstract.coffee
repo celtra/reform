@@ -144,6 +144,12 @@ class SelectBoxAbstract
         @$list = $("<div/>").appendTo @floater
         @$list.attr "class", "reform-floater-list"
         @$list.addClass @options.uiClass
+
+        # Create item for multiple
+        @textMultiple = ""
+        $itemMultiple = $ "<div/>"
+        $itemMultiple.attr "class", "reform-floater-item"
+        $itemMultiple.addClass "disabled"
         
         # Filling options
         @orig.find("option").each (i, option) =>
@@ -155,7 +161,22 @@ class SelectBoxAbstract
             $item.attr "title", $option.attr("title")
             $item.attr "value", $option.val()
             $item.append @createItemContent $option
-            $item.appendTo @$list
+
+            # disable selected item, push on top of list
+            if $option.is ":selected"
+                if  @orig.is "[multiple]"
+                    if  @textMultiple == ""
+                        @textMultiple += $option.html()
+                    else
+                        @textMultiple += ", " + $option.html()
+                    $itemMultiple.html @textMultiple
+                else
+                    $itemSelected = $item.clone()
+                    $itemSelected.addClass "disabled"
+                    $itemSelected.prependTo @$list
+                    $item.addClass "disabled"     
+            $item.appendTo @$list 
+
             
             # Prevent text selection
             $item.on "mousedown", (e) -> e.preventDefault()
@@ -176,6 +197,9 @@ class SelectBoxAbstract
                 
                 # Update values
                 @orig.val(@value()).trigger "change"
+
+        #push multiple item on top of list
+        $itemMultiple.prependTo @$list
     
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
@@ -211,7 +235,9 @@ class SelectBoxAbstract
         # Position the options layer
         $window = $ window
         if pos.top + @floater.outerHeight() > $window.height()
-            pos.top = pos.top - @floater.outerHeight() + @fake.outerHeight()
+            pos.top = pos.top - @floater.outerHeight() - 5
+        else
+            pos.top = pos.top + @fake.outerHeight() + 5
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
         @floater.css pos
