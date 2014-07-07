@@ -145,12 +145,16 @@ class SelectBoxAbstract
         @$list.attr "class", "reform-floater-list"
         @$list.addClass @options.uiClass
 
-        # Create item for multiple
+        # Create top item for multiple selection box
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
-        $itemMultiple.attr "class", "reform-floater-item"
+        $itemMultiple.addClass "reform-floater-item"
         $itemMultiple.addClass "disabled"
         
+        # List for values of selected items in multiple selection box
+        @listMultiple = []
+        @selectBoxTitle = @orig.data('title')
+
         # Filling options
         @orig.find("option").each (i, option) =>
             $option = $ option
@@ -162,19 +166,18 @@ class SelectBoxAbstract
             $item.attr "value", $option.val()
             $item.append @createItemContent $option
 
-            # disable selected item, push on top of list
+            # Disable selected item, add values in @listMultiple
             if $option.is ":selected"
                 if  @orig.is "[multiple]"
-                    if  @textMultiple == ""
-                        @textMultiple += $option.html()
-                    else
-                        @textMultiple += ", " + $option.html()
-                    $itemMultiple.html @textMultiple
+                    @listMultiple.push $option.html() 
                 else
-                    $itemSelected = $item.clone()
-                    $itemSelected.addClass "disabled"
-                    $itemSelected.prependTo @$list
-                    $item.addClass "disabled"     
+                    $item.addClass "disabled"
+
+                    # Add selected value on top of the list
+                    if @selectBoxTitle
+                        $itemSelected = $item.clone()
+                        $itemSelected.addClass @attributeType
+                        $itemSelected.prependTo @$list
             $item.appendTo @$list 
 
             
@@ -198,8 +201,10 @@ class SelectBoxAbstract
                 # Update values
                 @orig.val(@value()).trigger "change"
 
-        #push multiple item on top of list
-        $itemMultiple.prependTo @$list
+        # Push item with multiple values on top of the list
+        if @selectBoxTitle
+            $itemMultiple.html @listMultiple.join(", ")
+            $itemMultiple.prependTo @$list
     
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
@@ -234,10 +239,16 @@ class SelectBoxAbstract
         
         # Position the options layer
         $window = $ window
-        if pos.top + @floater.outerHeight() > $window.height()
-            pos.top = pos.top - @floater.outerHeight() - 5
+        if pos.top + @floater.innerHeight() > $window.height()
+            if @orig.data('shift')
+                pos.top = pos.top - @floater.outerHeight() - parseInt @orig.data('shift')
+            else
+                pos.top = pos.top - @floater.outerHeight()
         else
-            pos.top = pos.top + @fake.outerHeight() + 5
+            if @orig.data('shift')
+                pos.top = pos.top + @fake.innerHeight() + parseInt @orig.data('shift')
+            else
+                pos.top = pos.top + @fake.innerHeight() 
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
         @floater.css pos
