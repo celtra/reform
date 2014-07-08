@@ -205,6 +205,7 @@ class SelectBoxAbstract
         if @selectBoxTitle
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
+        
     
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
@@ -252,11 +253,16 @@ class SelectBoxAbstract
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
         @floater.css pos
+        if not @fake.hasClass "disabled"
+            @fake.addClass "disabled"
+        
     
     # Closes the options container
     close: =>
         @floater?.remove()
         @floater = null
+        if not @orig.is ":disabled"
+            @fake.removeClass "disabled"
     
     # Set the title of the fake select box
     refresh: =>
