@@ -239,16 +239,16 @@ class SelectBoxAbstract
         
         # Position the options layer
         $window = $ window
-        if pos.top + @floater.innerHeight() > $window.height()
+        if pos.top + @floater.outerHeight() > $window.height()
             if @orig.data('shift')
                 pos.top = pos.top - @floater.outerHeight() - parseInt @orig.data('shift')
             else
                 pos.top = pos.top - @floater.outerHeight()
         else
             if @orig.data('shift')
-                pos.top = pos.top + @fake.innerHeight() + parseInt @orig.data('shift')
+                pos.top = pos.top + @fake.outerHeight() + parseInt @orig.data('shift')
             else
-                pos.top = pos.top + @fake.innerHeight() 
+                pos.top = pos.top + @fake.outerHeight() 
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
         @floater.css pos
