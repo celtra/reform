@@ -1,17 +1,19 @@
 &.reform-floater {
-    z-index     : 20;
-    display     : block;
-    position    : absolute;
-    overflow    : hidden;
-    max-width   : 200px;
-    background  : @backgroundColor;
+    z-index      : 20;
+    display      : block;
+    position     : absolute;
+    overflow     : hidden;
+    max-width    : 200px;
+    background   : @backgroundColor;
+    -webkit-box-shadow: 0px 1px 4px 1px @borderColor;
+    -moz-box-shadow: 0px 1px 4px 1px @borderColor;
+    box-shadow: 0px 1px 4px 1px @borderColor;
     .border-box;
 
     font-size   : @fontSize;
     color       : @fontColor;
     line-height : @lineHeight;
 
-    .outline(@borderColor);
     .rounded-corners;
 
     .reform-floater-list {
