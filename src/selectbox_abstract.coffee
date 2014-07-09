@@ -178,6 +178,7 @@ class SelectBoxAbstract
                         $itemSelected = $item.clone()
                         $itemSelected.addClass @attributeType
                         $itemSelected.prependTo @$list
+                        $itemSelected.on "mousedown", (e) -> e.preventDefault()
 
             $item.appendTo @$list
             
@@ -204,6 +205,7 @@ class SelectBoxAbstract
         if @selectBoxTitle
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
+            $itemMultiple.on "mousedown", (e) -> e.preventDefault()
         
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
