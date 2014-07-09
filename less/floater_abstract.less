@@ -1,19 +1,17 @@
 &.reform-floater {
-    z-index      : 20;
-    display      : block;
-    position     : absolute;
-    overflow     : hidden;
-    max-width    : 200px;
-    background   : @backgroundColor;
-    -webkit-box-shadow: 0px 1px 4px 1px @borderColor;
-    -moz-box-shadow: 0px 1px 4px 1px @borderColor;
-    box-shadow: 0px 1px 4px 1px @borderColor;
+    z-index    : 20;
+    display    : block;
+    position   : absolute;
+    overflow   : hidden;
+    max-width  : 200px;
+    background : @backgroundColor;
     .border-box;
 
     font-size   : @fontSize;
     color       : @fontColor;
     line-height : @lineHeight;
 
+    .outline(@borderColor);
     .rounded-corners;
 
     .reform-floater-list {
@@ -54,10 +52,10 @@
 }
 
 &.reform-floater-overlay {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: fixed;
-    z-index: 10
+    top      : 0;
+    bottom   : 0;
+    left     : 0;
+    right    : 0;
+    position : fixed;
+    z-index  : 10
 }
