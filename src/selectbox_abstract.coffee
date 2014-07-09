@@ -178,14 +178,13 @@ class SelectBoxAbstract
                         $itemSelected = $item.clone()
                         $itemSelected.addClass @attributeType
                         $itemSelected.prependTo @$list
-            $item.appendTo @$list 
 
+            $item.appendTo @$list
             
             # Prevent text selection
             $item.on "mousedown", (e) -> e.preventDefault()
             
             $item.hover => @hover $item unless @ignoreMouse
-            
             
             # Option selection
             $item.on "click", (e) =>
@@ -206,7 +205,6 @@ class SelectBoxAbstract
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
         
-    
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
     
@@ -241,37 +239,37 @@ class SelectBoxAbstract
         # Position the options layer
         $window = $ window
         if pos.top + @floater.outerHeight() > $window.height()
-            if @orig.data('shift')
+            if @orig.data 'shift'
                 pos.top = pos.top - @floater.outerHeight() - parseInt @orig.data('shift')
             else
                 pos.top = pos.top - @floater.outerHeight()
         else
-            if @orig.data('shift')
+            if @orig.data 'shift'
                 pos.top = pos.top + @fake.outerHeight() + parseInt @orig.data('shift')
             else
                 pos.top = pos.top + @fake.outerHeight() 
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
+
         @floater.css pos
-        if not @fake.hasClass "disabled"
-            @fake.addClass "disabled"
         
+        @fake.addClass "disabled"
     
     # Closes the options container
     close: =>
         @floater?.remove()
         @floater = null
-        if not @orig.is ":disabled"
+        unless @orig.is ":disabled"
             @fake.removeClass "disabled"
     
     # Set the title of the fake select box
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
 
-        $selectedItem = @fake.find( '.selected-item' )
+        $selectedItem = @fake.find '.selected-item'
         $selectedItem.empty()
         
-        if @orig.data('title')
+        if @orig.data 'title'
             $selectedItem.append @orig.data('title')
         else
             $title = @createClosedItem()
