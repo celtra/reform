@@ -177,6 +177,7 @@ class SelectBoxAbstract
                     if @selectBoxTitle
                         $itemSelected = $item.clone()
                         $itemSelected.addClass "selected-item"
+                        $itemSelected.removeClass "selected"
                         $itemSelected.prependTo @$list
                         $itemSelected.on "mousedown", (e) -> e.preventDefault()
 
