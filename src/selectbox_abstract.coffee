@@ -253,9 +253,17 @@ class SelectBoxAbstract
                 pos.top = pos.top + @fake.outerHeight() 
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
-
-        @floater.css pos
         
+        @floater.css pos
+
+        # Determine the direction and size of slide animation
+        if @orig.data 'shift-slide-animation'
+            if pos.top + @floater.outerHeight() > $window.height()
+                move('.reform-floater').y( - parseInt @orig.data('shift-slide-animation')).end()
+            else
+                move('.reform-floater').y(parseInt @orig.data('shift-slide-animation')).end()       
+        
+
         @fake.addClass "selected-item"
     
     # Closes the options container
