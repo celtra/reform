@@ -27,6 +27,7 @@
 
             white-space   : nowrap;
             text-overflow : ellipsis;
+            color         : @floaterItemColor; 
 
             &.hover {
                 background : @hoverBackgroundColor;
@@ -34,8 +35,8 @@
             }
 
             &.selected {
-                background : @selectedBackgroundColor;
                 color      : @selectedFontColor;
+                font-weight: 500;
             }
 
             &.disabled {
