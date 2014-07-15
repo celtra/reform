@@ -149,7 +149,7 @@ class SelectBoxAbstract
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
         $itemMultiple.addClass "reform-floater-item"
-        $itemMultiple.addClass "disabled"
+        $itemMultiple.addClass "selected"
         
         # List for values of selected items in multiple selection box
         @listMultiple = []
@@ -171,7 +171,7 @@ class SelectBoxAbstract
                 if  @orig.is "[multiple]"
                     @listMultiple.push $option.html() 
                 else
-                    $item.addClass "disabled"
+                    $item.addClass "selected"
 
                     # Add selected value on top of the list
                     if @selectBoxTitle
@@ -252,8 +252,6 @@ class SelectBoxAbstract
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
         @floater.css pos
-        
-        @fake.addClass "disabled"
     
     # Closes the options container
     close: =>
