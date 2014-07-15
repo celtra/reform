@@ -149,7 +149,7 @@ class SelectBoxAbstract
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
         $itemMultiple.addClass "reform-floater-item"
-        $itemMultiple.addClass "top-options-item"
+        $itemMultiple.addClass "selected"
         
         # List for values of selected items in multiple selection box
         @listMultiple = []
@@ -176,8 +176,6 @@ class SelectBoxAbstract
                     # Add selected value on top of the list
                     if @selectBoxTitle
                         $itemSelected = $item.clone()
-                        $itemSelected.addClass "top-options-item"
-                        $itemSelected.removeClass "selected"
                         $itemSelected.prependTo @$list
                         $itemSelected.on "mousedown", (e) -> e.preventDefault()
 
