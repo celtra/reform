@@ -149,7 +149,7 @@ class SelectBoxAbstract
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
         $itemMultiple.addClass "reform-floater-item"
-        $itemMultiple.addClass "disabled"
+        $itemMultiple.addClass "selected"
         
         # List for values of selected items in multiple selection box
         @listMultiple = []
@@ -171,13 +171,13 @@ class SelectBoxAbstract
                 if  @orig.is "[multiple]"
                     @listMultiple.push $option.html() 
                 else
-                    $item.addClass "disabled"
+                    $item.addClass "selected"
 
                     # Add selected value on top of the list
                     if @selectBoxTitle
                         $itemSelected = $item.clone()
-                        $itemSelected.addClass @attributeType
                         $itemSelected.prependTo @$list
+                        $itemSelected.on "mousedown", (e) -> e.preventDefault()
 
             $item.appendTo @$list
             
@@ -204,6 +204,7 @@ class SelectBoxAbstract
         if @selectBoxTitle
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
+            $itemMultiple.on "mousedown", (e) -> e.preventDefault()
         
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
@@ -250,10 +251,18 @@ class SelectBoxAbstract
                 pos.top = pos.top + @fake.outerHeight() 
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
-
-        @floater.css pos
         
-        @fake.addClass "disabled"
+        @floater.css pos
+
+        # Determine the direction and size of slide animation
+        if @orig.data 'shift-slide-animation'
+            if pos.top + @floater.outerHeight() > $window.height()
+                move('.reform-floater').y(parseInt @orig.data('shift-slide-animation')).end()
+            else
+                move('.reform-floater').y( - parseInt @orig.data('shift-slide-animation')).end()       
+        
+
+        @fake.addClass "selected-item"
     
     # Closes the options container
     close: =>
