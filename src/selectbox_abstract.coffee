@@ -149,7 +149,7 @@ class SelectBoxAbstract
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
         $itemMultiple.addClass "reform-floater-item"
-        $itemMultiple.addClass "selected-item"
+        $itemMultiple.addClass "top-options-item"
         
         # List for values of selected items in multiple selection box
         @listMultiple = []
@@ -176,7 +176,7 @@ class SelectBoxAbstract
                     # Add selected value on top of the list
                     if @selectBoxTitle
                         $itemSelected = $item.clone()
-                        $itemSelected.addClass "selected-item"
+                        $itemSelected.addClass "top-options-item"
                         $itemSelected.removeClass "selected"
                         $itemSelected.prependTo @$list
                         $itemSelected.on "mousedown", (e) -> e.preventDefault()
@@ -259,9 +259,9 @@ class SelectBoxAbstract
         # Determine the direction and size of slide animation
         if @orig.data 'shift-slide-animation'
             if pos.top + @floater.outerHeight() > $window.height()
-                move('.reform-floater').y( - parseInt @orig.data('shift-slide-animation')).end()
+                move('.reform-floater').y(parseInt @orig.data('shift-slide-animation')).end()
             else
-                move('.reform-floater').y(parseInt @orig.data('shift-slide-animation')).end()       
+                move('.reform-floater').y( - parseInt @orig.data('shift-slide-animation')).end()       
         
 
         @fake.addClass "selected-item"
