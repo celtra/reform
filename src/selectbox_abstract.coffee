@@ -19,6 +19,7 @@ class SelectBoxAbstract
         # Fake select box
         @fake = $ "<div/>"
         @fake.attr "tabindex", 0
+        @fake.addClass "closed"
         
         origClass = @orig.attr 'class'
         @customClass = origClass.replace @options.reformClass, ''
@@ -252,11 +253,14 @@ class SelectBoxAbstract
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
         @floater.css pos
-    
+        @fake.addClass "opened"
+        @fake.removeClass "closed"
     # Closes the options container
     close: =>
         @floater?.remove()
         @floater = null
+        @fake.removeClass "opened"
+        @fake.addClass "closed"
         unless @orig.is ":disabled"
             @fake.removeClass "disabled"
     

@@ -25,11 +25,14 @@
         text-overflow : ellipsis;
     }
 
-    &:after {
+    &.reform-selectbox-ui.closed:after {
         .arrow-down(@fontColor);
     }
+    &.reform-selectbox-ui.opened:after {
+        .reform-arrow-up(@fontColor);
+    }
 
-    &.disabled {
+    &.reform-selectbox-ui.disabled {
         cursor : default;
         color  : @disabledFontColor;
 

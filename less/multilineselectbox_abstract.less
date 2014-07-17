@@ -4,10 +4,13 @@
         min-width : 390px; /* !!! */
         padding   : 12px (@paddingHorizontal + 4) 12px @paddingHorizontal;
 
-        &:after {
+        &.closed:after {
             right: 10px;
-
             .arrow-down(@fontColor, 7px, 12px);
+        }
+        &.opened:after {
+            right: 10px;
+            .reform-arrow-up(@fontColor, 7px, 12px);
         }
 
         &.disabled {
