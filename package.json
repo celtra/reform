@@ -14,7 +14,8 @@
     "url": "https://github.com/celtra/reform.git"
   },
   "dependencies": {
-    "jquery-commonjs": ">=1.7.1"
+    "jquery-commonjs": ">=1.7.1",
+    "move.js"        : ">=0.3.3"
   },
   "devDependencies": {
     "coffee-script": "~1.7.1",
