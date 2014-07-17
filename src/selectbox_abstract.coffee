@@ -140,7 +140,8 @@ class SelectBoxAbstract
         
         # Empty the options container
         @floater.empty()
-
+        @height = $(document).height()
+        @width = $(document).width()
         # List container
         @$list = $("<div/>").appendTo @floater
         @$list.attr "class", "reform-floater-list"
@@ -269,7 +270,7 @@ class SelectBoxAbstract
             
             # Get position of fake
             pos = @fake.offset()
-            if pos.top + @floater.outerHeight() > $('body').height()
+            if pos.top + @floater.outerHeight() > @height
                 if @orig.data 'shift'
                     pos.top = pos.top - @floater.outerHeight() - parseInt @orig.data('shift')
                 else
@@ -279,7 +280,7 @@ class SelectBoxAbstract
                     pos.top = pos.top + @fake.outerHeight() + parseInt @orig.data('shift')
                 else
                     pos.top = pos.top + @fake.outerHeight() 
-            if pos.left + @floater.outerWidth() > $('body').width()
+            if pos.left + @floater.outerWidth() > @width
                 pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
             @floater.css pos
