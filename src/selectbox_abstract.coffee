@@ -202,7 +202,7 @@ class SelectBoxAbstract
                 @orig.val(@value()).trigger "change"
 
         # Push item with multiple values on top of the list
-        if @selectBoxTitle and  @listMultiple.length > 0
+        if @selectBoxTitle and @listMultiple.length > 0
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
         
