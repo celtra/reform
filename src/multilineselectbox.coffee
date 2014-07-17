@@ -4,10 +4,9 @@ SelectBoxAbstract = require './selectbox_abstract'
 class MultilineSelectBox extends SelectBoxAbstract
     constructor: ($select, options) ->
         @options = $.extend {
-            noSelectionText   : 'Select an item'
-
-            reformClass       : 'reform-multilineselectbox'
-            uiClass           : 'reform-multilineselectbox-ui'
+            noSelectionText : 'Select an item'
+            reformClass     : 'reform-multilineselectbox'
+            uiClass         : 'reform-multilineselectbox-ui'
         }, options
 
         super $select, @options

@@ -24,11 +24,13 @@ class SelectBoxAbstract
         origClass = @orig.attr 'class'
         @customClass = origClass.replace @options.reformClass, ''
         @customClass = @customClass.trim()
-        @fake.addClass 'reform'                         # todo: move to base
-        @fake.addClass @customClass
-        @fake.addClass @options.fakeClass
-        @fake.addClass "disabled" if @orig.is ":disabled"
-        @fake.addClass @options.uiClass
+        # todo: move adding a reform class to base
+        @fake.addClass 'reform'
+             .addClass @customClass
+             .addClass @options.fakeClass
+             .addClass @options.uiClass
+
+        @fake.addClass 'disabled' if @orig.is ':disabled'
 
         @orig.hide().attr "class", "reformed"
 
@@ -149,8 +151,7 @@ class SelectBoxAbstract
         # Create top item for multiple selection box
         @textMultiple = ""
         $itemMultiple = $ "<div/>"
-        $itemMultiple.addClass "reform-floater-item"
-        $itemMultiple.addClass "selected"
+        $itemMultiple.addClass "reform-floater-item selected"
         
         # List for values of selected items in multiple selection box
         @listMultiple = []
@@ -160,11 +161,12 @@ class SelectBoxAbstract
         @orig.find("option").each (i, option) =>
             $option = $ option
             $item = $ "<div/>"
-            $item.attr "class", "reform-floater-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.addClass "disabled" if $option.is ":disabled"
-            $item.attr "title", $option.attr("title")
+            $item.addClass "reform-floater-item"
+            $item.attr "title", $option.attr "title"
             $item.attr "value", $option.val()
+
             $item.append @createItemContent $option
 
             # Disable selected item, add values in @listMultiple
@@ -216,14 +218,14 @@ class SelectBoxAbstract
 
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "reform-floater"
         @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass 'reform'              # todo: do it better
-        @floater.addClass @customClass
-        @floater.addClass @orig.data "floater-class"
-        @floater.addClass @options.uiClass
-        @floater.addClass 'reform-floater-ui'   # todo: do it better
-        @floater.addClass 'reform-' + @options.theme
+        # todo: do it better
+        @floater.addClass 'reform-floater reform reform-floater-ui'
+                .addClass @customClass
+                .addClass @orig.data "floater-class"
+                .addClass @options.uiClass
+                .addClass 'reform-' + @options.theme
+
         @body.append @floater
         
         @createOptions()
@@ -231,30 +233,27 @@ class SelectBoxAbstract
         # Click closes the options layer
         @body.one "click", @close
         
-        # get position of fake
-        pos = @fake.offset()
-        
         # Show the options layer
         @floater.show()
         
         # Position the options layer
         $window = $ window
+        pos     = @fake.offset()
+
         if pos.top + @floater.outerHeight() > $window.height()
-            if @orig.data 'shift'
-                pos.top = pos.top - @floater.outerHeight() - parseInt @orig.data('shift')
-            else
-                pos.top = pos.top - @floater.outerHeight()
+            pos.top = pos.top - @floater.outerHeight()
+            pos.top = pos.top - parseInt @orig.data('shift') if @orig.data 'shift'
         else
-            if @orig.data 'shift'
-                pos.top = pos.top + @fake.outerHeight() + parseInt @orig.data('shift')
-            else
-                pos.top = pos.top + @fake.outerHeight() 
+            pos.top = pos.top + @fake.outerHeight()
+            pos.top = pos.top + parseInt @orig.data('shift') if @orig.data 'shift'
+
         if pos.left + @floater.outerWidth() > $window.width()
             pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
         @floater.css pos
         @fake.addClass "opened"
         @fake.removeClass "closed"
+
     # Closes the options container
     close: =>
         @floater?.remove()
