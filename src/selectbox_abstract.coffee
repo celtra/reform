@@ -142,7 +142,8 @@ class SelectBoxAbstract
         
         # Empty the options container
         @floater.empty()
-
+        @height = $(document).height()
+        @width = $(document).width()
         # List container
         @$list = $("<div/>").appendTo @floater
         @$list.attr "class", "reform-floater-list"
@@ -204,7 +205,7 @@ class SelectBoxAbstract
                 @orig.val(@value()).trigger "change"
 
         # Push item with multiple values on top of the list
-        if @selectBoxTitle
+        if @selectBoxTitle and @listMultiple.length > 0
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
         
@@ -237,20 +238,8 @@ class SelectBoxAbstract
         @floater.show()
         
         # Position the options layer
-        $window = $ window
-        pos     = @fake.offset()
-
-        if pos.top + @floater.outerHeight() > $window.height()
-            pos.top = pos.top - @floater.outerHeight()
-            pos.top = pos.top - parseInt @orig.data('shift') if @orig.data 'shift'
-        else
-            pos.top = pos.top + @fake.outerHeight()
-            pos.top = pos.top + parseInt @orig.data('shift') if @orig.data 'shift'
-
-        if pos.left + @floater.outerWidth() > $window.width()
-            pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
-
-        @floater.css pos
+        @positionFloater()
+        
         @fake.addClass "opened"
         @fake.removeClass "closed"
 
@@ -277,5 +266,22 @@ class SelectBoxAbstract
             $selectedItem.append $title    
         
         @createOptions()
+
+    positionFloater: =>
+        if @floater?
+            
+            # Get position of fake
+            pos = @fake.offset()
+            if pos.top + @floater.outerHeight() > @height
+                pos.top = pos.top - @floater.outerHeight()
+                pos.top = pos.top - parseInt @orig.data('shift') if @orig.data 'shift'
+            else
+                pos.top = pos.top + @fake.outerHeight() 
+                pos.top = pos.top + parseInt @orig.data('shift') if @orig.data 'shift'
+
+            if pos.left + @floater.outerWidth() > @width
+                pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
+
+            @floater.css pos
 
 module.exports = SelectBoxAbstract
