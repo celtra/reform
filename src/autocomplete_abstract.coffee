@@ -109,6 +109,8 @@ class AutocompleteAbstract
 
         @el.on 'selectedItemChanged', => @handleSelectionChanged()
 
+        @el.on 'setFieldLabel', (e, newSelectedItem) => @setSelectedItem newSelectedItem
+
         @refreshState()
 
     initCustomClass: ->
