@@ -274,15 +274,19 @@ class SelectBoxAbstract
             pos = @fake.offset()
             if pos.top + @floater.outerHeight() > @height
                 pos.top = pos.top - @floater.outerHeight()
-                posTopNew = pos.top - parseInt @orig.data('shift') if @orig.data 'shift'
+                if @orig.data 'shift'
+                    posTopAfterAnimation = pos.top - parseInt @orig.data('shift') 
+                    pos.top -= 1
             else
-                pos.top = pos.top + @fake.outerHeight() 
-                posTopNew = pos.top + parseInt @orig.data('shift') if @orig.data 'shift'
+                pos.top = pos.top + @fake.outerHeight()
+                if @orig.data 'shift'
+                    posTopAfterAnimation = pos.top + parseInt @orig.data('shift') 
+                    pos.top += 1
 
             if pos.left + @floater.outerWidth() > @width
                 pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
 
             @floater.css pos
-            @floater.animate {top: posTopNew}, 200 if @orig.data 'shift'
+            @floater.animate {top: posTopAfterAnimation}, 200 if @orig.data 'shift'
 
 module.exports = SelectBoxAbstract
