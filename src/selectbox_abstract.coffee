@@ -19,15 +19,18 @@ class SelectBoxAbstract
         # Fake select box
         @fake = $ "<div/>"
         @fake.attr "tabindex", 0
+        @fake.addClass "closed"
         
         origClass = @orig.attr 'class'
         @customClass = origClass.replace @options.reformClass, ''
         @customClass = @customClass.trim()
-        @fake.addClass 'reform'                         # todo: move to base
-        @fake.addClass @customClass
-        @fake.addClass @options.fakeClass
-        @fake.addClass "disabled" if @orig.is ":disabled"
-        @fake.addClass @options.uiClass
+        # todo: move adding a reform class to base
+        @fake.addClass 'reform'
+             .addClass @customClass
+             .addClass @options.fakeClass
+             .addClass @options.uiClass
+
+        @fake.addClass 'disabled' if @orig.is ':disabled'
 
         @orig.hide().attr "class", "reformed"
 
@@ -139,29 +142,53 @@ class SelectBoxAbstract
         
         # Empty the options container
         @floater.empty()
-
+        @height = $(document).height()
+        @width = $(document).width()
         # List container
         @$list = $("<div/>").appendTo @floater
         @$list.attr "class", "reform-floater-list"
         @$list.addClass @options.uiClass
+
+        # Create top item for multiple selection box
+        @textMultiple = ""
+        $itemMultiple = $ "<div/>"
+        $itemMultiple.addClass "reform-floater-item selected"
         
+        # List for values of selected items in multiple selection box
+        @listMultiple = []
+        @selectBoxTitle = @orig.data('title')
+
         # Filling options
         @orig.find("option").each (i, option) =>
             $option = $ option
             $item = $ "<div/>"
-            $item.attr "class", "reform-floater-item"
             $item.addClass "selected" if $option.is ":selected"
             $item.addClass "disabled" if $option.is ":disabled"
-            $item.attr "title", $option.attr("title")
+            $item.addClass "reform-floater-item"
+            $item.attr "title", $option.attr "title"
             $item.attr "value", $option.val()
+
             $item.append @createItemContent $option
+
+            # Disable selected item, add values in @listMultiple
+            if $option.is ":selected"
+                if  @orig.is "[multiple]"
+                    @listMultiple.push $option.html() 
+                else
+                    $item.addClass "selected"
+
+                    # Add selected value on top of the list
+                    if @selectBoxTitle
+                        $itemSelected = $item.clone()
+                        $itemSelected.addClass @attributeType
+                        $itemSelected.prependTo @$list
+
             $item.appendTo @$list
             
             # Prevent text selection
             $item.on "mousedown", (e) -> e.preventDefault()
             
             $item.hover => @hover $item unless @ignoreMouse
-            
             
             # Option selection
             $item.on "click", (e) =>
@@ -176,7 +203,12 @@ class SelectBoxAbstract
                 
                 # Update values
                 @orig.val(@value()).trigger "change"
-    
+
+        # Push item with multiple values on top of the list
+        if @selectBoxTitle and @listMultiple.length > 0
+            $itemMultiple.html @listMultiple.join(", ")
+            $itemMultiple.prependTo @$list
+        
     value: ->
         @$list.find(".reform-floater-item.selected").map -> $(@).val()
     
@@ -187,14 +219,14 @@ class SelectBoxAbstract
 
         # Options container
         @floater = $ "<div/>"
-        @floater.attr "class", "reform-floater"
         @floater.css "min-width", @fake.outerWidth()
-        @floater.addClass 'reform'              # todo: do it better
-        @floater.addClass @customClass
-        @floater.addClass @orig.data "floater-class"
-        @floater.addClass @options.uiClass
-        @floater.addClass 'reform-floater-ui'   # todo: do it better
-        @floater.addClass 'reform-' + @options.theme
+        # todo: do it better
+        @floater.addClass 'reform-floater reform reform-floater-ui'
+                .addClass @customClass
+                .addClass @orig.data "floater-class"
+                .addClass @options.uiClass
+                .addClass 'reform-' + @options.theme
+
         @body.append @floater
         
         @createOptions()
@@ -202,38 +234,54 @@ class SelectBoxAbstract
         # Click closes the options layer
         @body.one "click", @close
         
-        # get position of fake
-        pos = @fake.offset()
-        
         # Show the options layer
         @floater.show()
         
         # Position the options layer
-        $window = $ window
-        if pos.top + @floater.outerHeight() > $window.height()
-            pos.top = pos.top - @floater.outerHeight() + @fake.outerHeight()
-        if pos.left + @floater.outerWidth() > $window.width()
-            pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
-        @floater.css pos
-    
+        @positionFloater()
+        
+        @fake.addClass "opened"
+        @fake.removeClass "closed"
+
     # Closes the options container
     close: =>
         @floater?.remove()
         @floater = null
+        @fake.removeClass "opened"
+        @fake.addClass "closed"
+        unless @orig.is ":disabled"
+            @fake.removeClass "disabled"
     
     # Set the title of the fake select box
     refresh: =>
         @fake.toggleClass "disabled", @orig.is ":disabled"
 
-        $selectedItem = @fake.find( '.selected-item' )
+        $selectedItem = @fake.find '.selected-item'
         $selectedItem.empty()
         
-        if @orig.data('title')
+        if @orig.data 'title'
             $selectedItem.append @orig.data('title')
         else
             $title = @createClosedItem()
             $selectedItem.append $title    
         
         @createOptions()
+
+    positionFloater: =>
+        if @floater?
+            
+            # Get position of fake
+            pos = @fake.offset()
+            if pos.top + @floater.outerHeight() > @height
+                pos.top = pos.top - @floater.outerHeight()
+                pos.top = pos.top - parseInt @orig.data('shift') if @orig.data 'shift'
+            else
+                pos.top = pos.top + @fake.outerHeight() 
+                pos.top = pos.top + parseInt @orig.data('shift') if @orig.data 'shift'
+
+            if pos.left + @floater.outerWidth() > @width
+                pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
+
+            @floater.css pos
 
 module.exports = SelectBoxAbstract

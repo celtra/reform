@@ -40,8 +40,8 @@ class CheckBox
         @fake.removeClass "checked"
         @fake.addClass "checked" if @orig.is ":checked"
 
-        return unless @orig.is(':checked')
         @fake.trigger 'reform-checkbox-attribute-change', @fake.hasClass 'checked'
+        return unless @orig.is(':checked')
         @siblings?.each -> $(@).parent().removeClass "checked"
 
 module.exports = CheckBox
