@@ -28,7 +28,9 @@
 }
 
 .outline (@color: #000) {
-    box-shadow: 0 0 0 1px @color;
+    -webkit-box-shadow : 0 0 0 1px @color;
+    -moz-box-shadow    : 0 0 0 1px @color;
+    box-shadow         : 0 0 0 1px @color;
 }
 
 .reform-arrow-up (@color: #000, @height: 4px, @width: 8px) {
