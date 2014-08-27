@@ -353,6 +353,8 @@ class AutocompleteAbstract
                 @close()
             else
                 @setFilterValue @filter.val()
+                @orig.val @filter.val()
+                @orig.trigger 'keyup', e
 
     handleReturnKeyPress: ->
         if @floater?
