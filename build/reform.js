@@ -443,7 +443,9 @@
           this.cancelChanges();
           return this.close();
         default:
-          return this.setFilterValue(this.filter.val());
+          this.setFilterValue(this.filter.val());
+          this.orig.val(this.filter.val());
+          return this.orig.trigger('keyup', e);
       }
     };
 
@@ -1208,10 +1210,14 @@
   AutocompleteCombobox = require("./autocompletecombobox");
 
   Reform = (function() {
+    var selectboxList;
+
     function Reform() {}
 
+    selectboxList = [];
+
     Reform.prototype.process = function(node) {
-      var cls, control, n, _ref, _results;
+      var cls, control, n, select, _ref, _results;
       _ref = Reform.controls;
       _results = [];
       for (cls in _ref) {
@@ -1222,7 +1228,12 @@
           _results1 = [];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             n = _ref1[_i];
-            _results1.push(new control(n));
+            if (cls === "reform-selectbox" || cls === "reform-multilineselectbox") {
+              select = new control(n);
+              _results1.push(selectboxList.push(select));
+            } else {
+              _results1.push(new control(n));
+            }
           }
           return _results1;
         })());
@@ -1236,15 +1247,30 @@
           return _this.process("body");
         };
       })(this));
-      return $(document).on("DOMNodeInserted", (function(_this) {
+      $(document).on("DOMNodeInserted", (function(_this) {
         return function(e) {
           return _this.process(e.target);
+        };
+      })(this));
+      return $(window).resize((function(_this) {
+        return function() {
+          return _this.refresh();
         };
       })(this));
     };
 
     Reform.prototype.register = function(controlName, controlObj) {
       return Reform.controls[controlName] = controlObj;
+    };
+
+    Reform.prototype.refresh = function() {
+      var n, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = selectboxList.length; _i < _len; _i++) {
+        n = selectboxList[_i];
+        _results.push(n.positionFloater());
+      }
+      return _results;
     };
 
     return Reform;
@@ -1326,6 +1352,7 @@
     function SelectBoxAbstract(select, options) {
       var $selectedItem, origClass;
       this.select = select;
+      this.positionFloater = __bind(this.positionFloater, this);
       this.refresh = __bind(this.refresh, this);
       this.close = __bind(this.close, this);
       this.open = __bind(this.open, this);
@@ -1340,16 +1367,14 @@
       this.body = $("body");
       this.fake = $("<div/>");
       this.fake.attr("tabindex", 0);
+      this.fake.addClass("closed");
       origClass = this.orig.attr('class');
       this.customClass = origClass.replace(this.options.reformClass, '');
       this.customClass = this.customClass.trim();
-      this.fake.addClass('reform');
-      this.fake.addClass(this.customClass);
-      this.fake.addClass(this.options.fakeClass);
-      if (this.orig.is(":disabled")) {
-        this.fake.addClass("disabled");
+      this.fake.addClass('reform').addClass(this.customClass).addClass(this.options.fakeClass).addClass(this.options.uiClass);
+      if (this.orig.is(':disabled')) {
+        this.fake.addClass('disabled');
       }
-      this.fake.addClass(this.options.uiClass);
       this.orig.hide().attr("class", "reformed");
       $selectedItem = $('<div></div>');
       $selectedItem.addClass('selected-item');
@@ -1471,29 +1496,49 @@
     };
 
     SelectBoxAbstract.prototype.createOptions = function() {
+      var $itemMultiple;
       if (this.floater == null) {
         return;
       }
       this.fake.focus();
       this.floater.empty();
+      this.height = $(document).height();
+      this.width = $(document).width();
       this.$list = $("<div/>").appendTo(this.floater);
       this.$list.attr("class", "reform-floater-list");
       this.$list.addClass(this.options.uiClass);
-      return this.orig.find("option").each((function(_this) {
+      this.textMultiple = "";
+      $itemMultiple = $("<div/>");
+      $itemMultiple.addClass("reform-floater-item selected");
+      this.listMultiple = [];
+      this.selectBoxTitle = this.orig.data('title');
+      this.orig.find("option").each((function(_this) {
         return function(i, option) {
-          var $item, $option;
+          var $item, $itemSelected, $option;
           $option = $(option);
           $item = $("<div/>");
-          $item.attr("class", "reform-floater-item");
           if ($option.is(":selected")) {
             $item.addClass("selected");
           }
           if ($option.is(":disabled")) {
             $item.addClass("disabled");
           }
+          $item.addClass("reform-floater-item");
           $item.attr("title", $option.attr("title"));
           $item.attr("value", $option.val());
           $item.append(_this.createItemContent($option));
+          if ($option.is(":selected")) {
+            if (_this.orig.is("[multiple]")) {
+              _this.listMultiple.push($option.html());
+            } else {
+              $item.addClass("selected");
+              if (_this.selectBoxTitle) {
+                $itemSelected = $item.clone();
+                $itemSelected.addClass(_this.attributeType);
+                $itemSelected.prependTo(_this.$list);
+              }
+            }
+          }
           $item.appendTo(_this.$list);
           $item.on("mousedown", function(e) {
             return e.preventDefault();
@@ -1518,6 +1563,10 @@
           });
         };
       })(this));
+      if (this.selectBoxTitle && this.listMultiple.length > 0) {
+        $itemMultiple.html(this.listMultiple.join(", "));
+        return $itemMultiple.prependTo(this.$list);
+      }
     };
 
     SelectBoxAbstract.prototype.value = function() {
@@ -1527,30 +1576,17 @@
     };
 
     SelectBoxAbstract.prototype.open = function() {
-      var $window, pos;
       this.orig.trigger("reform.open");
       this.floater = $("<div/>");
-      this.floater.attr("class", "reform-floater");
       this.floater.css("min-width", this.fake.outerWidth());
-      this.floater.addClass('reform');
-      this.floater.addClass(this.customClass);
-      this.floater.addClass(this.orig.data("floater-class"));
-      this.floater.addClass(this.options.uiClass);
-      this.floater.addClass('reform-floater-ui');
-      this.floater.addClass('reform-' + this.options.theme);
+      this.floater.addClass('reform-floater reform reform-floater-ui').addClass(this.customClass).addClass(this.orig.data("floater-class")).addClass(this.options.uiClass).addClass('reform-' + this.options.theme);
       this.body.append(this.floater);
       this.createOptions();
       this.body.one("click", this.close);
-      pos = this.fake.offset();
       this.floater.show();
-      $window = $(window);
-      if (pos.top + this.floater.outerHeight() > $window.height()) {
-        pos.top = pos.top - this.floater.outerHeight() + this.fake.outerHeight();
-      }
-      if (pos.left + this.floater.outerWidth() > $window.width()) {
-        pos.left = pos.left - this.floater.outerWidth() + this.fake.outerWidth();
-      }
-      return this.floater.css(pos);
+      this.positionFloater();
+      this.fake.addClass("opened");
+      return this.fake.removeClass("closed");
     };
 
     SelectBoxAbstract.prototype.close = function() {
@@ -1558,7 +1594,12 @@
       if ((_ref = this.floater) != null) {
         _ref.remove();
       }
-      return this.floater = null;
+      this.floater = null;
+      this.fake.removeClass("opened");
+      this.fake.addClass("closed");
+      if (!this.orig.is(":disabled")) {
+        return this.fake.removeClass("disabled");
+      }
     };
 
     SelectBoxAbstract.prototype.refresh = function() {
@@ -1573,6 +1614,35 @@
         $selectedItem.append($title);
       }
       return this.createOptions();
+    };
+
+    SelectBoxAbstract.prototype.positionFloater = function() {
+      var pos, posTopAfterAnimation;
+      if (this.floater != null) {
+        pos = this.fake.offset();
+        if (pos.top + this.floater.outerHeight() > this.height) {
+          pos.top = pos.top - this.floater.outerHeight();
+          if (this.orig.data('shift')) {
+            posTopAfterAnimation = pos.top - parseInt(this.orig.data('shift'));
+            pos.top -= 1;
+          }
+        } else {
+          pos.top = pos.top + this.fake.outerHeight();
+          if (this.orig.data('shift')) {
+            posTopAfterAnimation = pos.top + parseInt(this.orig.data('shift'));
+            pos.top += 1;
+          }
+        }
+        if (pos.left + this.floater.outerWidth() > this.width) {
+          pos.left = pos.left - this.floater.outerWidth() + this.fake.outerWidth();
+        }
+        this.floater.css(pos);
+        if (this.orig.data('shift')) {
+          return this.floater.animate({
+            top: posTopAfterAnimation
+          }, 200);
+        }
+      }
     };
 
     return SelectBoxAbstract;
