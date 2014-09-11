@@ -116,10 +116,10 @@ class AutocompleteAbstract
         @customClass = origClass.replace @options.reformClass, ''
         @customClass = @customClass.trim()
 
-    handleSelectionChanged: ->
+    handleSelectionChanged: (silent = false) ->
         @orig.val @selectedItem.value
         @orig.data 'title', @selectedItem.title
-        @orig.trigger 'change', @selectedItem
+        @orig.trigger 'change', @selectedItem unless silent
 
     handleDataFill: (data) ->
         return if @options.url

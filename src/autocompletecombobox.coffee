@@ -28,11 +28,20 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
         @el.append $title
 
-    handleSelectionChanged: ->
+    handleSelectionChanged: (silent = false)->
         $title = @el.find 'span'
         if @selectedItem.value?
             $title.text @selectedItem.title
             $title.removeClass @options.placeholderClass
+
+        super silent
+
+    refreshState: =>
+        for data in @data
+            if data.value is @select.value
+                @selectedItem = { value: @select.value, title: data.title }
+                @handleSelectionChanged(yes)
+                break
 
         super
 
