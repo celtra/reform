@@ -1,0 +1,48 @@
+&.reform-checkbox{
+    display:none;
+	
+    & + label span {
+	    position   : relative;
+	    display    : inline-block;
+	    width      : 30px;
+	    height     : 30px;
+	    box-shadow : 0px 0px 0px 1px #DDD;
+	    cursor     : pointer;
+	   
+	    &:after {
+	        position: absolute;
+		    top     : 50%;
+		    left    : 50%;
+		    width   : 50%;
+		    height  : 50%;
+		    margin  : -25% 0px 0px -25%;
+		    content : "";
+	    }
+    }
+    
+    &:hover + label span { box-shadow: 0px 0px 0px 1px #CCC; }
+
+    &:checked + label span:after {
+	    position   : absolute;
+	    top        : 50%;
+	    left       : 50%;
+	    width      : 50%;
+	    height     : 50%;
+	    margin     : -25% 0px 0px -25%;
+	    background : none repeat scroll 0% 0% #1F1F1F;
+	    content    : "";
+    }
+
+    &:disabled + label span {
+	    cursor           : default;
+	    background-color : #F7F7F7;
+	    box-shadow       : 0px 0px 0px 1px #DDD;
+    }
+
+    &:disabled:checked + label span:after { background-color: #DDD; }
+
+    &.radio{
+	    & + label span { border-radius: 50%; }
+	    & + label span:after { border-radius: 50%; }
+    }
+}
