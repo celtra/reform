@@ -15,7 +15,7 @@
 		    left    : 50%;
 		    width   : 50%;
 		    height  : 50%;
-		    margin  : -25% 0px 0px -25%;
+		    margin  : -25% 0 0 -25%;
 		    content : "";
 	    }
     }
@@ -44,5 +44,43 @@
     &.radio {
 	    & + label span { border-radius: 50%; }
 	    & + label span:after { border-radius: 50%; }
+    }
+}
+
+&.reform-checkbox-nested {
+    span {
+        position   : relative;
+        display    : inline-block;
+        width      : 30px;
+        height     : 30px;
+        box-shadow : 0 0 0 1px #dddddd;
+        cursor     : pointer;
+
+        &:after {
+            position: absolute;
+            top     : 50%;
+            left    : 50%;
+            width   : 50%;
+            height  : 50%;
+            margin  : -25% 0 0 -25%;
+            content : "";
+        }
+    }
+
+    input {
+        display: none;
+
+        &:hover + span { box-shadow: 0 0 0 1px #cccccc; }
+        &:checked + span:after { background: none repeat scroll 0 0 #1f1f1f; }
+        &:disabled + span {
+            cursor           : default;
+            background-color : #f7f7f7;
+            box-shadow       : 0 0 0 1px #dddddd;
+        }
+    }
+
+    input[type=radio] {
+        & + span { border-radius: 50%; }
+        & + span:after { border-radius: 50%; }
     }
 }

@@ -86,8 +86,11 @@
         <h3>Check boxes</h3>
         
         <div>
-            <input class="reform-checkbox reform pure" type="checkbox" id="c1"/>
-            <label for="c1"><span></span></label>
+            <label class="reform-checkbox-nested reform pure">
+                <input type="checkbox" />
+                <span></span>
+            </label>
+
             <input class="reform-checkbox reform pure" type="checkbox" id="c2" checked/>
             <label for="c2"><span></span></label>
             <input class="reform-checkbox reform pure" type="checkbox" id="c3" disabled/>
@@ -101,13 +104,18 @@
         <h3>Radio boxes</h3>
         
         <div>
-            <input id="radio-4" class="reform-checkbox radio reform pure"  type="radio" name="test-radio-css-only"/>
-            <label for="radio-4"><span></span></label>
-            <input id="radio-5" class="reform-checkbox radio reform pure"  type="radio" name="test-radio-css-only" checked/>
+
+            <label class="reform-checkbox-nested radio reform pure">
+                <input type="radio" />
+                <span></span>
+            </label>
+            <!--<label for="radio-4"><span></span></label>-->
+
+            <input id="radio-5" class="reform-checkbox radio reform pure" type="radio" name="test-radio-css-only" checked/>
             <label for="radio-5"><span></span></label>
-            <input id="radio-6" class="reform-checkbox radio reform pure"  type="radio" name="test-radio-css-only"  disabled/>
+            <input id="radio-6" class="reform-checkbox radio reform pure" type="radio" name="test-radio-css-only" disabled/>
             <label for="radio-6"><span></span></label>
-            <input id="radio-7" class="reform-checkbox radio reform pure"  type="radio" disabled checked/>
+            <input id="radio-7" class="reform-checkbox radio reform pure" type="radio" disabled checked/>
             <label for="radio-7"><span></span></label>
         </div>
         
