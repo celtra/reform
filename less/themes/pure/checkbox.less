@@ -1,1 +1,25 @@
 #abstracts > .checkbox;
+
+&.reform-checkbox {
+    span {
+        width  : 30px;
+        height : 30px;
+        .outline(#dddddd);
+
+        &:hover { .outline(#cccccc); }
+    }
+
+    input {
+        &:hover + span { .outline(#cccccc); }
+
+        &:checked + span:after { background: none repeat scroll 0 0 #1f1f1f; }
+
+        &:disabled + span {
+            cursor           : default;
+            background-color : #f7f7f7;
+            .outline(#dddddd);
+        }
+
+        &:disabled:checked + span:after { background-color: #dddddd; }
+    }
+}
