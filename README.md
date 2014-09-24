@@ -265,6 +265,27 @@ You can register new extended component before observing:
 reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 ```
 
+## Themes branch
+
+In the themes branch we have additional themes for input components.
+
+Check out the branch and see how it's done.
+
+Example structure for pure theme:
+
+```
+/less
+|-/themes
+    /pure
+  	  |- index.less
+  	  |- checkbox.less
+  	  |- ...
+|- theme-pure.less
+```
+
+Be sure to add compiling of a theme in `gulpfile.coffee` and include it to demo/html file to see the results.
+
+
 ## Development
 
 ### First setup
@@ -280,7 +301,7 @@ reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 ### To build `reform.js` and `reform.css` and watch for changes
 
 ```bash
-rm -rf build && gulp
+gulp
 ```
 
 ### Static Ruby server
