@@ -225,11 +225,7 @@ Example:
 </label>
 ```
 
-<<<<<<< HEAD
 If you don't need label you can use div tag instead.
-=======
-If you don't need label, you can use div tag.
->>>>>>> 2f64f87... label tag is not mandatory
 
 The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
@@ -317,26 +313,6 @@ alias server='ruby -run -e httpd . -p5000'
 
 From here you can run `server` inside project's directory and open
 [http://localhost:5000/demo/index.html](http://localhost:5000/demo/index.html)
-
-## Themes branch
-
-In the themes branch we have additional themes for input components.
-
-Check out the branch and see how it's done.
-
-Example structure for pure theme:
-
-```
-/less
-|-/themes
-    /pure
-  	  |- index.less
-  	  |- checkbox.less
-  	  |- ...
-|- theme-pure.less
-```
-
-Be sure to add compiling of a theme in `gulpfile.coffee` and include it to demo/html file to see the results.
 
 ## Deploy new version to GitHub
 
