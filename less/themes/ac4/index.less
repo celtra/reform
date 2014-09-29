@@ -1,23 +1,25 @@
-&.reform-ac4 {
-    @import 'types';
+@import 'types';
 
-    .setDefaults(
-        @_fontFamily : 'Avenir Next LT Pro Regular'
-    );
+.setDefaults(
+    @_fontFamily           : 'Avenir Next LT Pro Regular';
+    @_hoverBackgroundColor : #eeeeee;
+    @_fontColor            : #222222;
+    @_hoverFontColor       : #222222;
+);
 
-    @borderHoverColor        : #ccc;
-    @disabledFontColor       : @disabledColor;
-    @disabledBackgroundColor : @backgroundColor;
-    @disabledBorderColor     : @disabledColor;
+@borderHoverColor        : #cccccc;
+@disabledFontColor       : @disabledColor;
+@disabledBackgroundColor : @backgroundColor;
+@disabledBorderColor     : @disabledColor;
 
-    font-family: @fontFamily;
+font-family: @fontFamily;
 
-    @import 'checkbox';
-    @import 'selectbox';
-    @import 'multilineselectbox';
-    @import 'floater';
-    @import 'autocomplete';
-    @import 'autocompletecombobox';
+@import 'mixins';
+@import 'checkbox';
+@import 'selectbox';
+@import 'multilineselectbox';
+@import 'floater';
+@import 'autocomplete';
+@import 'autocompletecombobox';
 
-    @import 'menu';
-}
+@import 'menu';

@@ -1,1 +1,18 @@
 #abstracts > .floater;
+
+&.reform-floater {
+    .outline-floater;
+    .reform-floater-list {
+        .reform-floater-item {
+            &.selected {
+                background  : #eeeeee;
+                color       : #222222;
+                font-family : @fontFamily;
+            }
+
+            &.selected {
+                &.hover { background: @hoverBackgroundColor; }
+            }
+        }
+    }
+}

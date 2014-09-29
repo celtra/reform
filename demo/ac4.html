@@ -1,7 +1,6 @@
 <html>
     <head>
         <title>Custom forms with Reform</title>
-        <!-- <link rel="stylesheet" type="text/css" href="../build/reform.css"> -->
         <link rel="stylesheet" type="text/css" href="../build/reform-ac4.css">
         <link rel="stylesheet" type="text/css" href="demo.css">
         
@@ -12,6 +11,10 @@
             h3 {
                 font-family: Arial;
                 font-weight: normal;
+            }
+
+            div.checked {
+                background-color: #EEE;
             }
         </style>
         <script>
@@ -77,6 +80,10 @@
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+
+                $('.filter-checkboxes div').on('reform-checkbox-attribute-change', function(e, checked) {
+                    $(e.currentTarget).toggleClass('checked');
+                });
             });
         </script>
 
@@ -86,21 +93,74 @@
         <h3>Check boxes</h3>
         
         <div>
-            <input class="reform-checkbox reform-ac4" type="checkbox">
-            <input class="reform-checkbox reform-ac4" type="checkbox" checked>
-            <input class="reform-checkbox reform-ac4" type="checkbox" disabled>
-            <input class="reform-checkbox tmp reform-ac4" type="checkbox" checked disabled>
+            <label class="reform-checkbox reform">
+                <input type="checkbox" />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="checkbox" checked />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="checkbox" disabled />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="checkbox" disabled checked />
+                <span></span>
+            </label>
         </div>
-        
-        <br/><br/>
-        
+
+        <h3>Filter check boxes</h3>
+        <ul class="filter-checkboxes">
+            <li>
+                <div>
+                    <label id="casual" class="reform-checkbox reform">
+                        <input type="checkbox" />
+                        <span></span>
+                    </label>
+                    <label class="caption" for="casual">Not checked</label>
+                </div>
+            </li>
+            <li>
+                <div class="checked">
+                    <label id="checked" class="reform-checkbox reform">
+                        <input type="checkbox" checked />
+                        <span></span>
+                    </label>
+                    <label class="caption" for="checked">Checked</label>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <label id="disabled" class="reform-checkbox reform">
+                        <input type="checkbox" disabled />
+                        <span></span>
+                    </label>
+                    <label class="caption" for="disabled">Disabled</label>
+                </div>
+            </li>
+        </ul>
+
         <h3>Radio boxes</h3>
         
         <div>
-            <input id="radio-1" class="reform-checkbox reform-ac4" type="radio" name="test-radio">
-            <input id="radio-2" class="reform-checkbox reform-ac4" type="radio" name="test-radio" checked="checked">
-            <input id="radio-3" class="reform-checkbox reform-ac4" type="radio" name="test-radio" disabled>
-            <input class="reform-checkbox radio reform-ac4" type="radio" checked disabled>
+            <label class="reform-checkbox reform">
+                <input type="radio">
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="radio" checked>
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="radio" disabled>
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform">
+                <input type="radio" checked disabled>
+                <span></span>
+            </label>
         </div>
         
         <br/><br/>
@@ -108,7 +168,7 @@
         <h3>Select boxes</h3>
         
         <div>
-            <select class="reform-selectbox reform-ac4" title="Pick a number">
+            <select class="reform-selectbox reform-ac4" title="Pick a number" data-shift="5">
                 <option value="1" title="First tooltip">One</option>
                 <option value="2" selected>Two</option>
                 <option value="3" title="Tooltip for three">Three</option>
@@ -214,7 +274,37 @@
         <h3>Custom style</h3>
         
         <div>
-            <select class="reform-selectbox reform-ac4 menu" title="Pick a number">
+            <select class="reform-selectbox reform-ac4 menu menu-dimensions" title="Pick a number">
+                <option value="1" title="First tooltip">One</option>
+                <option value="2" selected>Two</option>
+                <option value="3" title="Tooltip for three">Three</option>
+                <option value="4" disabled>Four</option>
+                <option value="5">Five</option>
+                <option value="6" title="Tooltip for six">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+        </div>
+
+        <div>
+            <select class="reform-selectbox reform-ac4 menu menu-metrics" title="Pick a number">
+                <option value="1" title="First tooltip">One</option>
+                <option value="2" selected>Two</option>
+                <option value="3" title="Tooltip for three">Three</option>
+                <option value="4" disabled>Four</option>
+                <option value="5">Five</option>
+                <option value="6" title="Tooltip for six">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+                <option value="10">Ten</option>
+            </select>
+        </div>
+
+        <div>
+            <select class="reform-selectbox reform-ac4 menu menu-metrics menu-borderless" title="Pick a number">
                 <option value="1" title="First tooltip">One</option>
                 <option value="2" selected>Two</option>
                 <option value="3" title="Tooltip for three">Three</option>

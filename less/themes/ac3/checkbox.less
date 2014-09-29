@@ -1,100 +1,89 @@
 #abstracts > .checkbox;
 
-@checkboxBorderColor : #aaa;
+&.reform-checkbox {
+    span {
+        height  : 10px;
+        width   : 10px;
+        padding : 1px;
+        border  : 1px solid #aaaaaa;
 
-&.reform-checkbox-fake {
-    height           : 10px;
-    width            : 10px;
-    padding          : 1px;
-    box-sizing       : content-box;
-
-    &:before {
-        position : absolute;
-        top      : 1px;
-        right    : 1px;
-        bottom   : 1px;
-        left     : 1px;
-        z-index  : 0;
-        border   : 1px solid #ccc;
-        content  : "";
-        
-    }
-
-    &:after {
-        display    : none;
-        position   : absolute;
-        top        : 50%;
-        left       : 50%;
-        z-index    : 1;
-        width      : 10px;
-        height     : 10px;
-        margin     : -5px 0 0 -5px;
-        padding    : 0;
-        content    : "";
-        background : url('img/check.gif') no-repeat;
-    }
-
-    &.checked { 
         &:before {
-            top        : 1px;
-            left       : 1px;
-            width      : auto;
-            height     : auto;
-            margin     : 0;
-            background : none;
-        }
-
-        &:after {
-            display    : block;
+            content  : "";
+            position : absolute;
+            top      : 1px;
+            right    : 1px;
+            bottom   : 1px;
+            left     : 1px;
+            border   : 1px solid #cccccc;
         }
     }
 
-    &.disabled {
-        background-color : @disabledBackgroundColor;
+    input {
+        &:checked + span:after {
+            width           : 10px;
+            height          : 10px;
+            margin          : -5px 0 0 -5px;
+            background      : url('img/check.svg') no-repeat -2px -2px;
+            background-size : 15px;
+        }
 
-        .outline(@checkboxBorderColor);
+        &:disabled + span {
+            .outline(#aaaaaa);
+            background-color: #dddddd;
+        }
 
-        &.checked:before {
-            background: none;
+        &:disabled:checked + span:after {
+            .outline(#aaaaaa);
+            border: none;
         }
     }
 
-    &.radio {
-        
-        &:before {
-            .rounded-corners(50%);
+    input[type=radio] {
+        & + span {
+            &:before { border-radius: 50%; }
+            &:after {
+                width  : 4px;
+                height : 4px;
+                margin : -2px 0 0 -2px;
+                border : none !important;
+            }
         }
-        
-        &:after {
-            .rounded-corners(50%);
-            
-            width            : 4px;
-            height           : 4px;
-            margin           : -2px 0 0 -2px;
-            background-color : #000;
-            content          : "";
+
+        &:checked + span {
+            .outline(#aaaaaa);
+
+            &:after { background-color: #000000 !important; }
+        }
+
+        &:disabled:checked + span {
+            .outline(#aaaaaa);
+            background-color: #dddddd;
         }
     }
 
     &.big-checkbox {
-        width  : 16px;
-        height : 16px;
-
-        &:after {
-            width      : 14px;
-            height     : 14px;
-            margin     : -7px 0 0 -7px;
-            background : url('img/big_check.gif') no-repeat;
+        span {
+            width  : 16px;
+            height : 16px;
         }
 
-        &.radio:after {
-            .rounded-corners(50%);
+        input {
+            &:checked + span:after {
+                width      : 14px;
+                height     : 14px;
+                margin     : -7px 0 0 -7px;
+                background : url('img/big_check.gif') no-repeat;
+            }
+        }
 
-            width            : 6px;
-            height           : 6px;
-            margin           : -3px 0 0 -3px;
-            content          : "";
-            background-color : #000;
+        input[type=radio] {
+            & + span {
+                &:after {
+                    width  : 6px;
+                    height : 6px;
+                    margin : -3px 0 0 -3px;
+                }
+            }
         }
     }
 }

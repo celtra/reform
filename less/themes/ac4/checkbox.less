@@ -1,12 +1,54 @@
-#abstracts > .checkbox();
+#abstracts > .checkbox;
 
-&.reform-checkbox-fake {
-
-    &:hover {
-        .outline(@borderHoverColor);
+&.reform-checkbox {
+    span {
+        .outline(#dddddd);
+        height  : 12px;
+        width   : 12px;
+        padding : 1px;
     }
 
-    &.disabled {
-        .outline(@disabledBorderColor);
+    input {
+        &:checked + span:after {
+            width           : 10px;
+            height          : 10px;
+            margin          : -7px 0 0 -7px;
+            border          : 2px solid #eeeeee;
+            background      : url('img/check.svg') no-repeat #eeeeee -3px -2px;
+            background-size : 16px;
+            .outline(#eeeeee);
+        }
+
+        &:disabled + span { .outline(#aaaaaa); }
+
+        &:disabled:checked + span:after {
+            .outline(#aaaaaa);
+            background-color : @disabledBackgroundColor;
+            border           : 2px solid transparent;
+        }
+    }
+
+    input[type=radio] {
+        & + span:after {
+            width  : 4px;
+            height : 4px;
+            margin : -2px 0 0 -2px;
+            border : none !important;
+        }
+
+        &:checked + span {
+            background-color : #eeeeee;
+            .outline(#eeeeee);
+
+            &:after {
+                box-shadow       : none;
+                background-color : #000000;
+            }
+        }
+
+        &:disabled:checked + span {
+            .outline(#aaaaaa);
+            background-color : #ffffff;
+        }
     }
 }

@@ -2,8 +2,20 @@
     @import 'defaults';
     @import 'mixins';
     @import 'abstracts';
+    
+	&.pure {
+        @import 'themes/pure/index';
+    }
 
-    @import 'themes/pure/index';
-    @import 'themes/ac4/index';
-    @import 'themes/ac3/index';
+    &.ac4 {
+        @import 'themes/ac4/index';
+    }
+
+    &.ac3 {
+        @import 'themes/ac3/index';
+    }
+
+    &.ac3-dark {
+        @import 'themes/ac3-dark/index';
+    }
 }

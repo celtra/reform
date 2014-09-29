@@ -3,9 +3,10 @@
 @autocompleteHeight: 16px;
 
 &.reform-autocomplete-fake {
-    box-sizing : content-box;    
-    margin     : 0;
-    padding    : 0 17px 0 4px;
+    .content-box;
+    margin          : 0;
+    padding         : 0 17px 0 4px;
+    vertical-align  : middle;
 
     .no-rounded-corners;
     .outline(@borderColor);
@@ -36,4 +37,6 @@
 .reform-autocomplete-filter {
     width   : 100%;
     padding : 0;
+
+    font-family: @inputFontFamily;
 }

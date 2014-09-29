@@ -1,10 +1,8 @@
-Reform - HTML forms the way you want them
-=========================================
+# Reform - HTML forms the way you want them
 
 Have you spent the last 15 years wishing browsers wouldn't force their style on your HTML elements? How many times did you want to style a check box or a select box as if they were divs? I thought so.
 
-Instructions
-------------
+## Instructions
 
 All the files you need are in the `build` folder.
 
@@ -18,86 +16,89 @@ All the files you need are in the `build` folder.
    - Add `reform-autocompletecombobox` class to `input[type=text]` elements
  4. Define your own CSS for "reformed" form elements or override the defaults in `reform.css`
 
-Dependencies
-------------
+# Dependencies
 
   - jQuery 1.7+
 
-How it works
-------------
+# How it works
 
 Reform will hide original elements and wrap them in "fake" elements, which are just plain divs. It will copy all your classes from the original to the fake element and replicate the behavior of the original element by setting special classes on the fake element (e.g. `checked`, `selected`, `disabled`). The state is automatically synchronized between the fake and the original, so you can trigger events and set values on the original elements without worrying about the fake element.
 
-Check box
----------
-
-Original:
-
-    <input type="checkbox" class="reform-checkbox my-class">
-
-will become:
-
-    <div class="reform-checkbox-fake my-class">
-      <input type="checkbox" style="display: none">
-    </div>
-
 For disabled original elements, fake elements will get the `disabled` class. For checked original elements, they will get the `checked` class.
 
-Select box
-----------
+### Handling `checked` state changes
+
+```javascript
+$('parent-element-of-checkboxes').on('reform-checkbox-attribute-change', function(e, checked) {
+    console.log('Checked? ', checked);
+    $(e.currentTarget).toggleClass('checked');
+});
+```
+
+## Select box
 
 Original:
 
-    <select class="reform-selectbox my-class" title="Pick a number" data-options-class="my-options">
-      <option value="1">One</option>
-      <option value="2">Two</option>
-    </select>
+```html
+<select class="reform-selectbox my-class" title="Pick a number" data-options-class="my-options">
+  <option value="1">One</option>
+  <option value="2">Two</option>
+</select>
+```
   
 will become:
 
-    <div class="reform-selectbox-fake my-class">
-      <select style="display: none" title="Pick a number" data-options-class="my-options">
-        <option value="1">One</option>
-        <option value="2">Two</option>
-      </select>
-      Pick a number
-    </div>
+```html
+<div class="reform-selectbox-fake my-class">
+  <select style="display: none" title="Pick a number" data-options-class="my-options">
+    <option value="1">One</option>
+    <option value="2">Two</option>
+  </select>
+  Pick a number
+</div>
+```
 
 Again, for disabled original elements, fake elements will get the `disabled` class.
 
 Another div -- options container -- is attached to the `body` element and initially hidden.
 
-    <div class="reform-options my-options"></div>
+```html
+<div class="reform-options my-options"></div>
+```
   
 Once the fake element is clicked, the options container is populated and shown:
 
-    <div class="reform-options my-options">
-      <div class="reform-list">
-        <div class="reform-item" value="1">One</div>
-        <div class="reform-item" value="2">Two</div>
-      </div>
-    </div>
+```html
+<div class="reform-options my-options">
+  <div class="reform-list">
+    <div class="reform-item" value="1">One</div>
+    <div class="reform-item" value="2">Two</div>
+  </div>
+</div>
+```
 
 The options container div is automatically positioned. When an item is selected, it gets the `selected` class. You may have also noticed that, if you specify the attribute `data-options-class` on the original element, the value of that attribute will be set as a class on the options container div.
 
-Multiline select box
---------------------
+## Multiline select box
 
 The multiline select box is basically a select box with support for a description line in the list of options. Simply add a data-desc attribute to the option tag.
 
-Autocomplete box
-----------
+## Autocomplete box
 
 Original:
 
-      <input class="reform-autocompletebox" type="text" />
+```html
+<input class="reform-autocompletebox" type="text" />
+```
 
 Will become:
 
-      <div class="reform-autocompletebox-ui reform-autocomplete-fake">
-        <input class="reformed" type="text" style="display: none;">
-        <input class="reform-autocomplete-filter" placeholder="Type to search...">
-      </div>
+```html
+<div class="reform-autocompletebox-ui reform-autocomplete-fake">
+    <input class="reformed" type="text" style="display: none;">
+    <input class="reform-autocomplete-filter" placeholder="Type to search...">
+</div>
+```
 
 Optional input field parameters:
 
@@ -112,46 +113,53 @@ Optional input field parameters:
 
 Default json format is:
 
-      [{
-          "title": 'example1',
-          "value": '1'
-        },
-        {
-          "title": 'example2',
-          "value": '2'
-        },
-        ...
-      ]
+```json
+[{
+  "title": "example1",
+  "value": "1"
+},
+{
+  "title": "example2",
+  "value": "2"
+},
+...
+]
+```
 
 For performance reasons results retrieved from a server are cached. Also delay is used if dooing ajax requests.
 
 Once autocomplete detects results the options container is shown:
 
-      <div class="reform-autocompletebox-ui reform-autocomplete-floater">
-        <div class="reform-autocomplete-list">
-          <div class="reform-autocomplete-item" value="4">
+```html
+<div class="reform-autocompletebox-ui reform-autocomplete-floater">
+    <div class="reform-autocomplete-list">
+        <div class="reform-autocomplete-item" value="4">
             <strong>exam</strong>ple1
-          </div>
-          <div class="reform-autocomplete-item" value="40">
-            <strong>exam</strong>ple2
-          </div>
-          ...
         </div>
-      </div>
+        <div class="reform-autocomplete-item" value="40">
+            <strong>exam</strong>ple2
+        </div>
+        ...
+    </div>
+</div>
+```
 
-Autocomplete combobox
-----------
+## Autocomplete combobox
 
 Original:
 
-      <input class="reform-autocompletecombobox" type="text" />
+```html
+<input class="reform-autocompletecombobox" type="text" />
+```
 
 Will become:
 
-      <div class="reform-autocompletecombobox-ui reform-autocomplete-fake reform-autocomplete-arrow-down">
-        <input class="reformed" style="display: none;">
-        <span class="reform-autocomplete-selected-label placeholder">Select an item...</span>
-      </div>
+```html
+<div class="reform-autocompletecombobox-ui reform-autocomplete-fake reform-autocomplete-arrow-down">
+    <input class="reformed" style="display: none;">
+    <span class="reform-autocomplete-selected-label placeholder">Select an item...</span>
+</div>
+```
 
 Optional input field parameters:
 
@@ -168,70 +176,151 @@ Optional input field parameters:
 
 Default json format is:
 
-      [{
-          "title": 'example1',
-          "value": '1'
-        },
-        {
-          "title": 'example2',
-          "value": '2'
-        },
-        ...
-      ]
+```json
+[{
+  "title": "example1",
+  "value": "1"
+},
+{
+  "title": "example2",
+  "value": "2"
+},
+...
+]
+```
 
 Once autocomplete detects results the options container is shown:
 
-      <div class="reform-autocompletecombobox-ui reform-autocomplete-floater">
-        <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
-        <input class="reform-autocomplete-filter" placeholder="Type to search...">
-        <div class="reform-autocomplete-list">
-          <div class="reform-autocomplete-item" value="1">
-            <strong>ex</strong>ample1
-          </div>
-          <div class="reform-autocomplete-item" value="2">
-            <strong>ex</strong>ample2
-          </div>
-          ...
-        </div>
-      </div>
+```html
+<div class="reform-autocompletecombobox-ui reform-autocomplete-floater">
+  <span class="reform-autocomplete-floater-label reform-autocomplete-arrow-up">Select an item...</span>
+  <input class="reform-autocomplete-filter" placeholder="Type to search...">
+  <div class="reform-autocomplete-list">
+    <div class="reform-autocomplete-item" value="1">
+      <strong>ex</strong>ample1
+    </div>
+    <div class="reform-autocomplete-item" value="2">
+      <strong>ex</strong>ample2
+    </div>
+    ...
+  </div>
+</div>
+```
 
-The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
+The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only available options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
-NPM package
-----------
+# Check box
+
+Checkboxes and radio buttons were rewritten and is not using any JavaScript and fake divs anymore.
+
+Example:
+
+```html
+<label class="reform-checkbox reform">
+    <input type="checkbox" />
+    <span></span>
+</label>
+
+<label class="reform-checkbox reform">
+    <input type="radio" />
+    <span></span>
+</label>
+```
+
+If you don't need label you can use div tag instead.
+
+## NPM package
 
 To use Reform as a CommonJS module (e.g. to use some Node.js tool, such as Browserify, to package your app), you should install the NPM module:
 
-    npm install reform
+```bash
+npm install reform
+```
 
 You can then require Reform:
 
-    Reform = require("reform");
+```javascript
+Reform = require("reform");
+```
 
 To use it in your application, you should instantiate a Reform object:
 
-    reform = new Reform;
+```javascript
+reform = new Reform;
+```
 
 You can then either process nodes individually:
 
-    reform.process(document.body);
+```javascript
+reform.process(document.body);
+```
 
 The easy way is just to "observe" the DOM for any custom controls being inserted:
 
-    reform.observe();
+```javascript
+reform.observe();
+```
 
 You can register new extended component before observing:
 
-    reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
+```javascript
+reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
+```
 
-Development
------------
+## Themes branch
 
-  - You need Node.js 0.4.12 or up and NPM 1.0.106 or up.
-  - Run `npm install -dev` in root to install dev dependencies:
-    - CoffeeScript 1.2.0 or up
-    - Browserify 1.9.2 or up
-    - Uglify.js 1.2.5 or up
-  - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
-  - Tests are located in `test`. You can run them by opening `test/index.html` in the browser.
-  - Run `bin/build` to build `reform.js`, `reform.min.js` and `reform.css`
+In the themes branch we have additional themes for input components.
+
+Check out the branch and see how it's done.
+
+Example structure for pure theme:
+
+```
+/less
+|-/themes
+    /pure
+  	  |- index.less
+  	  |- checkbox.less
+  	  |- ...
+|- theme-pure.less
+```
+
+Be sure to add compiling of a theme in `gulpfile.coffee` and include it to demo/html file to see the results.
+
+
+## Development
+
+### First setup
+
+- You need [Node.js](http://nodejs.org/)
+- Install `gulp` with `npm install -g gulp`
+- Run `npm install` to install all the dependencies
+- Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
+- Tests are located in `test`. You can run them by opening `test/index.html` in the browser. Before you'll ned to run
+`gulp test` to build test scripts.
+
+### To build `reform.js` and `reform.css` and watch for changes
+
+```bash
+gulp
+```
+
+### Static Ruby server
+
+```bash
+alias server='ruby -run -e httpd . -p5000'
+```
+
+From here you can run `server` inside project's directory and open
+[http://localhost:5000/demo/index.html](http://localhost:5000/demo/index.html)
+
+## Deploy new version to GitHub
+
+Workflow
+
+```bash
+git checkout npm
+git merge master # or the branch you want to deploy
+gulp build
+git push origin npm
+```

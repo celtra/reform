@@ -6,7 +6,8 @@
     display        : inline-block;
     cursor         : pointer;
 
-    box-sizing     : border-box;
+    .border-box;
+
     outline        : none;
 
     font-size      : @fontSize;
@@ -16,7 +17,7 @@
 
     .outline(@borderColor);
     .select-disabled;
-    .rounded-corners;
+    border-radius: 5px;
 
     .selected-item {
         overflow      : hidden;    
@@ -24,11 +25,14 @@
         text-overflow : ellipsis;
     }
 
-    &:after {
+    &.reform-selectbox-ui.closed:after {
         .arrow-down(@fontColor);
     }
+    &.reform-selectbox-ui.opened:after {
+        .reform-arrow-up(@hoverBackgroundColor);
+    }
 
-    &.disabled {
+    &.reform-selectbox-ui.disabled {
         cursor : default;
         color  : @disabledFontColor;
 

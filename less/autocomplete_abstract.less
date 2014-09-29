@@ -1,7 +1,7 @@
 &.reform-autocomplete-fake {
     position      : relative;
     display       : inline-block;
-    box-sizing    : border-box;
+    .border-box;
     cursor        : pointer;
     overflow      : hidden;
 
@@ -12,14 +12,14 @@
 
     .select-disabled;
     .outline(@borderColor);
-    .rounded-corners;
+    border-radius: 5px;
 
     &.arrow-down:after {
         .arrow-down(@fontColor);
     }
 
     &.arrow-up:after {
-        .arrow-up(@fontColor);
+        .reform-arrow-up(@fontColor);
     }
 
     &.disabled {
@@ -27,6 +27,7 @@
 
         .reform-autocomplete-filter {
             .placeholder(@disabledPlaceholderColor);
+            background-color : @backgroundColor;
         }
 
         &.arrow-down:after {
