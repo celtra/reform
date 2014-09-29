@@ -225,6 +225,8 @@ Example:
 </label>
 ```
 
+If you don't need label, you can use div tag.
+
 The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
 ## NPM package
