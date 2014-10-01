@@ -1,10 +1,10 @@
-gulp        = require 'gulp'
-coffee      = require 'gulp-coffee'
-rename      = require 'gulp-rename'
-browserify  = require 'gulp-browserify'
-concat      = require 'gulp-concat'
-less        = require 'gulp-less'
-uglify      = require 'gulp-uglify'
+gulp       = require 'gulp'
+coffee     = require 'gulp-coffee'
+rename     = require 'gulp-rename'
+browserify = require 'gulp-browserify'
+concat     = require 'gulp-concat'
+less       = require 'gulp-less'
+uglify     = require 'gulp-uglify'
 
 gulp.task 'coffee', ->
     gulp.src('./src/*.coffee')
