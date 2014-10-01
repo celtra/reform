@@ -4,7 +4,7 @@
     -webkit-user-select : none;
     -ms-user-select     : none;
 
-    span {
+    .reform-checkbox-abstract-span {
         position : relative;
         display  : inline-block;
         cursor   : pointer;
@@ -20,9 +20,20 @@
         }
     }
 
+    span { .reform-checkbox-abstract-span; }
+
     input { display: none; }
 
     input[type=radio] {
         & + span, & + span:after { border-radius: 50%; }
+    }
+
+    &.non-nested {
+        + input { display: none; }
+        + input + span { .reform-checkbox-abstract-span; }
+
+        + input[type=radio] {
+            & + span, & + span:after { border-radius: 50%; }
+        }
     }
 }
