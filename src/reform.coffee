@@ -1,5 +1,4 @@
-window.$ 	   		    ?= require "jquery-commonjs"
-CheckBox             = require "./checkbox"
+window.$            ?= require "jquery-commonjs"
 SelectBox            = require "./selectbox"
 MultilineSelectBox   = require "./multilineselectbox"
 AutocompleteBox      = require "./autocompletebox"
@@ -31,9 +30,8 @@ class Reform
     refresh: ->
         n.positionFloater() for n in selectboxList
 
-# Posible custom controls
+# Possible custom controls
 Reform.controls =
-    "reform-checkbox"             : CheckBox
     "reform-selectbox"            : SelectBox
     "reform-multilineselectbox"   : MultilineSelectBox
     "reform-autocompletebox"      : AutocompleteBox

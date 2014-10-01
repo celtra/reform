@@ -24,22 +24,6 @@ All the files you need are in the `build` folder.
 
 Reform will hide original elements and wrap them in "fake" elements, which are just plain divs. It will copy all your classes from the original to the fake element and replicate the behavior of the original element by setting special classes on the fake element (e.g. `checked`, `selected`, `disabled`). The state is automatically synchronized between the fake and the original, so you can trigger events and set values on the original elements without worrying about the fake element.
 
-# Check box
-
-Original:
-
-```html
-<input type="checkbox" class="reform-checkbox my-class">
-```
-
-will become:
-
-```html
-<div class="reform-checkbox-fake my-class">
-  <input type="checkbox" style="display: none">
-</div>
-```
-
 For disabled original elements, fake elements will get the `disabled` class. For checked original elements, they will get the `checked` class.
 
 ### Handling `checked` state changes
@@ -223,6 +207,26 @@ Once autocomplete detects results the options container is shown:
 </div>
 ```
 
+# Check box
+
+Checkboxes and radio buttons were rewritten and is not using any JavaScript and fake divs anymore.
+
+Example:
+
+```html
+<label class="reform-checkbox reform">
+    <input type="checkbox" />
+    <span></span>
+</label>
+
+<label class="reform-checkbox reform">
+    <input type="radio" />
+    <span></span>
+</label>
+```
+
+If you don't need label you can use div tag instead.
+
 The Autocomplete combobox acts like a regular combobox with an addition to filter options. Just like with comboboxes only availbale options can be selected while custom inputs are not possible. If you need custom inputs you should use the Autocomplete box instead.
 
 ## NPM package
@@ -263,7 +267,30 @@ You can register new extended component before observing:
 reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 ```
 
+## Themes branch
+
+In the themes branch we have additional themes for input components.
+
+Check out the branch and see how it's done.
+
+Example structure for pure theme:
+
+```
+/less
+|-/themes
+    /pure
+  	  |- index.less
+  	  |- checkbox.less
+  	  |- ...
+|- theme-pure.less
+```
+
+Be sure to add compiling of a theme in `gulpfile.coffee` and include it to demo/html file to see the results.
+
+
 ## Development
+
+### First setup
 
 - You need [Node.js](http://nodejs.org/)
 - Install `gulp` with `npm install -g gulp`
@@ -271,8 +298,21 @@ reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 - Source files are located in `src` and `less` for CoffeeScript and LESS, respectively.
 - Tests are located in `test`. You can run them by opening `test/index.html` in the browser. Before you'll ned to run
 `gulp test` to build test scripts.
-- Run `gulp` to build `reform.js` and `reform.css` and watch for changes
-- Before pushing new build to `npm` repository, run `gulp build`.
+
+### To build `reform.js` and `reform.css` and watch for changes
+
+```bash
+gulp
+```
+
+### Static Ruby server
+
+```bash
+alias server='ruby -run -e httpd . -p5000'
+```
+
+From here you can run `server` inside project's directory and open
+[http://localhost:5000/demo/index.html](http://localhost:5000/demo/index.html)
 
 ## Deploy new version to GitHub
 
@@ -284,14 +324,3 @@ git merge master # or the branch you want to deploy
 gulp build
 git push origin npm
 ```
-
-### Static Ruby server
-
-You can add this alias to your [dotfiles](http://dotfiles.github.io/).
-
-```
-alias server='ruby -run -e httpd . -p5000'
-```
-
-And from here you can run `server` from this directory and open
-[http://localhost:5000/demo/index.html](http://localhost:5000/demo/index.html) for Reform demo.

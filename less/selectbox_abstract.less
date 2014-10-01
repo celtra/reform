@@ -17,7 +17,7 @@
 
     .outline(@borderColor);
     .select-disabled;
-    .rounded-corners;
+    border-radius: 5px;
 
     .selected-item {
         overflow      : hidden;    
@@ -29,7 +29,7 @@
         .arrow-down(@fontColor);
     }
     &.reform-selectbox-ui.opened:after {
-        .reform-arrow-up(@fontColor);
+        .reform-arrow-up(@hoverBackgroundColor);
     }
 
     &.reform-selectbox-ui.disabled {

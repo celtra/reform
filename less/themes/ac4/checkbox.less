@@ -1,69 +1,66 @@
 #abstracts > .checkbox;
 
-@checkboxBorderColor : #aaa;
-
-&.reform-checkbox-fake {
-    height           : 12px;
-    width            : 12px;
-    padding          : 1px;
-    .content-box;
-
-    &:after {
-        display    : none;
-        position   : absolute;
-        top        : 50%;
-        left       : 50%;
-        z-index    : 1;
-        width      : 10px;
-        height     : 10px;
-        margin     : -5px 0 0 -5px;
-        padding    : 0;
-        content    : "";
-        background : url('img/check.gif') no-repeat;
+&.reform-checkbox {
+    .span-mixin {
+        .outline(#dddddd);
+        height  : 12px;
+        width   : 12px;
+        padding : 1px;
     }
 
-    &.checked {
-        &:before {
-            top        : 1px;
-            left       : 1px;
-            width      : auto;
-            height     : auto;
-            margin     : 0;
-            background : none;
+    span { .span-mixin; }
+
+    .input-mixin {
+        &:checked + span:after {
+            width           : 10px;
+            height          : 10px;
+            margin          : -7px 0 0 -7px;
+            border          : 2px solid #eeeeee;
+            background      : url('img/check.svg') no-repeat #eeeeee -3px -2px;
+            background-size : 16px;
+            .outline(#eeeeee);
         }
 
-        &:after {
-            display    : block;
-        }
+        &:disabled + span { .outline(#aaaaaa); }
 
-        box-shadow       : 0 0 0 1px #EEE;
-        background-color : #EEE;
-    }
-
-    &.disabled {
-        background-color : @disabledBackgroundColor;
-
-        .outline(@checkboxBorderColor);
-
-        &.checked:before {
-            background: none;
+        &:disabled:checked + span:after {
+            .outline(#aaaaaa);
+            background-color : @disabledBackgroundColor;
+            border           : 2px solid transparent;
         }
     }
 
-    &.radio {
+    input { .input-mixin; }
 
-        &:before {
-            .rounded-corners(50%);
+    .radio-input-mixin {
+        & + span:after {
+            width  : 4px;
+            height : 4px;
+            margin : -2px 0 0 -2px;
+            border : none !important;
         }
 
-        &:after {
-            .rounded-corners(50%);
+        &:checked + span {
+            background-color : #eeeeee;
+            .outline(#eeeeee);
 
-            width            : 4px;
-            height           : 4px;
-            margin           : -2px 0 0 -2px;
-            background-color : #000;
-            content          : "";
+            &:after {
+                box-shadow       : none;
+                background-color : #000000;
+            }
         }
+
+        &:disabled:checked + span {
+            .outline(#aaaaaa);
+            background-color : #ffffff;
+        }
+    }
+
+    input[type=radio] { .radio-input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
+        + input + span { .span-mixin; }
     }
 }

@@ -1,51 +1,57 @@
 #abstracts > .checkbox;
 
-&.reform-checkbox-fake {
-    height           : 10px;
-    width            : 10px;
-    border           : 1px solid #383838;
-    background-color : #000;
-    padding          : 1px;
-    .content-box;
-    .outline;
-
-    &:before {
-        border : none;
+&.reform-checkbox {
+    .span-mixin {
+        width   : 10px;
+        height  : 10px;
+        padding : 1px;
+        border  : 1px solid #383838;
     }
 
-    &.checked:before {
-        content: none;
-    }
+    span { .span-mixin; }
 
-    &:after {
-        display    : none;
-        position   : absolute;
-        top        : 50%;
-        left       : 50%;
-        z-index    : 1;
-        width      : 6px;
-        height     : 6px;
-        margin     : -3px 0 0 -3px;
-        padding    : 0;
-        content    : "";
-        background-color : #fff;
-    }
-
-    &.checked:after {
-        display: block;
-    }
-
-    &.radio.checked:after {
-        display    : block;
-    }
-
-    &.radio {        
-        &:after {
-            .rounded-corners(50%);
-
-            width            : 4px;
-            height           : 4px;
-            margin           : -2px 0 0 -2px;
+    .input-mixin {
+        &:checked + span:after {
+            top              : 50%;
+            left             : 50%;
+            width            : 6px;
+            height           : 6px;
+            background-color : #ffffff;
         }
+
+        &:disabled + span {
+            .outline(#aaaaaa);
+            background-color: #727272;
+        }
+    }
+
+    input { .input-mixin; }
+
+    .radio-input-mixin {
+        & + span {
+            &:before { border-radius: 50%; }
+            &:after {
+                width  : 4px;
+                height : 4px;
+                margin : -2px 0 0 -2px;
+                border : none !important;
+            }
+        }
+
+        &:checked + span {
+            &:after { background-color: #ffffff !important; }
+        }
+
+        &:disabled:checked + span {
+            background-color: #727272;
+        }
+    }
+
+    input[type=radio] { .radio-input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
+        + input + span { .span-mixin; }
     }
 }
