@@ -1,7 +1,7 @@
 #abstracts > .checkbox;
 
 &.reform-checkbox {
-    .reform-checkbox-span {
+    .span-mixin {
         width   : 10px;
         height  : 10px;
         padding : 1px;
@@ -18,7 +18,7 @@
         }
     }
 
-    span { .reform-checkbox-span; }
+    span { .span-mixin; }
 
     .input-mixin {
         &:checked + span:after {
@@ -70,7 +70,7 @@
     &.non-nested {
         + input { .input-mixin; }
         + input[type=radio] { .radio-input-mixin; }
-        + input + span { .reform-checkbox-span; }
+        + input + span { .span-mixin; }
     }
 
     &.big-checkbox {

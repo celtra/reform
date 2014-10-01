@@ -1,14 +1,16 @@
 #abstracts > .checkbox;
 
 &.reform-checkbox {
-    span {
+    .span-mixin {
         width   : 10px;
         height  : 10px;
         padding : 1px;
         border  : 1px solid #383838;
     }
 
-    input {
+    span { .span-mixin; }
+
+    .input-mixin {
         &:checked + span:after {
             top              : 50%;
             left             : 50%;
@@ -23,7 +25,9 @@
         }
     }
 
-    input[type=radio] {
+    input { .input-mixin; }
+
+    .radio-input-mixin {
         & + span {
             &:before { border-radius: 50%; }
             &:after {
@@ -41,5 +45,13 @@
         &:disabled:checked + span {
             background-color: #727272;
         }
+    }
+
+    input[type=radio] { .radio-input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
+        + input + span { .span-mixin; }
     }
 }
