@@ -1,14 +1,16 @@
 #abstracts > .checkbox;
 
 &.reform-checkbox {
-    span {
+    .span-mixin {
         .outline(#dddddd);
         height  : 12px;
         width   : 12px;
         padding : 1px;
     }
 
-    input {
+    span { .span-mixin; }
+
+    .input-mixin {
         &:checked + span:after {
             width           : 10px;
             height          : 10px;
@@ -28,7 +30,9 @@
         }
     }
 
-    input[type=radio] {
+    input { .input-mixin; }
+
+    .radio-input-mixin {
         & + span:after {
             width  : 4px;
             height : 4px;
@@ -50,5 +54,13 @@
             .outline(#aaaaaa);
             background-color : #ffffff;
         }
+    }
+
+    input[type=radio] { .radio-input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
+        + input + span { .span-mixin; }
     }
 }
