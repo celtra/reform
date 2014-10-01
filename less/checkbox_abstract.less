@@ -4,7 +4,7 @@
     -webkit-user-select : none;
     -ms-user-select     : none;
 
-    .reform-checkbox-abstract-span {
+    .span-mixin {
         position : relative;
         display  : inline-block;
         cursor   : pointer;
@@ -20,20 +20,21 @@
         }
     }
 
-    span { .reform-checkbox-abstract-span; }
+    span { .span-mixin; }
 
-    input { display: none; }
+    .input-mixin { display: none; }
 
-    input[type=radio] {
+    input { .input-mixin; }
+
+    .radio-input-mixin {
         & + span, & + span:after { border-radius: 50%; }
     }
 
-    &.non-nested {
-        + input { display: none; }
-        + input + span { .reform-checkbox-abstract-span; }
+    input[type=radio] { .radio-input-mixin; }
 
-        + input[type=radio] {
-            & + span, & + span:after { border-radius: 50%; }
-        }
+    &.non-nested {
+        + input { .input-mixin; }
+        + input + span { .span-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
     }
 }
