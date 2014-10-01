@@ -1,7 +1,7 @@
 #abstracts > .checkbox;
 
 &.reform-checkbox {
-    span {
+    .reform-checkbox-span {
         width  : 30px;
         height : 30px;
         .outline(#dddddd);
@@ -9,7 +9,9 @@
         &:hover { .outline(#cccccc); }
     }
 
-    input {
+    span { .reform-checkbox-span; }
+
+    .input-mixin {
         &:hover + span { .outline(#cccccc); }
 
         &:checked + span:after { background: none repeat scroll 0 0 #1f1f1f; }
@@ -21,5 +23,12 @@
         }
 
         &:disabled:checked + span:after { background-color: #dddddd; }
+    }
+
+    input { .input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input + span { .reform-checkbox-span; }
     }
 }

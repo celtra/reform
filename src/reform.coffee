@@ -1,4 +1,4 @@
-window.$ 	   		?= require "jquery-commonjs"
+window.$            ?= require "jquery-commonjs"
 SelectBox            = require "./selectbox"
 MultilineSelectBox   = require "./multilineselectbox"
 AutocompleteBox      = require "./autocompletebox"
