@@ -2,8 +2,8 @@
 
 &.reform-checkbox {
     span {
-        height  : 10px;
         width   : 10px;
+        height  : 10px;
         padding : 1px;
         border  : 1px solid #aaaaaa;
 
@@ -77,12 +77,10 @@
         }
 
         input[type=radio] {
-            & + span {
-                &:after {
-                    width  : 6px;
-                    height : 6px;
-                    margin : -3px 0 0 -3px;
-                }
+            & + span:after {
+                width  : 6px;
+                height : 6px;
+                margin : -3px 0 0 -3px;
             }
         }
     }
