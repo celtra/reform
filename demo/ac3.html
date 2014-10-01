@@ -12,6 +12,10 @@
                 font-family: Arial;
                 font-weight: normal;
             }
+
+            .newline {
+                margin-top: 10px;
+            }
         </style>
         <script>
             var inlineData = [
@@ -101,6 +105,12 @@
                 <input type="checkbox" checked disabled />
                 <span></span>
             </label>
+
+            <div class="newline">
+                <label for="cb" class="reform-checkbox non-nested reform">Not nested label</label>
+                <input id="cb" type="checkbox" />
+                <span></span>
+            </div>
         </div>
 
         <h3>Radio boxes</h3>
@@ -122,6 +132,12 @@
                 <input type="radio" checked disabled />
                 <span></span>
             </label>
+
+            <div class="newline">
+                <label for="rb" class="reform-checkbox non-nested reform">Not nested label</label>
+                <input id="rb" type="radio" />
+                <span></span>
+            </div>
         </div>
 
         <br/><br/>
@@ -145,6 +161,12 @@
                 <input type="checkbox" checked disabled />
                 <span></span>
             </label>
+
+            <div class="newline">
+                <label for="big-cb" class="reform-checkbox big-checkbox non-nested reform">Not nested label</label>
+                <input id="big-cb" type="checkbox" />
+                <span></span>
+            </div>
         </div>
 
         <h3>Big radio boxes</h3>
@@ -166,8 +188,14 @@
                 <input type="radio" checked disabled />
                 <span></span>
             </label>
-        </div>        
-        
+
+            <div class="newline">
+                <label for="big-rb" class="reform-checkbox big-checkbox non-nested reform">Not nested label</label>
+                <input id="big-rb" type="radio" />
+                <span></span>
+            </div>
+        </div>
+
         <br/><br/>
 
         <h3>Select boxes</h3>

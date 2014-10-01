@@ -1,7 +1,7 @@
 #abstracts > .checkbox;
 
 &.reform-checkbox {
-    span {
+    .reform-checkbox-span {
         width   : 10px;
         height  : 10px;
         padding : 1px;
@@ -18,7 +18,9 @@
         }
     }
 
-    input {
+    span { .reform-checkbox-span; }
+
+    .input-mixin {
         &:checked + span:after {
             width           : 10px;
             height          : 10px;
@@ -38,7 +40,9 @@
         }
     }
 
-    input[type=radio] {
+    input { .input-mixin; }
+
+    .radio-input-mixin {
         & + span {
             &:before { border-radius: 50%; }
             &:after {
@@ -61,27 +65,47 @@
         }
     }
 
+    input[type=radio] { .radio-input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input[type=radio] { .radio-input-mixin; }
+        + input + span { .reform-checkbox-span; }
+    }
+
     &.big-checkbox {
-        span {
+        .big-span {
             width  : 16px;
             height : 16px;
         }
 
-        input {
+        span { .big-span; }
+
+        .big-input-mixin {
             &:checked + span:after {
-                width      : 14px;
-                height     : 14px;
-                margin     : -7px 0 0 -7px;
-                background : url('img/big_check.gif') no-repeat;
+                width           : 14px;
+                height          : 14px;
+                margin          : -7px 0 0 -8px;
+                background-size : 20px;
             }
         }
 
-        input[type=radio] {
+        input { .big-input-mixin; }
+
+        .big-input-radio-mixin {
             & + span:after {
                 width  : 6px;
                 height : 6px;
                 margin : -3px 0 0 -3px;
             }
+        }
+
+        input[type=radio] { .big-input-radio-mixin; }
+
+        &.non-nested {
+            + input { .big-input-mixin; }
+            + input[type=radio] { .big-input-radio-mixin; }
+            + input + span { .big-span; }
         }
     }
 }
