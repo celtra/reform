@@ -224,6 +224,8 @@ class AutocompleteAbstract
         $item.addClass @options.itemClass
         $item.data 'title', item.title
         $item.data 'value', item.value
+        $item.attr 'title', item.tooltip      if item.tooltip
+        $item.addClass @options.disabledClass if item.disabled
         
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
         if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
@@ -252,6 +254,7 @@ class AutocompleteAbstract
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
+        return if $item.hasClass @options.disabledClass
 
         if $item.is 'strong'
             $item = $item.closest 'div'
@@ -422,8 +425,10 @@ class AutocompleteAbstract
 
         $.each data, (num, item) =>
             parsed.push {
-                value: item.value
-                title: @options.formatResult and @options.formatResult(item) or item.title
+                value    : item.value
+                title    : @options.formatResult and @options.formatResult(item) or item.title
+                tooltip  : if item.tooltip?  then item.tooltip  else null
+                disabled : if item.disabled? then item.disabled else null
             }
 
         parsed
