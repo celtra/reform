@@ -1,7 +1,6 @@
 <html>
     <head>
         <title>Custom forms with Reform</title>
-        <!-- <link rel="stylesheet" type="text/css" href="../build/reform.css"> -->
         <link rel="stylesheet" type="text/css" href="../build/reform-pure.css">
         <link rel="stylesheet" type="text/css" href="demo.css">
         
@@ -12,6 +11,10 @@
             h3 {
                 font-family: Arial;
                 font-weight: normal;
+            }
+            
+            .newline {
+                margin-top: 10px;
             }
         </style>
         <script>
@@ -89,10 +92,28 @@
         <h3>Check boxes</h3>
         
         <div>
-            <input class="reform-checkbox reform-pure" type="checkbox">
-            <input class="reform-checkbox reform-pure" type="checkbox" checked>
-            <input class="reform-checkbox reform-pure" type="checkbox" disabled>
-            <input class="reform-checkbox tmp reform-pure" type="checkbox" checked disabled>
+            <label class="reform-checkbox reform pure">
+                <input type="checkbox" />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="checkbox" checked />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="checkbox" disabled />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="checkbox" disabled checked />
+                <span></span>
+            </label>
+
+            <div class="newline">
+                <label for="cb" class="reform-checkbox non-nested reform pure">Not nested label</label>
+                <input id="cb" type="checkbox" />
+                <span></span>
+            </div>
         </div>
         
         <br/><br/>
@@ -100,10 +121,28 @@
         <h3>Radio boxes</h3>
         
         <div>
-            <input id="radio-1" class="reform-checkbox reform-pure" type="radio" name="test-radio">
-            <input id="radio-2" class="reform-checkbox reform-pure" type="radio" name="test-radio" checked="checked">
-            <input id="radio-3" class="reform-checkbox reform-pure" type="radio" name="test-radio" disabled>
-            <input class="reform-checkbox radio reform-pure" type="radio" checked disabled>
+            <label class="reform-checkbox reform pure">
+                <input type="radio" />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="radio" checked />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="radio" disabled />
+                <span></span>
+            </label>
+            <label class="reform-checkbox reform pure">
+                <input type="radio" disabled checked />
+                <span></span>
+            </label>
+
+            <div class="newline">
+                <label for="rb" class="reform-checkbox non-nested reform pure">Not nested label</label>
+                <input id="rb" type="radio" />
+                <span></span>
+            </div>
         </div>
         
         <br/><br/>

@@ -1,12 +1,34 @@
 #abstracts > .checkbox;
 
-&.reform-checkbox-fake {
+&.reform-checkbox {
+    .span-mixin {
+        width  : 30px;
+        height : 30px;
+        .outline(#dddddd);
 
-    &:hover {
-        .outline(@borderHoverColor);
+        &:hover { .outline(#cccccc); }
     }
 
-    &.disabled {
-        .outline(@disabledBorderColor);
+    span { .span-mixin; }
+
+    .input-mixin {
+        &:hover + span { .outline(#cccccc); }
+
+        &:checked + span:after { background: none repeat scroll 0 0 #1f1f1f; }
+
+        &:disabled + span {
+            cursor           : default;
+            background-color : #f7f7f7;
+            .outline(#dddddd);
+        }
+
+        &:disabled:checked + span:after { background-color: #dddddd; }
+    }
+
+    input { .input-mixin; }
+
+    &.non-nested {
+        + input { .input-mixin; }
+        + input + span { .span-mixin; }
     }
 }
