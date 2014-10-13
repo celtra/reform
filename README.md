@@ -274,6 +274,26 @@ reform.register('reform-geoautocompletebox', GeoAutocompleteBox);
 - Run `gulp` to build `reform.js` and `reform.css` and watch for changes
 - Before pushing new build to `npm` repository, run `gulp build`.
 
+## Themes branch
+
+In the themes branch we have additional themes for input components.
+
+Check out the branch and see how it's done.
+
+Example structure for pure theme:
+
+```
+/less
+|-/themes
+    /pure
+  	  |- index.less
+  	  |- checkbox.less
+  	  |- ...
+|- theme-pure.less
+```
+
+Be sure to add compiling of a theme in `gulpfile.coffee` and include it to demo/html file to see the results.
+
 ## Deploy new version to GitHub
 
 Workflow
