@@ -291,6 +291,12 @@
       $item.addClass(this.options.itemClass);
       $item.data('title', item.title);
       $item.data('value', item.value);
+      if (item.tooltip) {
+        $item.attr('title', item.tooltip);
+      }
+      if (item.disabled) {
+        $item.addClass(this.options.disabledClass);
+      }
       position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
       if (this.options.highlightTitles && this.filterValue.length !== 0 && position !== -1) {
         text = item.title.substring(position, position + this.filterValue.length);
@@ -324,6 +330,9 @@
 
     AutocompleteAbstract.prototype.handleItemSelect = function($item) {
       if ($item.length === 0) {
+        return;
+      }
+      if ($item.hasClass(this.options.disabledClass)) {
         return;
       }
       if ($item.is('strong')) {
@@ -535,7 +544,9 @@
         return function(num, item) {
           return parsed.push({
             value: item.value,
-            title: _this.options.formatResult && _this.options.formatResult(item) || item.title
+            title: _this.options.formatResult && _this.options.formatResult(item) || item.title,
+            tooltip: item.tooltip != null ? item.tooltip : null,
+            disabled: item.disabled != null ? item.disabled : null
           });
         };
       })(this));
