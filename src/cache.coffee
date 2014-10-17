@@ -38,7 +38,6 @@ class Cache
         else if @options.matchSubset
             i = q.length - 1
 
-            console.log '@options.minChars', @options.minChars
             while i >= @options.minChars
                 c = @data[q.substr(0, i)]
                 if c
