@@ -8,9 +8,9 @@ class AutocompleteBox extends AutocompleteAbstract
     constructor: (@select, options) ->
 
         @options = $.extend {
-            showArrows         : no
-            reformClass        : 'reform-autocompletebox'
-            uiClass            : 'reform-autocompletebox-ui'
+            showArrows  : no
+            reformClass : 'reform-autocompletebox'
+            uiClass     : 'reform-autocompletebox-ui'
         }, options
 
         super @select, @options
@@ -85,7 +85,7 @@ class AutocompleteBox extends AutocompleteAbstract
     handleKeyUp: (e) ->
         return if e.keyCode is @KEY.RETURN
 
-        if @filter.val().length > @options.minChars
+        if @filter.val().length >= @options.minChars
             @open() unless @floater?
         else if @floater?
             @close() 

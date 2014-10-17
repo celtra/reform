@@ -1,19 +1,14 @@
 <html>
     <head>
         <title>Custom forms with Reform</title>
-        <!-- <link rel="stylesheet" type="text/css" href="../build/reform.css"> -->
+        <link rel="stylesheet" type="text/css" href="assets/demo.css">
+
+        <link rel="stylesheet" type="text/css" href="../build/reform.css">
         <link rel="stylesheet" type="text/css" href="../build/reform-pure.css">
-        <link rel="stylesheet" type="text/css" href="demo.css">
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="../build/reform.js"></script>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCobVik6xLVkJ5r2NQAWX6zcjxppo6fcao"></script>
-        <style type="text/css">
-            h3 {
-                font-family: Arial;
-                font-weight: normal;
-            }
-        </style>
+        <script type="text/javascript" src="../build/reform.js"></script>
         <script>
             var inlineData = [
                 {
@@ -202,8 +197,10 @@
 
             <input class="reform-autocompletebox reform-pure" type="text" disabled />
 
-            <h3>Autocomplete (will not work if opened via file://)</h3>
-            <input id="autocompletebox" class="reform-autocompletebox reform-pure" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
+            <h3>
+                Autocomplete <small>(will not work if opened via file://, try using simple server, for example <code>python -m SimpleHTTPServer</code>)</small>
+            </h3>
+            <input id="autocompletebox" class="reform-autocompletebox reform-pure" type="text" data-delay="500" data-url="assets/demo.json" data-show-arrows="true" data-min-chars="2" />
 
             <h3>Autocomplete Combobox</h3>
             <input id="autocompletecombobox" class="reform-autocompletecombobox reform-pure" />

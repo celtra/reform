@@ -16,41 +16,41 @@ class AutocompleteAbstract
     constructor: (@select, options) ->
         # some defaults
         @options = {
-            url                 : null      # data url
-            dataType            : 'json'
-            max                 : 1000      # max results
-            minChars            : 0
-            delay               : 0
-            caseSensitive       : no
-            highlightTitles     : yes
-            highlightSelection  : yes
-            showArrows          : yes
-            hyphenate           : yes       # will break long strings if true
-            exactMatch          : no        # will not filter dropdown data if true
-            title               : null      # preset selected title
-            placeholderText     : 'Type to search...'
+            url                : null      # data url
+            dataType           : 'json'
+            max                : 1000      # max results
+            minChars           : 0
+            delay              : 0
+            caseSensitive      : no
+            highlightTitles    : yes
+            highlightSelection : yes
+            showArrows         : yes
+            hyphenate          : yes       # will break long strings if true
+            exactMatch         : no        # will not filter dropdown data if true
+            title              : null      # preset selected title
+            placeholderText    : 'Type to search...'
 
             # custom classes
-            reformClass         : 'reform-autocomplete'
-            uiClass             : 'reform-autocomplete-ui'
-            fakeClass           : 'reform-autocomplete-fake'
-            filterClass         : 'reform-autocomplete-filter'
-            emptyClass          : 'reform-autocomplete-empty'
-            disabledClass       : 'disabled'
-            arrowDownClass      : 'arrow-down'
-            arrowUpClass        : 'arrow-up'
-            hoverClass          : 'hover'
-            selectedClass       : 'selected'
-            floaterClass        : 'reform-floater'
-            listClass           : 'reform-floater-list'
-            itemClass           : 'reform-floater-item'
-            overlayClass        : 'reform-floater-overlay'
+            reformClass        : 'reform-autocomplete'
+            uiClass            : 'reform-autocomplete-ui'
+            fakeClass          : 'reform-autocomplete-fake'
+            filterClass        : 'reform-autocomplete-filter'
+            emptyClass         : 'reform-autocomplete-empty'
+            disabledClass      : 'disabled'
+            arrowDownClass     : 'arrow-down'
+            arrowUpClass       : 'arrow-up'
+            hoverClass         : 'hover'
+            selectedClass      : 'selected'
+            floaterClass       : 'reform-floater'
+            listClass          : 'reform-floater-list'
+            itemClass          : 'reform-floater-item'
+            overlayClass       : 'reform-floater-overlay'
         }
         
-        @orig    = $ @select
+        @orig = $ @select
 
         # Don't do this twice
-        return if @orig.is ".reformed"
+        return if @orig.is '.reformed'
 
         # read inline params
         inlineOptions = @orig.data()
@@ -59,12 +59,12 @@ class AutocompleteAbstract
         $.extend(@options, inlineOptions)
 
         # backward compatibility
-        @options.customParams     = @options.extraParams unless !@options.extraParams
-        @options.caseSensitive    = @options.matchCase   unless !@options.matchCase 
-        @options.highlightTitles  = @options.colorTitle  unless !@options.colorTitle
-        @options.exactMatch       = @options.matchAll    unless !@options.matchAll
-        @options.placeholderText  = @options.placeholder unless !@options.placeholder
-        @options.showArrows       = @options.arrow       unless !@options.arrow
+        @options.customParams    = @options.extraParams unless !@options.extraParams
+        @options.caseSensitive   = @options.matchCase   unless !@options.matchCase
+        @options.highlightTitles = @options.colorTitle  unless !@options.colorTitle
+        @options.exactMatch      = @options.matchAll    unless !@options.matchAll
+        @options.placeholderText = @options.placeholder unless !@options.placeholder
+        @options.showArrows      = @options.arrow       unless !@options.arrow
         
         # set initial state
         @data = []
@@ -77,32 +77,32 @@ class AutocompleteAbstract
         # clear delay if data is local
         @cache = new Cache(@options) if @options.url?
 
-        @el             = null
-        @floater        = null
-        @list           = null
-        @filter         = null
-        @customClass    = null
+        @el          = null
+        @floater     = null
+        @list        = null
+        @filter      = null
+        @customClass = null
 
         # extract custom classes from orig
         @initCustomClass()
 
         @el = @createClosed()
 
-        @orig.hide().attr "class", "reformed"
+        @orig.hide().attr 'class', 'reformed'
 
         @orig.after(@el).appendTo @el
 
         # Close any other open options containers
-        $( 'body' ).on "reform.open", (e) => @close() unless e.target is @select
+        $( 'body' ).on 'reform.open', (e) => @close() unless e.target is @select
 
         # Replicate changes from the original input to the fake one
-        @orig.on "reform.sync change DOMSubtreeModified", => setTimeout @refreshState, 0
+        @orig.on 'reform.sync change DOMSubtreeModified', => setTimeout @refreshState, 0
 
         # Close this selectbox
-        @orig.on "reform.close", (e) => @close()
+        @orig.on 'reform.close', (e) => @close()
 
         # set inline data
-        @orig.on "reform.fill", (e, data) => @handleDataFill data
+        @orig.on 'reform.fill', (e, data) => @handleDataFill data
 
         # reform events
         @el.on 'filterChanged', => @handleFilterChanged()
@@ -157,12 +157,12 @@ class AutocompleteAbstract
         @handleDisabledToggle()
 
     createClosed: ->
-        $el = $ "<div/>"
+        $el = $ '<div/>'
         $el.addClass 'reform'           # todo: do it better
         $el.addClass @customClass
         $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
-        $el.addClass @options.disabledClass if @orig.is ":disabled"
+        $el.addClass @options.disabledClass if @orig.is ':disabled'
 
         if @options.showArrows
             $el.addClass @options.arrowDownClass
@@ -170,15 +170,15 @@ class AutocompleteAbstract
         $el
 
     createFloater: ->
-        $floater = $ "<div/>"
+        $floater = $ '<div/>'
         $floater.addClass 'reform'                  # todo: do it better
         $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
-        $floater.css "min-width", @el.outerWidth()
+        $floater.css 'min-width', @el.outerWidth()
 
     createFilter: ->
-        $filter = $ "<input/>"
+        $filter = $ '<input/>'
         $filter.addClass @options.filterClass
 
         if @orig.is ':disabled'
@@ -187,11 +187,9 @@ class AutocompleteAbstract
         if @options.placeholderText?
             $filter.attr 'placeholder', @options.placeholderText
 
-        $filter.on 'blur', () => @handleFilterBlur()
-
-        $filter.on "keyup.autocomplete", (e) => @handleKeyUp e
-
-        $filter.on "keydown.autocomplete", (e) => @handleKeyDown e
+        $filter.on 'blur',                 ()  => @handleFilterBlur()
+        $filter.on 'keyup.autocomplete',   (e) => @handleKeyUp e
+        $filter.on 'keydown.autocomplete', (e) => @handleKeyDown e
 
         $filter
 
@@ -241,13 +239,8 @@ class AutocompleteAbstract
         if @options.highlightSelection and @selectedItem.value?
             $item.addClass @options.selectedClass if item.value is @selectedItem.value
         
-        # Prevent text selection
-        $item.on 'mousedown', (e) ->  e.preventDefault()
-
-        # Item selection
-        $item.on 'click', (e) => @handleItemSelect $ (e.target)
-
-        # hover items
+        $item.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
+        $item.on 'click',      (e) => @handleItemSelect $ (e.target)
         $item.on 'mouseenter', (e) => @setHover $ (e.target)
 
         $item
@@ -283,7 +276,7 @@ class AutocompleteAbstract
     open: ->
         return if @floater? or @el.hasClass @options.disabledClass
         
-        @orig.trigger "reform.open"
+        @orig.trigger 'reform.open'
 
         @floater = @createFloater()
 
@@ -317,7 +310,7 @@ class AutocompleteAbstract
 
         @filterValue = ''
 
-        @orig.trigger "reform.closed"
+        @orig.trigger 'reform.closed'
 
     cancelChanges: ->
         @filterValue = @selectedItem.title
@@ -473,17 +466,17 @@ class AutocompleteAbstract
             return
 
         params = {
-            q           : currentFilter
-            matchCase   : @options.caseSensitive
-            limit       : @options.max
-            timeStamp   : new Date()
+            q         : currentFilter
+            matchCase : @options.caseSensitive
+            limit     : @options.max
+            timeStamp : new Date()
         }
 
         if @options.customParams?
             customParams = []
 
             for key, param in @options.customParams
-                customParams[key] = if typeof param is "function" then param() else param
+                customParams[key] = if typeof param is 'function' then param() else param
 
             $.extend params, customParams        
 
@@ -516,7 +509,7 @@ class AutocompleteAbstract
                 @ajaxInProgress = no
                 @orig.trigger 'ajaxRequestFinished'
 
-                console.log data
+                console.log 'Error: ', data
         }
 
 module.exports = AutocompleteAbstract
