@@ -4,14 +4,14 @@ AutocompleteAbstract  = require "./autocomplete_abstract"
 class AutocompleteCombobox extends AutocompleteAbstract
     constructor: (@select, options) ->
         @options = $.extend {
-            emptySelectionText  : 'Select an item...'
-            emptyText           : 'No results.'
+            emptySelectionText : 'Select an item...'
+            emptyText          : 'No results.'
 
-            reformClass         : 'reform-autocompletecombobox'
-            uiClass             : 'reform-autocompletecombobox-ui'
-            floaterLabelClass   : 'reform-autocomplete-floater-label'
-            titleClass          : 'selected-item'
-            placeholderClass    : 'placeholder'
+            reformClass        : 'reform-autocompletecombobox'
+            uiClass            : 'reform-autocompletecombobox-ui'
+            floaterLabelClass  : 'reform-autocomplete-floater-label'
+            titleClass         : 'selected-item'
+            placeholderClass   : 'placeholder'
         }, options
         
         super @select, @options
