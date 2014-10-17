@@ -47,7 +47,7 @@ class AutocompleteAbstract
             overlayClass        : 'reform-floater-overlay'
         }
         
-        @orig    = $ @select
+        @orig = $ @select
 
         # Don't do this twice
         return if @orig.is ".reformed"
