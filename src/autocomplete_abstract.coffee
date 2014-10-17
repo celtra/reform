@@ -16,35 +16,35 @@ class AutocompleteAbstract
     constructor: (@select, options) ->
         # some defaults
         @options = {
-            url                 : null      # data url
-            dataType            : 'json'
-            max                 : 1000      # max results
-            minChars            : 0
-            delay               : 0
-            caseSensitive       : no
-            highlightTitles     : yes
-            highlightSelection  : yes
-            showArrows          : yes
-            hyphenate           : yes       # will break long strings if true
-            exactMatch          : no        # will not filter dropdown data if true
-            title               : null      # preset selected title
-            placeholderText     : 'Type to search...'
+            url                : null      # data url
+            dataType           : 'json'
+            max                : 1000      # max results
+            minChars           : 0
+            delay              : 0
+            caseSensitive      : no
+            highlightTitles    : yes
+            highlightSelection : yes
+            showArrows         : yes
+            hyphenate          : yes       # will break long strings if true
+            exactMatch         : no        # will not filter dropdown data if true
+            title              : null      # preset selected title
+            placeholderText    : 'Type to search...'
 
             # custom classes
-            reformClass         : 'reform-autocomplete'
-            uiClass             : 'reform-autocomplete-ui'
-            fakeClass           : 'reform-autocomplete-fake'
-            filterClass         : 'reform-autocomplete-filter'
-            emptyClass          : 'reform-autocomplete-empty'
-            disabledClass       : 'disabled'
-            arrowDownClass      : 'arrow-down'
-            arrowUpClass        : 'arrow-up'
-            hoverClass          : 'hover'
-            selectedClass       : 'selected'
-            floaterClass        : 'reform-floater'
-            listClass           : 'reform-floater-list'
-            itemClass           : 'reform-floater-item'
-            overlayClass        : 'reform-floater-overlay'
+            reformClass        : 'reform-autocomplete'
+            uiClass            : 'reform-autocomplete-ui'
+            fakeClass          : 'reform-autocomplete-fake'
+            filterClass        : 'reform-autocomplete-filter'
+            emptyClass         : 'reform-autocomplete-empty'
+            disabledClass      : 'disabled'
+            arrowDownClass     : 'arrow-down'
+            arrowUpClass       : 'arrow-up'
+            hoverClass         : 'hover'
+            selectedClass      : 'selected'
+            floaterClass       : 'reform-floater'
+            listClass          : 'reform-floater-list'
+            itemClass          : 'reform-floater-item'
+            overlayClass       : 'reform-floater-overlay'
         }
         
         @orig = $ @select
@@ -77,11 +77,11 @@ class AutocompleteAbstract
         # clear delay if data is local
         @cache = new Cache(@options) if @options.url?
 
-        @el             = null
-        @floater        = null
-        @list           = null
-        @filter         = null
-        @customClass    = null
+        @el          = null
+        @floater     = null
+        @list        = null
+        @filter      = null
+        @customClass = null
 
         # extract custom classes from orig
         @initCustomClass()
@@ -473,10 +473,10 @@ class AutocompleteAbstract
             return
 
         params = {
-            q           : currentFilter
-            matchCase   : @options.caseSensitive
-            limit       : @options.max
-            timeStamp   : new Date()
+            q         : currentFilter
+            matchCase : @options.caseSensitive
+            limit     : @options.max
+            timeStamp : new Date()
         }
 
         if @options.customParams?
@@ -516,7 +516,7 @@ class AutocompleteAbstract
                 @ajaxInProgress = no
                 @orig.trigger 'ajaxRequestFinished'
 
-                console.log data
+                console.log 'Error: ', data
         }
 
 module.exports = AutocompleteAbstract
