@@ -1,4 +1,4 @@
-SelectBoxAbstract = require './selectbox_abstract'
+SelectBoxAbstract = require "./selectbox_abstract"
 
 class SelectBox extends SelectBoxAbstract
     constructor: (@select, options) ->
@@ -14,11 +14,11 @@ class SelectBox extends SelectBoxAbstract
 
     createClosedItem: ->
         # Automatically choose a title
-        selected = @orig.find("option").filter(-> @selected and $(@).data("count-option") isnt "no")
-        plural = @orig.data "plural"
-        title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ", "
-        title = @orig.attr "title" unless title
-        title = "Select" unless title?
+        selected = @orig.find('option').filter(-> @selected and $(@).data('count-option') isnt 'no')
+        plural = @orig.data 'plural'
+        title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ', '
+        title = @orig.attr 'title' unless title
+        title = 'Select' unless title?
 
         title
 
