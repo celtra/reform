@@ -3,3 +3,6 @@
 /lib_test/*
 /build/*
 npm-debug.log
+
+# Ignoring all temporary development html files; index.html is already staged
+/demo/*.html
