@@ -1,14 +1,14 @@
-window.$   ?= require "jquery-commonjs"
+window.$ ?= require "jquery-commonjs"
 
 class Cache
 
-    data: {}
-    length: 0
+    data   : {}
+    length : 0
 
     options: {
-        cacheLength: 100
-        matchContains: false
-        matchSubset: true
+        cacheLength   : 100
+        matchContains : false
+        matchSubset   : true
     }
 
     constructor: (options) ->
@@ -27,28 +27,28 @@ class Cache
         @data[q] = value
 
     flush: ->
-        @data = {}
+        @data   = {}
         @length = 0
 
     load: (q) =>
         return null if not @options.cacheLength or not @length
         
         if @data[q]
-          return @data[q]
+            return @data[q]
         else if @options.matchSubset
-          i = q.length - 1
+            i = q.length - 1
 
-          while i >= @options.minChars
-            c = @data[q.substr(0, i)]
-            if c
-              csub = []
+            console.log '@options.minChars', @options.minChars
+            while i >= @options.minChars
+                c = @data[q.substr(0, i)]
+                if c
+                    csub = []
 
-              self = @
-              $.each c, (i, x) ->
-                csub[csub.length] = x if self.matchSubset(x.title, q)
+                    $.each c, (i, x) =>
+                        csub[csub.length] = x if @matchSubset(x.title, q)
 
-              return csub
-            i--
+                    csub
+                i--
         null
 
 module.exports = Cache
