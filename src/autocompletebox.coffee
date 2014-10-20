@@ -33,7 +33,7 @@ class AutocompleteBox extends AutocompleteAbstract
         super
         return if !@filter
 
-        if @orig.is( ':disabled' ) and !@filter.is( ':disabled' )
+        if @orig.is(':disabled') and !@filter.is(':disabled')
             @filter.attr 'disabled', 'disabled'
         else 
             @filter.removeAttr 'disabled'
@@ -41,7 +41,7 @@ class AutocompleteBox extends AutocompleteAbstract
     createClosed: ->
         $el = super
 
-        $el.on 'click', () => 
+        $el.on 'click', () =>
             if !@floater and @filter.val().length > @options.minChars
                 @open()
                 @filter.focus()

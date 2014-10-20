@@ -38,9 +38,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
     createClosed: ->
         $el = super
-
         $el.on 'click', () => @open()
-
         $el
 
     createTitle: ->
