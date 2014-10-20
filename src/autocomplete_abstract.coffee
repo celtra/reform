@@ -93,7 +93,7 @@ class AutocompleteAbstract
         @orig.after(@el).appendTo @el
 
         # Close any other open options containers
-        $( 'body' ).on 'reform.open', (e) => @close() unless e.target is @select
+        $('body').on 'reform.open', (e) => @close() unless e.target is @select
 
         # Replicate changes from the original input to the fake one
         @orig.on 'reform.sync change DOMSubtreeModified', => setTimeout @refreshState, 0
@@ -108,6 +108,9 @@ class AutocompleteAbstract
         @el.on 'filterChanged', => @handleFilterChanged()
 
         @el.on 'selectedItemChanged', => @handleSelectionChanged()
+
+        # If data-min-chars is set to 0, open results immediately
+        @el.on 'click', => @open() if @options.minChars is 0
 
         @refreshState()
 
@@ -209,13 +212,28 @@ class AutocompleteAbstract
         count = 0
         for item in data
             if @options.max > count
+                if item.isGroup
+                    $item = @createGroup item
+                else
+                    $item = @createItem item
 
-                $item = @createItem item
                 $item.appendTo $list
 
             count++
 
         $list
+
+    createGroup: (group) ->
+        $group = $ '<div></div>'
+        $group.addClass 'group'
+        $group.text group.title
+        $group.attr 'data-group', group.group
+
+        $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
+        $group.on 'click',      (e) => @handleGroupSelect $(e.target)
+        $group.on 'mouseenter', (e) => @setHover $ (e.target)
+
+        $group
 
     createItem: (item) ->
         $item = $ '<div></div>'
@@ -223,6 +241,8 @@ class AutocompleteAbstract
         $item.data 'title', item.title
         $item.data 'value', item.value
         $item.attr 'title', item.tooltip      if item.tooltip
+        $item.attr 'data-group', item.group   if item.group
+        $item.addClass 'nested'               if item.group
         $item.addClass @options.disabledClass if item.disabled
         
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
@@ -232,18 +252,22 @@ class AutocompleteAbstract
             trailingString = item.title.substring position + @filterValue.length, item.title.length
             
             highlightedText = "<strong>#{@hyphenate( text )}</strong>"
-            $item.html @hyphenate( leadingString ) + highlightedText + @hyphenate( trailingString )
+            $item.html @hyphenate(leadingString) + highlightedText + @hyphenate(trailingString)
         else 
-            $item.html @hyphenate( item.title )
+            $item.html @hyphenate(item.title)
 
         if @options.highlightSelection and @selectedItem.value?
             $item.addClass @options.selectedClass if item.value is @selectedItem.value
         
         $item.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
-        $item.on 'click',      (e) => @handleItemSelect $ (e.target)
+        $item.on 'click',      (e) => @handleItemSelect $(e.target)
         $item.on 'mouseenter', (e) => @setHover $ (e.target)
 
         $item
+
+    handleGroupSelect: ($group) ->
+        @list.find("[data-group='"+$group.data('group')+"']").toggleClass 'opened'
+        $group.toggleClass 'opened-group'
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
@@ -256,7 +280,7 @@ class AutocompleteAbstract
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
         
-        @setSelectedItem { value: $item.data( 'value' ), title: $item.data( 'title' ) }
+        @setSelectedItem { value: $item.data('value'), title: $item.data('title') }
         @close()
 
     insertList: ($list) ->
@@ -416,15 +440,33 @@ class AutocompleteAbstract
     parse: (data) ->
         parsed = []
 
-        $.each data, (num, item) =>
+        addItem = (item) =>
             parsed.push {
                 value    : item.value
                 title    : @options.formatResult and @options.formatResult(item) or item.title
+                group    : if item.group?    then item.group    else null
                 tooltip  : if item.tooltip?  then item.tooltip  else null
                 disabled : if item.disabled? then item.disabled else null
             }
 
+        if data[0].group
+            for group in @getDataGroups data
+                parsed.push { title: group, group: group, isGroup: true }
+
+                for item in data
+                    addItem item  if item['group'] is group
+        else
+            for item in data
+                addItem item
+
         parsed
+
+    getDataGroups: (data) ->
+        dataGroups = []
+        for item in data
+            dataGroups.push item.group unless item.group in dataGroups
+
+        dataGroups.sort()
 
     getData: (callback) ->
         return if !callback
@@ -497,9 +539,9 @@ class AutocompleteAbstract
         @orig.trigger 'ajaxRequestStarted'
 
         @lastXHR = $.ajax {
-            dataType    : @options.dataType
-            url         : @options.url
-            data        : params
+            dataType : @options.dataType
+            url      : @options.url
+            data     : params
             success: (data) => # 200 OK
                 @ajaxInProgress = no
                 @orig.trigger 'ajaxRequestFinished'

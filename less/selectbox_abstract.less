@@ -1,5 +1,4 @@
 &.reform-selectbox-fake {
-    
     min-height     : @height;
     padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
     position       : relative;
@@ -40,4 +39,47 @@
             .arrow-down(@disabledFontColor);
         }
     }
+}
+
+.group  {
+    position         : relative;
+    margin           : 3px 0 0 0;
+    padding          : 0 20px;
+    font-size        : 14px;
+    line-height      : 30px;
+    background-color : #eaeaea;
+    color            : #1f1f1f;
+    cursor           : pointer;
+
+    &:after {
+        position         : absolute;
+        content          : "▶";
+        top              : -1px;
+        right            : 2px;
+        font-size        : 8px;
+        font-family      : 'Impact', sans-serif;
+        font-size-adjust : 0.9;
+        color            : rgba(0, 0, 0, .5);
+    }
+
+    &.opened-group:after { content: "▼"; }
+}
+
+.nested {
+    display        : none;
+    font-size      : 10px;
+    line-height    : 12px;
+    margin         : 5px 5px;
+    padding-left   : 2 10px;
+    color          : rgba(0, 0, 0, .6);
+    text-transform : uppercase;
+
+    &:hover {
+        background-color : #e7e6f8 !important;
+        border-radius    : 20px;
+    }
+}
+
+.opened {
+    display: block;
 }

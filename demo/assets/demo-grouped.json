@@ -1,0 +1,52 @@
+[
+    {
+        "title" : "Tullamore Dew",
+        "value" : "Tullamore Dew",
+        "group" : "Blended Whiskey"
+    },
+    {
+        "title" : "Johnnie Walker",
+        "value" : "Johnnie Walker",
+        "group" : "Blended Whiskey"
+    },
+    {
+        "title" : "Glenfiddich",
+        "value" : "Glenfiddich",
+        "group" : "Single Malt"
+    },
+    {
+        "title" : "Glenmorangie",
+        "value" : "Glenmorangie",
+        "group" : "Single Malt"
+    },
+    {
+        "title" : "Ardbeg",
+        "value" : "Ardbeg",
+        "group" : "Peated whisky"
+    },
+    {
+        "title" : "Lagavulin",
+        "value" : "Lagavulin",
+        "group" : "Peated whisky"
+    },
+    {
+        "title" : "Laphroaig",
+        "value" : "Laphroaig",
+        "group" : "Peated whisky"
+    },
+    {
+        "title" : "Woodford Reserve",
+        "value" : "Woodford Reserve",
+        "group" : "Bourbon"
+    },
+    {
+        "title" : "Maker's Mark",
+        "value" : "Maker's Mark",
+        "group" : "Bourbon"
+    },
+    {
+        "title" : "Four Roses",
+        "value" : "Four Roses",
+        "group" : "Bourbon"
+    }
+]
