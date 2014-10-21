@@ -77,11 +77,12 @@ class AutocompleteAbstract
         # clear delay if data is local
         @cache = new Cache(@options) if @options.url?
 
-        @el          = null
-        @floater     = null
-        @list        = null
-        @filter      = null
-        @customClass = null
+        @el                = null
+        @floater           = null
+        @list              = null
+        @filter            = null
+        @customClass       = null
+        @matchFoundInGroup = null
 
         # extract custom classes from orig
         @initCustomClass()
@@ -209,29 +210,39 @@ class AutocompleteAbstract
 
         return if !data
 
+        # Create groups
+        for item in data
+            if item.isGroup
+                @createGroup(item).appendTo $list
+
+        # Create items
         count = 0
         for item in data
             if @options.max > count
-                if item.isGroup
-                    $item = @createGroup item
-                else
+                unless item.isGroup
                     $item = @createItem item
-
-                $item.appendTo $list
+                    if item.group
+                        # Item is nested under a group, if a group exists
+                        $item.appendTo $list.find("[data-group-id='"+encodeURIComponent(item.group)+"']")
+                    else
+                        $item.appendTo $list
 
             count++
 
         $list
 
     createGroup: (group) ->
-        $group = $ '<div></div>'
+        $group = $ "<div><span>"+group.title+"</span></div>"
+        $group.attr 'data-group-id', encodeURIComponent(group.group)
         $group.addClass 'group'
-        $group.text group.title
-        $group.attr 'data-group', group.group
 
         $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
-        $group.on 'click',      (e) => @handleGroupSelect $(e.target)
+        $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')
         $group.on 'mouseenter', (e) => @setHover $ (e.target)
+
+        # Open group
+        if @matchFoundInGroup is encodeURIComponent group.group
+            @handleGroupSelect $group
 
         $group
 
@@ -240,11 +251,10 @@ class AutocompleteAbstract
         $item.addClass @options.itemClass
         $item.data 'title', item.title
         $item.data 'value', item.value
-        $item.attr 'title', item.tooltip      if item.tooltip
-        $item.attr 'data-group', item.group   if item.group
-        $item.addClass 'nested'               if item.group
-        $item.addClass @options.disabledClass if item.disabled
-        
+        $item.attr 'title', item.tooltip                        if item.tooltip
+        $item.attr 'data-group', encodeURIComponent(item.group) if item.group
+        $item.addClass @options.disabledClass                   if item.disabled
+
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
         if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
             text           = item.title.substring position, position + @filterValue.length # extract text with original casing
@@ -253,6 +263,8 @@ class AutocompleteAbstract
             
             highlightedText = "<strong>#{@hyphenate( text )}</strong>"
             $item.html @hyphenate(leadingString) + highlightedText + @hyphenate(trailingString)
+
+            @matchFoundInGroup = $item.data 'group'
         else 
             $item.html @hyphenate(item.title)
 
@@ -266,8 +278,7 @@ class AutocompleteAbstract
         $item
 
     handleGroupSelect: ($group) ->
-        @list.find("[data-group='"+$group.data('group')+"']").toggleClass 'opened'
-        $group.toggleClass 'opened-group'
+        $group.toggleClass 'opened'
 
     handleItemSelect: ($item) ->
         return if $item.length is 0

@@ -42,44 +42,48 @@
 }
 
 .group  {
-    position         : relative;
-    margin           : 3px 0 0 0;
-    padding          : 0 20px;
-    font-size        : 14px;
-    line-height      : 30px;
-    background-color : #eaeaea;
-    color            : #1f1f1f;
-    cursor           : pointer;
+    span {
+        border-box       : border-box;
+        position         : relative;
+        display          : block;
+        margin           : 3px 0 0 0;
+        padding          : 0 20px;
+        font-size        : 14px;
+        line-height      : 30px;
+        background-color : #eaeaea;
+        color            : #1f1f1f;
+        cursor           : pointer;
 
-    &:after {
-        position         : absolute;
-        content          : "▶";
-        top              : -1px;
-        right            : 2px;
-        font-size        : 8px;
-        font-family      : 'Impact', sans-serif;
-        font-size-adjust : 0.9;
-        color            : rgba(0, 0, 0, .5);
+        &:after {
+            position         : absolute;
+            content          : "▶";
+            top              : -1px;
+            right            : 8px;
+            font-size        : 8px;
+            font-family      : 'Impact', sans-serif;
+            font-size-adjust : 0.9;
+            color            : rgba(0, 0, 0, .5);
+        }
     }
 
-    &.opened-group:after { content: "▼"; }
-}
+    &.opened span:after { content: "▼"; }
 
-.nested {
-    display        : none;
-    font-size      : 10px;
-    line-height    : 12px;
-    margin         : 5px 5px;
-    padding-left   : 2 10px;
-    color          : rgba(0, 0, 0, .6);
-    text-transform : uppercase;
+    &.opened div   { display: block; }
 
-    &:hover {
-        background-color : #e7e6f8 !important;
-        border-radius    : 20px;
+    // Group item
+    div {
+        display          : none;
+        margin           : 5px 5px;
+        padding-left     : 2 10px;
+        background-color : #ffffff;
+        line-height      : 12px;
+        font-size        : 10px;
+        color            : rgba(0, 0, 0, .6);
+        text-transform   : uppercase;
+
+        &:hover {
+            background-color : #e7e6f8 !important;
+            border-radius    : 20px;
+        }
     }
-}
-
-.opened {
-    display: block;
 }
