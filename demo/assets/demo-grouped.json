@@ -48,5 +48,10 @@
         "title" : "Four Roses",
         "value" : "Four Roses",
         "group" : "Bourbon"
+    },
+    {
+        "title" : "Big Peat",
+        "value" : "Big Peat",
+        "group" : "Peated whisky"
     }
 ]
