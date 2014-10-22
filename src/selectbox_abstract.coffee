@@ -143,7 +143,7 @@ class SelectBoxAbstract
         @height = $(document).height()
         @width = $(document).width()
         # List container
-        @$list = $("<div/>").attr("class", "reform-floater-list").addClass(@options.uiClass).appendTo @floater
+        @$list = $('<div/>').attr('class', 'reform-floater-list').addClass(@options.uiClass).appendTo @floater
 
         # Create top item for multiple selection box
         @textMultiple = ''
@@ -222,7 +222,7 @@ class SelectBoxAbstract
         @floater = $ '<div/>'
         @floater.css 'min-width', @fake.outerWidth()
         # todo: do it better
-        @floater.addClass 'reform-floater reform reform-floater-ui'
+        @floater.addClass 'reform-floater reform'
                 .addClass @customClass
                 .addClass @orig.data 'floater-class'
                 .addClass @options.uiClass
