@@ -6,6 +6,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
         @options = $.extend {
             emptySelectionText : 'Select an item...'
             emptyText          : 'No results.'
+            showArrows         : yes
 
             reformClass        : 'reform-autocompletecombobox'
             uiClass            : 'reform-autocompletecombobox-ui'
