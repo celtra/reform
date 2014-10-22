@@ -196,7 +196,6 @@ class AutocompleteAbstract
     createEmptyList: ->
         $list = $ '<div></div>'
         $list.addClass @options.listClass
-
         $list
 
     createList: (data) ->
@@ -242,7 +241,7 @@ class AutocompleteAbstract
         if @filterValue.length isnt 0
             groupsToHide = _.difference groups, groupsToOpen
             for group in groupsToHide
-                @hideGroup $list.find('[data-group-id="'+group+'"]')
+                $list.find('[data-group-id="'+group+'"]').remove()
 
         $list
 
@@ -286,8 +285,8 @@ class AutocompleteAbstract
 
         $item
 
-    handleGroupSelect: ($group) -> $group.toggleClass 'opened'
-    hideGroup: ($group) -> $group.addClass 'hidden'
+    handleGroupSelect: ($group) ->
+        $group.toggleClass 'opened'
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
