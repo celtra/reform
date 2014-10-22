@@ -1,43 +1,30 @@
 &.reform-selectbox-fake {
-    min-height     : @height;
-    padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
+    .border-box;
     position       : relative;
     display        : inline-block;
-    cursor         : pointer;
-
-    .border-box;
-
-    outline        : none;
-
-    font-size      : @fontSize;
-    color          : @fontColor;
+    min-height     : @height;
+    padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
     line-height    : @lineHeight;
+    font-size      : @fontSize;
     vertical-align : middle;
+    color          : @fontColor;
+    cursor         : pointer;
+    outline        : none;
 
     .outline(@borderColor);
     .select-disabled;
     .rounded-corners;
 
-    .selected-item {
-        overflow      : hidden;    
-        white-space   : nowrap;
-        text-overflow : ellipsis;
-    }
+    .selected-item { .ellipsis; }
 
-    &.reform-selectbox-ui.closed:after {
-        .arrow-down(@fontColor);
-    }
-    &.reform-selectbox-ui.opened:after {
-        .reform-arrow-up(@hoverBackgroundColor);
-    }
+    &.reform-selectbox-ui.closed:after { .arrow-down(@fontColor); }
+    &.reform-selectbox-ui.opened:after { .reform-arrow-up(@hoverBackgroundColor); }
 
     &.reform-selectbox-ui.disabled {
         cursor : default;
         color  : @disabledFontColor;
 
-        &:after {
-            .arrow-down(@disabledFontColor);
-        }
+        &:after { .arrow-down(@disabledFontColor); }
     }
 }
 
@@ -64,7 +51,7 @@
             top              : -1px;
             right            : 8px;
             font-size        : 8px;
-            font-family      : 'Impact', sans-serif;
+            font-family      : 'Arial', sans-serif;
             font-size-adjust : 0.9;
             color            : rgba(0, 0, 0, .5);
         }
@@ -85,8 +72,8 @@
         text-transform   : uppercase;
 
         &:hover {
+            .rounded-corners(20px);
             background-color : #e7e6f8 !important;
-            border-radius    : 20px;
         }
     }
 }

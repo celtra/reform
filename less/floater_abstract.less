@@ -1,15 +1,14 @@
 &.reform-floater {
-    z-index    : 20;
-    display    : block;
-    position   : absolute;
-    overflow   : hidden;
-    max-width  : 200px;
-    background : @backgroundColor;
     .border-box;
-
+    position    : absolute;
+    z-index     : 20;
+    display     : block;
+    overflow    : hidden;
+    max-width   : 200px;
+    line-height : @lineHeight;
+    background  : @backgroundColor;
     font-size   : @fontSize;
     color       : @fontColor;
-    line-height : @lineHeight;
 
     .outline(@borderColor);
     .rounded-corners;
@@ -20,13 +19,10 @@
         overflow-y : auto;
 
         .reform-floater-item {
-            padding       : @paddingVertical @paddingHorizontal; 
-            cursor        : pointer;
             .border-box;
-            overflow      : hidden;
-
-            white-space   : nowrap;
-            text-overflow : ellipsis;
+            .ellipsis;
+            padding : @paddingVertical @paddingHorizontal;
+            cursor  : pointer;
              
             &.hover {
                 background : @hoverBackgroundColor;
@@ -43,19 +39,17 @@
                 color      : @disabledFontColor;
                 background : @disabledBackgroundColor;
 
-                &.hover {
-                    background: inherit;
-                }
+                &.hover { background: inherit; }
             }
         }
     }
 }
 
 &.reform-floater-overlay {
+    position : fixed;
+    z-index  : 10
     top      : 0;
     bottom   : 0;
     left     : 0;
     right    : 0;
-    position : fixed;
-    z-index  : 10
 }
