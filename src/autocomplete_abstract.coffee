@@ -1,5 +1,6 @@
 window.$   ?= require "jquery-commonjs"
 Cache       = require "./cache"
+_           = require "underscore"
 
 class AutocompleteAbstract
 
@@ -24,15 +25,12 @@ class AutocompleteAbstract
             caseSensitive      : no
             highlightTitles    : yes
             highlightSelection : yes
-            showArrows         : yes
             hyphenate          : yes       # will break long strings if true
             exactMatch         : no        # will not filter dropdown data if true
             title              : null      # preset selected title
             placeholderText    : 'Type to search...'
 
             # custom classes
-            reformClass        : 'reform-autocomplete'
-            uiClass            : 'reform-autocomplete-ui'
             fakeClass          : 'reform-autocomplete-fake'
             filterClass        : 'reform-autocomplete-filter'
             emptyClass         : 'reform-autocomplete-empty'
@@ -65,7 +63,7 @@ class AutocompleteAbstract
         @options.exactMatch      = @options.matchAll    unless !@options.matchAll
         @options.placeholderText = @options.placeholder unless !@options.placeholder
         @options.showArrows      = @options.arrow       unless !@options.arrow
-        
+
         # set initial state
         @data = []
         if @options.title? then @filterValue = @options.title else @filterValue = ''
@@ -77,12 +75,11 @@ class AutocompleteAbstract
         # clear delay if data is local
         @cache = new Cache(@options) if @options.url?
 
-        @el                = null
-        @floater           = null
-        @list              = null
-        @filter            = null
-        @customClass       = null
-        @matchFoundInGroup = null
+        @el          = null
+        @floater     = null
+        @list        = null
+        @filter      = null
+        @customClass = null
 
         # extract custom classes from orig
         @initCustomClass()
@@ -140,10 +137,10 @@ class AutocompleteAbstract
             @insertList $list
 
     handleDisabledToggle: ->
-        if @orig.is( ':disabled' ) and !@el.hasClass( ':disabled' )
+        if @orig.is(':disabled') and !@el.hasClass(':disabled')
             @close()
             @el.addClass @options.disabledClass
-        else if !@orig.is( ':disabled' ) and !@el.hasClass( ':disabled' )
+        else if !@orig.is(':disabled') and !@el.hasClass(':disabled')
             @el.removeClass @options.disabledClass
 
     setFilterValue: (value) ->
@@ -162,7 +159,7 @@ class AutocompleteAbstract
 
     createClosed: ->
         $el = $ '<div/>'
-        $el.addClass 'reform'           # todo: do it better
+        $el.addClass 'reform'
         $el.addClass @customClass
         $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
@@ -175,7 +172,7 @@ class AutocompleteAbstract
 
     createFloater: ->
         $floater = $ '<div/>'
-        $floater.addClass 'reform'                  # todo: do it better
+        $floater.addClass 'reform'
         $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
@@ -211,16 +208,21 @@ class AutocompleteAbstract
         return if !data
 
         # Create groups
+        groups = []
         for item in data
             if item.isGroup
-                @createGroup(item).appendTo $list
+                $group = @createGroup item
+                groups.push encodeURIComponent item.group
+                $group.appendTo $list
 
         # Create items
         count = 0
+        listItems = []
         for item in data
             if @options.max > count
                 unless item.isGroup
                     $item = @createItem item
+                    listItems.push item
                     if item.group
                         # Item is nested under a group, if a group exists
                         $item.appendTo $list.find("[data-group-id='"+encodeURIComponent(item.group)+"']")
@@ -228,6 +230,22 @@ class AutocompleteAbstract
                         $item.appendTo $list
 
             count++
+
+        # Open groups
+        groupsToOpen = [] # set of groups with matches
+        for item in listItems
+            position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
+            if @filterValue.length isnt 0 and position isnt -1
+                group = encodeURIComponent item.group
+                unless group in groupsToOpen
+                    groupsToOpen.push group
+                    @handleGroupSelect $list.find('[data-group-id="'+group+'"]')
+
+        # Hide groups that does not contain a matching string
+        if @filterValue.length isnt 0
+            groupsToHide = _.difference groups, groupsToOpen
+            for group in groupsToHide
+                @hideGroup $list.find('[data-group-id="'+group+'"]')
 
         $list
 
@@ -239,10 +257,6 @@ class AutocompleteAbstract
         $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
         $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')
         $group.on 'mouseenter', (e) => @setHover $ (e.target)
-
-        # Open group
-        if @matchFoundInGroup is encodeURIComponent group.group
-            @handleGroupSelect $group
 
         $group
 
@@ -263,9 +277,7 @@ class AutocompleteAbstract
             
             highlightedText = "<strong>#{@hyphenate( text )}</strong>"
             $item.html @hyphenate(leadingString) + highlightedText + @hyphenate(trailingString)
-
-            @matchFoundInGroup = $item.data 'group'
-        else 
+        else
             $item.html @hyphenate(item.title)
 
         if @options.highlightSelection and @selectedItem.value?
@@ -277,8 +289,8 @@ class AutocompleteAbstract
 
         $item
 
-    handleGroupSelect: ($group) ->
-        $group.toggleClass 'opened'
+    handleGroupSelect: ($group) -> $group.toggleClass 'opened'
+    hideGroup: ($group) -> $group.addClass 'hidden'
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
@@ -316,7 +328,7 @@ class AutocompleteAbstract
         @floater = @createFloater()
 
         $overlay = $ '<div></div>'
-        $overlay.addClass 'reform'          # todo: do it better
+        $overlay.addClass 'reform'
         $overlay.addClass @options.overlayClass
         $overlay.addClass @customClass
 
