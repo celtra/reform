@@ -24,6 +24,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
         @el.append @filter
 
+        # If data-min-chars is set to 0, open results immediately
+        @el.on 'click', => @open() if @options.minChars is 0
+
     handleSelectionChanged: ->
         @filter.val @selectedItem.title
 

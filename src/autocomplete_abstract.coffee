@@ -107,9 +107,6 @@ class AutocompleteAbstract
 
         @el.on 'selectedItemChanged', => @handleSelectionChanged()
 
-        # If data-min-chars is set to 0, open results immediately
-        @el.on 'click', => @open() if @options.minChars is 0
-
         @refreshState()
 
     initCustomClass: ->
