@@ -249,7 +249,7 @@ class AutocompleteAbstract
     createGroup: (group) ->
         $group = $ "<div><span>"+group.title+"</span></div>"
         $group.attr 'data-group-id', encodeURIComponent(group.group)
-        $group.addClass 'group'
+        $group.addClass 'reform-group'
 
         $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
         $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')

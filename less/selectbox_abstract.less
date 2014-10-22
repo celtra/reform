@@ -28,8 +28,7 @@
     }
 }
 
-.group  {
-    // Group
+.reform-group  {
     display: block;
     &.hidden { display: none; }
 
@@ -61,19 +60,16 @@
     &.opened div { display: block; }
 
     // Group item
-    div {
+    .reform-floater-item {
         display          : none;
         margin           : 5px 5px;
-        padding-left     : 2 10px;
+        padding-left     : 0 10px;
         background-color : #ffffff;
         line-height      : 12px;
         font-size        : 10px;
         color            : rgba(0, 0, 0, .6);
         text-transform   : uppercase;
 
-        &:hover {
-            .rounded-corners(20px);
-            background-color : #e7e6f8 !important;
-        }
+        &.hover { .rounded-corners(20px); }
     }
 }
