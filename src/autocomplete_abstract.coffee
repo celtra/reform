@@ -227,7 +227,7 @@ class AutocompleteAbstract
 
             count++
 
-        # Open groups
+        # Open groups that contain a matching string
         groupsToOpen = [] # set of groups with matches
         for item in listItems
             position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
@@ -237,7 +237,7 @@ class AutocompleteAbstract
                     groupsToOpen.push group
                     @handleGroupSelect $list.find('[data-group-id="'+group+'"]')
 
-        # Hide groups that does not contain a matching string
+        # Remove groups that does not contain a matching string
         if @filterValue.length isnt 0
             groupsToHide = _.difference groups, groupsToOpen
             for group in groupsToHide
