@@ -73,16 +73,15 @@
             ];
 
             $(document).ready(function() {
-                // $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
-                // $('#autocomplete-grouped-results').trigger("reform.fill", [inlineGroupedData]);
-                // $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+                $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
+                $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
             });
         </script>
 
     </head>
     <body>
         
-        <!-- <h3>Check boxes</h3>
+        <h3>Check boxes</h3>
         
         <div>
             <input class="reform-checkbox reform-pure" type="checkbox">
@@ -192,11 +191,9 @@
 
         <h3>Autocomplete Inline</h3>
 
-        -->
-
         <div>
         
-            <!-- <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
+            <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
 
             <input class="reform-autocompletebox reform-pure" type="text" disabled />
 
@@ -208,10 +205,10 @@
             <h3>Autocomplete Combobox</h3>
             <input id="autocompletecombobox" class="reform-autocompletecombobox reform-pure" />
 
-            <input class="reform-autocompletecombobox reform-pure" disabled /> -->
+            <input class="reform-autocompletecombobox reform-pure" disabled />
 
             <h3>Autocomplete with grouped options</h3>
-            <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-url="assets/demo-grouped.json" data-min-chars="3" />
+            <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-url="assets/demo-grouped.json" data-min-chars="0" />
 
         </div>
 

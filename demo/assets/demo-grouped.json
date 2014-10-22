@@ -1,62 +1,62 @@
 [
     {
         "title" : "Ardbeg Shitty Edition",
-        "value" : "Ardbeg Shitty Edition",
+        "value" : 40,
         "group" : "Blended Whiskey"
     },
     {
         "title" : "Tullamore Dew",
-        "value" : "Tullamore Dew",
+        "value" : 25,
         "group" : "Blended Whiskey"
     },
     {
         "title" : "Johnnie Walker",
-        "value" : "Johnnie Walker",
+        "value" : 27,
         "group" : "Blended Whiskey"
     },
     {
         "title" : "Glenfiddich",
-        "value" : "Glenfiddich",
+        "value" : 42,
         "group" : "Single Malt"
     },
     {
         "title" : "Glenmorangie",
-        "value" : "Glenmorangie",
+        "value" : 45,
         "group" : "Single Malt"
     },
     {
         "title" : "Ardbeg",
-        "value" : "Ardbeg",
+        "value" : 49,
         "group" : "Peated whisky"
     },
     {
         "title" : "Lagavulin",
-        "value" : "Lagavulin",
+        "value" : 42,
         "group" : "Peated whisky"
     },
     {
         "title" : "Laphroaig",
-        "value" : "Laphroaig",
+        "value" : 44,
         "group" : "Peated whisky"
     },
     {
         "title" : "Woodford Reserve",
-        "value" : "Woodford Reserve",
+        "value" : 39,
         "group" : "Bourbon"
     },
     {
         "title" : "Maker's Mark",
-        "value" : "Maker's Mark",
+        "value" : 37,
         "group" : "Bourbon"
     },
     {
         "title" : "Four Roses",
-        "value" : "Four Roses",
+        "value" : 32,
         "group" : "Bourbon"
     },
     {
         "title" : "Big Peat",
-        "value" : "Big Peat",
+        "value" : 44,
         "group" : "Peated whisky"
     }
 ]
