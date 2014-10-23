@@ -34,9 +34,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
     handleDisabledToggle: =>
         super
-        return if !@filter
+        return if not @filter
 
-        if @orig.is(':disabled') and !@filter.is(':disabled')
+        if @orig.is(':disabled') and not @filter.is(':disabled')
             @filter.attr 'disabled', 'disabled'
         else 
             @filter.removeAttr 'disabled'

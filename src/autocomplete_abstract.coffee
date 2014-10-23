@@ -231,28 +231,29 @@ class AutocompleteAbstract
         groupsToOpen = [] # set of groups with matches
         for item in listItems
             position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
-            if @filterValue.length isnt 0 and position isnt -1
+            if @filterValue.length and position isnt -1
                 group = encodeURIComponent item.group
                 unless group in groupsToOpen
                     groupsToOpen.push group
                     @handleGroupSelect $list.find('[data-group-id="'+group+'"]')
 
         # Remove groups that does not contain a matching string
-        if @filterValue.length isnt 0
-            groupsToHide = _.difference groups, groupsToOpen
+        if @filterValue.length
+            groupsToHide = groups.filter (group) -> groupsToOpen.indexOf(group) < 0
+
             for group in groupsToHide
                 $list.find('[data-group-id="'+group+'"]').remove()
 
         $list
 
     createGroup: (group) ->
-        $group = $ "<div><span>"+group.title+"</span></div>"
+        $group = $ "<div><span>#{group.title}</span></div>"
         $group.attr 'data-group-id', encodeURIComponent(group.group)
         $group.addClass 'reform-group'
 
         $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
         $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')
-        $group.on 'mouseenter', (e) => @setHover $ (e.target)
+        $group.on 'mouseenter', (e) => @setHover $(e.target)
 
         $group
 
@@ -266,7 +267,7 @@ class AutocompleteAbstract
         $item.addClass @options.disabledClass                   if item.disabled
 
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
-        if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
+        if @options.highlightTitles and @filterValue.length and position isnt -1
             text           = item.title.substring position, position + @filterValue.length # extract text with original casing
             leadingString  = item.title.substring 0, position
             trailingString = item.title.substring position + @filterValue.length, item.title.length
@@ -281,7 +282,7 @@ class AutocompleteAbstract
         
         $item.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
         $item.on 'click',      (e) => @handleItemSelect $(e.target)
-        $item.on 'mouseenter', (e) => @setHover $ (e.target)
+        $item.on 'mouseenter', (e) => @setHover $(e.target)
 
         $item
 
@@ -470,7 +471,7 @@ class AutocompleteAbstract
 
         if data[0].group
             for group in @getDataGroups data
-                parsed.push { title: group, group: group, isGroup: true }
+                parsed.push { title: group, group: group, isGroup: yes }
 
                 for item in data
                     addItem item  if item['group'] is group
