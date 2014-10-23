@@ -40,6 +40,7 @@ class AutocompleteAbstract
             hoverClass         : 'hover'
             selectedClass      : 'selected'
             floaterClass       : 'reform-floater'
+            groupClass         : 'reform-group'
             listClass          : 'reform-floater-list'
             itemClass          : 'reform-floater-item'
             overlayClass       : 'reform-floater-overlay'
@@ -249,7 +250,7 @@ class AutocompleteAbstract
     createGroup: (group) ->
         $group = $ "<div><span>#{group.title}</span></div>"
         $group.attr 'data-group-id', encodeURIComponent(group.group)
-        $group.addClass 'reform-group'
+        $group.addClass @options.groupClass
 
         $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
         $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')
