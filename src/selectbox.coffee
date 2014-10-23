@@ -10,7 +10,7 @@ class SelectBox extends SelectBoxAbstract
         super @select, @options
 
     createItemContent: ($option) ->
-        $option.text()
+        $('<div/>').text($option.text()).html()
 
     createClosedItem: ->
         # Automatically choose a title
