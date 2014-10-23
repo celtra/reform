@@ -222,7 +222,7 @@ class SelectBoxAbstract
         @floater = $ '<div/>'
         @floater.css 'min-width', @fake.outerWidth()
         # todo: do it better
-        @floater.addClass 'reform-floater reform'
+        @floater.addClass 'reform-floater reform reform-floater-ui'
                 .addClass @customClass
                 .addClass @orig.data 'floater-class'
                 .addClass @options.uiClass
