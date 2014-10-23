@@ -10,6 +10,7 @@ class SelectBox extends SelectBoxAbstract
         super @select, @options
 
     createItemContent: ($option) ->
+        # jQuery.html() uses innerHTML to do native html escaping
         $('<div/>').text($option.text()).html()
 
     createClosedItem: ->
