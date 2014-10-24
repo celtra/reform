@@ -14,38 +14,26 @@
         }
 
         &.disabled {
-            span, p {
-                color: @disabledFontColor !important;
-            }
+            span, p { color: @disabledFontColor !important; }
 
-            &:after {
-                .arrow-down(@disabledFontColor, 7px, 12px);
-            }
+            &:after { .arrow-down(@disabledFontColor, 7px, 12px); }
         }
     }
 
     &.reform-selectbox-fake .selected-item, .reform-floater-item {
-        p, span {
-            white-space   : nowrap;
-            text-overflow : ellipsis;
-            overflow      : hidden;
-        }
+        p, span { .ellipsis; }
 
         p {
-            font-size   : @fontSize + 3;
-            margin      : 0;
+            font-size : @fontSize + 3;
+            margin    : 0;
         }
 
         span {
-            font-size   : @fontSize - 1;
-            color       : #aaa;
+            font-size : @fontSize - 1;
+            color     : #aaaaaa;
         }
 
-        &.disabled {
-            span, p {
-                color: @disabledFontColor;
-            }
-        }
+        &.disabled span, &.disabled p { color: @disabledFontColor; }
     }
 
     &.reform-floater .reform-floater-list .reform-floater-item {

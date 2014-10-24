@@ -6,6 +6,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
         @options = $.extend {
             emptySelectionText : 'Select an item...'
             emptyText          : 'No results.'
+            showArrows         : yes
 
             reformClass        : 'reform-autocompletecombobox'
             uiClass            : 'reform-autocompletecombobox-ui'
@@ -38,9 +39,7 @@ class AutocompleteCombobox extends AutocompleteAbstract
 
     createClosed: ->
         $el = super
-
         $el.on 'click', () => @open()
-
         $el
 
     createTitle: ->

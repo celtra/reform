@@ -24,6 +24,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
         @el.append @filter
 
+        # If data-min-chars is set to 0, open results immediately
+        @el.on 'click', => @open() if @options.minChars is 0
+
     handleSelectionChanged: ->
         @filter.val @selectedItem.title
 
@@ -31,9 +34,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
     handleDisabledToggle: =>
         super
-        return if !@filter
+        return if not @filter
 
-        if @orig.is( ':disabled' ) and !@filter.is( ':disabled' )
+        if @orig.is(':disabled') and not @filter.is(':disabled')
             @filter.attr 'disabled', 'disabled'
         else 
             @filter.removeAttr 'disabled'
@@ -41,7 +44,7 @@ class AutocompleteBox extends AutocompleteAbstract
     createClosed: ->
         $el = super
 
-        $el.on 'click', () => 
+        $el.on 'click', () =>
             if !@floater and @filter.val().length > @options.minChars
                 @open()
                 @filter.focus()

@@ -1,5 +1,6 @@
 window.$   ?= require "jquery-commonjs"
 Cache       = require "./cache"
+_           = require "underscore"
 
 class AutocompleteAbstract
 
@@ -24,15 +25,12 @@ class AutocompleteAbstract
             caseSensitive      : no
             highlightTitles    : yes
             highlightSelection : yes
-            showArrows         : yes
             hyphenate          : yes       # will break long strings if true
             exactMatch         : no        # will not filter dropdown data if true
             title              : null      # preset selected title
             placeholderText    : 'Type to search...'
 
             # custom classes
-            reformClass        : 'reform-autocomplete'
-            uiClass            : 'reform-autocomplete-ui'
             fakeClass          : 'reform-autocomplete-fake'
             filterClass        : 'reform-autocomplete-filter'
             emptyClass         : 'reform-autocomplete-empty'
@@ -42,6 +40,7 @@ class AutocompleteAbstract
             hoverClass         : 'hover'
             selectedClass      : 'selected'
             floaterClass       : 'reform-floater'
+            groupClass         : 'reform-group'
             listClass          : 'reform-floater-list'
             itemClass          : 'reform-floater-item'
             overlayClass       : 'reform-floater-overlay'
@@ -65,7 +64,7 @@ class AutocompleteAbstract
         @options.exactMatch      = @options.matchAll    unless !@options.matchAll
         @options.placeholderText = @options.placeholder unless !@options.placeholder
         @options.showArrows      = @options.arrow       unless !@options.arrow
-        
+
         # set initial state
         @data = []
         if @options.title? then @filterValue = @options.title else @filterValue = ''
@@ -93,7 +92,7 @@ class AutocompleteAbstract
         @orig.after(@el).appendTo @el
 
         # Close any other open options containers
-        $( 'body' ).on 'reform.open', (e) => @close() unless e.target is @select
+        $('body').on 'reform.open', (e) => @close() unless e.target is @select
 
         # Replicate changes from the original input to the fake one
         @orig.on 'reform.sync change DOMSubtreeModified', => setTimeout @refreshState, 0
@@ -136,10 +135,10 @@ class AutocompleteAbstract
             @insertList $list
 
     handleDisabledToggle: ->
-        if @orig.is( ':disabled' ) and !@el.hasClass( ':disabled' )
+        if @orig.is(':disabled') and !@el.hasClass(':disabled')
             @close()
             @el.addClass @options.disabledClass
-        else if !@orig.is( ':disabled' ) and !@el.hasClass( ':disabled' )
+        else if !@orig.is(':disabled') and !@el.hasClass(':disabled')
             @el.removeClass @options.disabledClass
 
     setFilterValue: (value) ->
@@ -158,7 +157,7 @@ class AutocompleteAbstract
 
     createClosed: ->
         $el = $ '<div/>'
-        $el.addClass 'reform'           # todo: do it better
+        $el.addClass 'reform'
         $el.addClass @customClass
         $el.addClass @options.uiClass
         $el.addClass @options.fakeClass
@@ -171,7 +170,7 @@ class AutocompleteAbstract
 
     createFloater: ->
         $floater = $ '<div/>'
-        $floater.addClass 'reform'                  # todo: do it better
+        $floater.addClass 'reform'
         $floater.addClass @customClass
         $floater.addClass @options.uiClass
         $floater.addClass @options.floaterClass
@@ -198,7 +197,6 @@ class AutocompleteAbstract
     createEmptyList: ->
         $list = $ '<div></div>'
         $list.addClass @options.listClass
-
         $list
 
     createList: (data) ->
@@ -206,44 +204,91 @@ class AutocompleteAbstract
 
         return if !data
 
+        # Create groups
+        groups = []
+        for item in data
+            if item.isGroup
+                $group = @createGroup item
+                groups.push encodeURIComponent item.group
+                $group.appendTo $list
+
+        # Create items
         count = 0
+        listItems = []
         for item in data
             if @options.max > count
-
-                $item = @createItem item
-                $item.appendTo $list
+                unless item.isGroup
+                    $item = @createItem item
+                    listItems.push item
+                    if item.group
+                        # Item is nested under a group, if a group exists
+                        $item.appendTo $list.find("[data-group-id='"+encodeURIComponent(item.group)+"']")
+                    else
+                        $item.appendTo $list
 
             count++
 
+        # Open groups that contain a matching string
+        groupsToOpen = [] # set of groups with matches
+        for item in listItems
+            position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
+            if @filterValue.length and position isnt -1
+                group = encodeURIComponent item.group
+                unless group in groupsToOpen
+                    groupsToOpen.push group
+                    @handleGroupSelect $list.find('[data-group-id="'+group+'"]')
+
+        # Remove groups that does not contain a matching string
+        if @filterValue.length
+            groupsToHide = groups.filter (group) -> groupsToOpen.indexOf(group) < 0
+
+            for group in groupsToHide
+                $list.find('[data-group-id="'+group+'"]').remove()
+
         $list
+
+    createGroup: (group) ->
+        $group = $ "<div><span>#{group.title}</span></div>"
+        $group.attr 'data-group-id', encodeURIComponent(group.group)
+        $group.addClass @options.groupClass
+
+        $group.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
+        $group.on 'click',      (e) => @handleGroupSelect $(e.target).closest('div')
+        $group.on 'mouseenter', (e) => @setHover $(e.target)
+
+        $group
 
     createItem: (item) ->
         $item = $ '<div></div>'
         $item.addClass @options.itemClass
         $item.data 'title', item.title
         $item.data 'value', item.value
-        $item.attr 'title', item.tooltip      if item.tooltip
-        $item.addClass @options.disabledClass if item.disabled
-        
+        $item.attr 'title', item.tooltip                        if item.tooltip
+        $item.attr 'data-group', encodeURIComponent(item.group) if item.group
+        $item.addClass @options.disabledClass                   if item.disabled
+
         position = item.title.toLowerCase().indexOf @filterValue.toLowerCase()
-        if @options.highlightTitles and @filterValue.length isnt 0 and position isnt -1
+        if @options.highlightTitles and @filterValue.length and position isnt -1
             text           = item.title.substring position, position + @filterValue.length # extract text with original casing
             leadingString  = item.title.substring 0, position
             trailingString = item.title.substring position + @filterValue.length, item.title.length
             
             highlightedText = "<strong>#{@hyphenate( text )}</strong>"
-            $item.html @hyphenate( leadingString ) + highlightedText + @hyphenate( trailingString )
-        else 
-            $item.html @hyphenate( item.title )
+            $item.html @hyphenate(leadingString) + highlightedText + @hyphenate(trailingString)
+        else
+            $item.html @hyphenate(item.title)
 
         if @options.highlightSelection and @selectedItem.value?
             $item.addClass @options.selectedClass if item.value is @selectedItem.value
         
         $item.on 'mousedown',  (e) -> e.preventDefault() # Prevent text selection
-        $item.on 'click',      (e) => @handleItemSelect $ (e.target)
-        $item.on 'mouseenter', (e) => @setHover $ (e.target)
+        $item.on 'click',      (e) => @handleItemSelect $(e.target)
+        $item.on 'mouseenter', (e) => @setHover $(e.target)
 
         $item
+
+    handleGroupSelect: ($group) ->
+        $group.toggleClass 'opened'
 
     handleItemSelect: ($item) ->
         return if $item.length is 0
@@ -256,7 +301,7 @@ class AutocompleteAbstract
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
         
-        @setSelectedItem { value: $item.data( 'value' ), title: $item.data( 'title' ) }
+        @setSelectedItem { value: $item.data('value'), title: $item.data('title') }
         @close()
 
     insertList: ($list) ->
@@ -288,7 +333,7 @@ class AutocompleteAbstract
         @floater = @createFloater()
 
         $overlay = $ '<div></div>'
-        $overlay.addClass 'reform'          # todo: do it better
+        $overlay.addClass 'reform'
         $overlay.addClass @options.overlayClass
         $overlay.addClass @customClass
 
@@ -423,15 +468,33 @@ class AutocompleteAbstract
     parse: (data) ->
         parsed = []
 
-        $.each data, (num, item) =>
+        addItem = (item) =>
             parsed.push {
                 value    : item.value
                 title    : @options.formatResult and @options.formatResult(item) or item.title
+                group    : if item.group?    then item.group    else null
                 tooltip  : if item.tooltip?  then item.tooltip  else null
                 disabled : if item.disabled? then item.disabled else null
             }
 
+        if data[0].group
+            for group in @getDataGroups data
+                parsed.push { title: group, group: group, isGroup: yes }
+
+                for item in data
+                    addItem item  if item['group'] is group
+        else
+            for item in data
+                addItem item
+
         parsed
+
+    getDataGroups: (data) ->
+        dataGroups = []
+        for item in data
+            dataGroups.push item.group unless item.group in dataGroups
+
+        dataGroups.sort()
 
     getData: (callback) ->
         return if !callback
@@ -504,9 +567,9 @@ class AutocompleteAbstract
         @orig.trigger 'ajaxRequestStarted'
 
         @lastXHR = $.ajax {
-            dataType    : @options.dataType
-            url         : @options.url
-            data        : params
+            dataType : @options.dataType
+            url      : @options.url
+            data     : params
             success: (data) => # 200 OK
                 @ajaxInProgress = no
                 @orig.trigger 'ajaxRequestFinished'
