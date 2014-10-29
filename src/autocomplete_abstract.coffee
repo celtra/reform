@@ -1,6 +1,5 @@
 window.$   ?= require "jquery-commonjs"
 Cache       = require "./cache"
-_           = require "underscore"
 
 class AutocompleteAbstract
 
