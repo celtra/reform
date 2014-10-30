@@ -28,6 +28,7 @@ class AutocompleteAbstract
             exactMatch         : no        # will not filter dropdown data if true
             title              : null      # preset selected title
             placeholderText    : 'Type to search...'
+            dataIsGrouped      : no
 
             # custom classes
             fakeClass          : 'reform-autocomplete-fake'
@@ -477,6 +478,7 @@ class AutocompleteAbstract
             }
 
         if data[0].group
+            @options.dataIsGrouped = true
             for group in @getDataGroups data
                 parsed.push { title: group, group: group, isGroup: yes }
 
@@ -510,18 +512,20 @@ class AutocompleteAbstract
         # filter local collection
         for item in @data
             # can match all, usefull for custom requests
-            if not @options.exactMatch and @filterValue?    
-                title = item.title
-                filterValue = @filterValue
+            if not @options.dataIsGrouped
+                if not @options.exactMatch and @filterValue?
+                    title = item.title
+                    filterValue = @filterValue
 
-                if not @options.caseSensitive
-                    title = title.toLowerCase()
-                    filterValue = filterValue.toLowerCase()
-                
-                if title.indexOf(filterValue) isnt -1
+                    if not @options.caseSensitive
+                        title = title.toLowerCase()
+                        filterValue = filterValue.toLowerCase()
+                    
+                    if title.indexOf(filterValue) isnt -1
+                        filteredData.push item
+                else
                     filteredData.push item
-
-            else 
+            else
                 filteredData.push item
 
         filteredData
@@ -547,7 +551,7 @@ class AutocompleteAbstract
             for key, param in @options.customParams
                 customParams[key] = if typeof param is 'function' then param() else param
 
-            $.extend params, customParams        
+            $.extend params, customParams
 
         fetchDataCallback = () =>
             @fetchData params, (data) =>
