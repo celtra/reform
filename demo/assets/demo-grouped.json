@@ -12,6 +12,11 @@
         "group" : "Blended Whiskey"
     },
     {
+        "title" : "Tullamore Dew Limited Edition",
+        "value" : 25,
+        "group" : "Blended Whiskey"
+    },
+    {
         "title" : "Johnnie Walker",
         "value" : 27,
         "group" : "Blended Whiskey"
