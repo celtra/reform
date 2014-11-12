@@ -14,8 +14,6 @@
     AutocompleteAbstract.prototype.KEY = {
       UP: 38,
       DOWN: 40,
-      RIGHT: 39,
-      LEFT: 37,
       DEL: 46,
       RETURN: 13,
       ESC: 27,
@@ -1610,7 +1608,7 @@
 
     SelectBoxAbstract.prototype.scrollTo = function($item) {
       var $container, newScrollTop, scrollTop;
-      $container = $item.parent();
+      $container = this.list;
       newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop();
       this.ignoreMouse = true;
       if (newScrollTop > ($container.outerHeight() - $item.outerHeight())) {
