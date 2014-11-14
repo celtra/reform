@@ -441,7 +441,7 @@
     };
 
     AutocompleteAbstract.prototype.open = function() {
-      var $body, $overlay;
+      var $body, $overlay, pos, posTopAfterAnimation;
       if ((this.floater != null) || this.el.hasClass(this.options.disabledClass)) {
         return;
       }
@@ -458,7 +458,14 @@
       })(this));
       this.list = this.createEmptyList();
       this.list.appendTo(this.floater);
-      this.floater.css(this.getFloaterPosition());
+      pos = this.getFloaterPosition();
+      this.floater.css(pos);
+      if (this.orig.data('shift')) {
+        posTopAfterAnimation = pos.top + parseInt(this.orig.data('shift'));
+        this.floater.animate({
+          top: posTopAfterAnimation
+        }, 200);
+      }
       $body = $('body');
       $body.append($overlay);
       $body.append(this.floater);
