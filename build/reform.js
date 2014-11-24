@@ -1,7 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function() {
   var AutocompleteAbstract, Cache,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   if (window.$ == null) {
     window.$ = require("jquery-commonjs");
@@ -33,13 +34,10 @@
         caseSensitive: false,
         highlightTitles: true,
         highlightSelection: true,
-        showArrows: true,
         hyphenate: true,
         exactMatch: false,
         title: null,
         placeholderText: 'Type to search...',
-        reformClass: 'reform-autocomplete',
-        uiClass: 'reform-autocomplete-ui',
         fakeClass: 'reform-autocomplete-fake',
         filterClass: 'reform-autocomplete-filter',
         emptyClass: 'reform-autocomplete-empty',
@@ -49,12 +47,13 @@
         hoverClass: 'hover',
         selectedClass: 'selected',
         floaterClass: 'reform-floater',
+        groupClass: 'reform-group',
         listClass: 'reform-floater-list',
         itemClass: 'reform-floater-item',
         overlayClass: 'reform-floater-overlay'
       };
       this.orig = $(this.select);
-      if (this.orig.is(".reformed")) {
+      if (this.orig.is('.reformed')) {
         return;
       }
       inlineOptions = this.orig.data();
@@ -105,26 +104,26 @@
       this.customClass = null;
       this.initCustomClass();
       this.el = this.createClosed();
-      this.orig.hide().attr("class", "reformed");
+      this.orig.hide().attr('class', 'reformed');
       this.orig.after(this.el).appendTo(this.el);
-      $('body').on("reform.open", (function(_this) {
+      $('body').on('reform.open', (function(_this) {
         return function(e) {
           if (e.target !== _this.select) {
             return _this.close();
           }
         };
       })(this));
-      this.orig.on("reform.sync change DOMSubtreeModified", (function(_this) {
+      this.orig.on('reform.sync change DOMSubtreeModified', (function(_this) {
         return function() {
           return setTimeout(_this.refreshState, 0);
         };
       })(this));
-      this.orig.on("reform.close", (function(_this) {
+      this.orig.on('reform.close', (function(_this) {
         return function(e) {
           return _this.close();
         };
       })(this));
-      this.orig.on("reform.fill", (function(_this) {
+      this.orig.on('reform.fill', (function(_this) {
         return function(e, data) {
           return _this.handleDataFill(data);
         };
@@ -206,12 +205,12 @@
 
     AutocompleteAbstract.prototype.createClosed = function() {
       var $el;
-      $el = $("<div/>");
+      $el = $('<div/>');
       $el.addClass('reform');
       $el.addClass(this.customClass);
       $el.addClass(this.options.uiClass);
       $el.addClass(this.options.fakeClass);
-      if (this.orig.is(":disabled")) {
+      if (this.orig.is(':disabled')) {
         $el.addClass(this.options.disabledClass);
       }
       if (this.options.showArrows) {
@@ -222,17 +221,17 @@
 
     AutocompleteAbstract.prototype.createFloater = function() {
       var $floater;
-      $floater = $("<div/>");
+      $floater = $('<div/>');
       $floater.addClass('reform');
       $floater.addClass(this.customClass);
       $floater.addClass(this.options.uiClass);
       $floater.addClass(this.options.floaterClass);
-      return $floater.css("min-width", this.el.outerWidth());
+      return $floater.css('min-width', this.el.outerWidth());
     };
 
     AutocompleteAbstract.prototype.createFilter = function() {
       var $filter;
-      $filter = $("<input/>");
+      $filter = $('<input/>');
       $filter.addClass(this.options.filterClass);
       if (this.orig.is(':disabled')) {
         $filter.attr('disabled', 'disabled');
@@ -245,12 +244,12 @@
           return _this.handleFilterBlur();
         };
       })(this));
-      $filter.on("keyup.autocomplete", (function(_this) {
+      $filter.on('keyup.autocomplete', (function(_this) {
         return function(e) {
           return _this.handleKeyUp(e);
         };
       })(this));
-      $filter.on("keydown.autocomplete", (function(_this) {
+      $filter.on('keydown.autocomplete', (function(_this) {
         return function(e) {
           return _this.handleKeyDown(e);
         };
@@ -268,21 +267,80 @@
     };
 
     AutocompleteAbstract.prototype.createList = function(data) {
-      var $item, $list, count, item, _i, _len;
+      var $group, $item, $list, count, group, groups, groupsToHide, groupsToOpen, item, listItems, position, _i, _j, _k, _l, _len, _len1, _len2, _len3;
       $list = this.createEmptyList();
       if (!data) {
         return;
       }
-      count = 0;
+      groups = [];
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         item = data[_i];
+        if (item.isGroup) {
+          $group = this.createGroup(item);
+          groups.push(encodeURIComponent(item.group));
+          $group.appendTo($list);
+        }
+      }
+      count = 0;
+      listItems = [];
+      for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+        item = data[_j];
         if (this.options.max > count) {
-          $item = this.createItem(item);
-          $item.appendTo($list);
+          if (!item.isGroup) {
+            $item = this.createItem(item);
+            listItems.push(item);
+            if (item.group) {
+              $item.appendTo($list.find("[data-group-id='" + encodeURIComponent(item.group) + "']"));
+            } else {
+              $item.appendTo($list);
+            }
+          }
         }
         count++;
       }
+      groupsToOpen = [];
+      for (_k = 0, _len2 = listItems.length; _k < _len2; _k++) {
+        item = listItems[_k];
+        position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
+        if (this.filterValue.length && position !== -1) {
+          group = encodeURIComponent(item.group);
+          if (__indexOf.call(groupsToOpen, group) < 0) {
+            groupsToOpen.push(group);
+            this.handleGroupSelect($list.find('[data-group-id="' + group + '"]'));
+          }
+        }
+      }
+      if (this.filterValue.length) {
+        groupsToHide = groups.filter(function(group) {
+          return groupsToOpen.indexOf(group) < 0;
+        });
+        for (_l = 0, _len3 = groupsToHide.length; _l < _len3; _l++) {
+          group = groupsToHide[_l];
+          $list.find('[data-group-id="' + group + '"]').remove();
+        }
+      }
       return $list;
+    };
+
+    AutocompleteAbstract.prototype.createGroup = function(group) {
+      var $group;
+      $group = $("<div><span>" + group.title + "</span></div>");
+      $group.attr('data-group-id', encodeURIComponent(group.group));
+      $group.addClass(this.options.groupClass);
+      $group.on('mousedown', function(e) {
+        return e.preventDefault();
+      });
+      $group.on('click', (function(_this) {
+        return function(e) {
+          return _this.handleGroupSelect($(e.target).closest('div'));
+        };
+      })(this));
+      $group.on('mouseenter', (function(_this) {
+        return function(e) {
+          return _this.setHover($(e.target));
+        };
+      })(this));
+      return $group;
     };
 
     AutocompleteAbstract.prototype.createItem = function(item) {
@@ -294,11 +352,14 @@
       if (item.tooltip) {
         $item.attr('title', item.tooltip);
       }
+      if (item.group) {
+        $item.attr('data-group', encodeURIComponent(item.group));
+      }
       if (item.disabled) {
         $item.addClass(this.options.disabledClass);
       }
       position = item.title.toLowerCase().indexOf(this.filterValue.toLowerCase());
-      if (this.options.highlightTitles && this.filterValue.length !== 0 && position !== -1) {
+      if (this.options.highlightTitles && this.filterValue.length && position !== -1) {
         text = item.title.substring(position, position + this.filterValue.length);
         leadingString = item.title.substring(0, position);
         trailingString = item.title.substring(position + this.filterValue.length, item.title.length);
@@ -328,6 +389,10 @@
       return $item;
     };
 
+    AutocompleteAbstract.prototype.handleGroupSelect = function($group) {
+      return $group.toggleClass('opened');
+    };
+
     AutocompleteAbstract.prototype.handleItemSelect = function($item) {
       if ($item.length === 0) {
         return;
@@ -350,6 +415,7 @@
     };
 
     AutocompleteAbstract.prototype.insertList = function($list) {
+      var _ref;
       if (!this.floater) {
         return;
       }
@@ -357,6 +423,15 @@
       this.list.append($list.children());
       if (this.list.children().length === 0) {
         this.handleEmptyList();
+      }
+      if ((_ref = this.list) != null) {
+        _ref.on('mousewheel DOMMouseScroll', function(e) {
+          var delta, e0;
+          e0 = e.originalEvent;
+          delta = e0.wheelDelta || -e0.detail;
+          this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+          return e.preventDefault();
+        });
       }
       return this.list;
     };
@@ -370,7 +445,7 @@
       if ((this.floater != null) || this.el.hasClass(this.options.disabledClass)) {
         return;
       }
-      this.orig.trigger("reform.open");
+      this.orig.trigger('reform.open');
       this.floater = this.createFloater();
       $overlay = $('<div></div>');
       $overlay.addClass('reform');
@@ -397,6 +472,7 @@
     };
 
     AutocompleteAbstract.prototype.close = function() {
+      return;
       if (!this.floater) {
         return;
       }
@@ -405,7 +481,7 @@
       this.floater = null;
       this.list = null;
       this.filterValue = '';
-      return this.orig.trigger("reform.closed");
+      return this.orig.trigger('reform.closed');
     };
 
     AutocompleteAbstract.prototype.cancelChanges = function() {
@@ -477,11 +553,17 @@
       }
       $current = this.list.find('.' + this.options.hoverClass);
       if ($current.length === 0) {
-        $nextHover = this.list.find('.' + this.options.itemClass + ':first-child');
+        $nextHover = this.list.find('.' + this.options.itemClass).first();
       } else if (direction === 'down') {
         $nextHover = $current.next();
+        if ($nextHover.length === 0) {
+          $nextHover = $current.parent().next('.' + this.options.groupClass).children().first();
+        }
       } else if (direction === 'up') {
         $nextHover = $current.prev();
+        if ($nextHover.length === 0) {
+          $nextHover = $current.parent().prev('.' + this.options.groupClass).children().last();
+        }
       }
       if ($nextHover.length !== 0) {
         this.setHover($nextHover);
@@ -505,12 +587,10 @@
     };
 
     AutocompleteAbstract.prototype.setHover = function($item) {
-      var $items;
       if (!this.floater) {
         return;
       }
-      $items = this.list.find('.' + this.options.itemClass);
-      $items.removeClass(this.options.hoverClass);
+      this.list.find('.' + this.options.hoverClass).removeClass(this.options.hoverClass);
       return $item.addClass(this.options.hoverClass);
     };
 
@@ -538,19 +618,54 @@
     };
 
     AutocompleteAbstract.prototype.parse = function(data) {
-      var parsed;
+      var addItem, group, item, parsed, _i, _j, _k, _len, _len1, _len2, _ref;
       parsed = [];
-      $.each(data, (function(_this) {
-        return function(num, item) {
+      addItem = (function(_this) {
+        return function(item) {
           return parsed.push({
             value: item.value,
             title: _this.options.formatResult && _this.options.formatResult(item) || item.title,
+            group: item.group != null ? item.group : null,
             tooltip: item.tooltip != null ? item.tooltip : null,
             disabled: item.disabled != null ? item.disabled : null
           });
         };
-      })(this));
+      })(this);
+      if (data[0].group) {
+        _ref = this.getDataGroups(data);
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          group = _ref[_i];
+          parsed.push({
+            title: group,
+            group: group,
+            isGroup: true
+          });
+          for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+            item = data[_j];
+            if (item['group'] === group) {
+              addItem(item);
+            }
+          }
+        }
+      } else {
+        for (_k = 0, _len2 = data.length; _k < _len2; _k++) {
+          item = data[_k];
+          addItem(item);
+        }
+      }
       return parsed;
+    };
+
+    AutocompleteAbstract.prototype.getDataGroups = function(data) {
+      var dataGroups, item, _i, _len, _ref;
+      dataGroups = [];
+      for (_i = 0, _len = data.length; _i < _len; _i++) {
+        item = data[_i];
+        if (_ref = item.group, __indexOf.call(dataGroups, _ref) < 0) {
+          dataGroups.push(item.group);
+        }
+      }
+      return dataGroups;
     };
 
     AutocompleteAbstract.prototype.getData = function(callback) {
@@ -572,7 +687,9 @@
       _ref = this.data;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
-        if (!this.options.exactMatch && (this.filterValue != null)) {
+        if (item.isGroup) {
+          filteredData.push(item);
+        } else if (!this.options.exactMatch && (this.filterValue != null)) {
           title = item.title;
           filterValue = this.filterValue;
           if (!this.options.caseSensitive) {
@@ -608,7 +725,7 @@
         _ref = this.options.customParams;
         for (param = _i = 0, _len = _ref.length; _i < _len; param = ++_i) {
           key = _ref[param];
-          customParams[key] = typeof param === "function" ? param() : param;
+          customParams[key] = typeof param === 'function' ? param() : param;
         }
         $.extend(params, customParams);
       }
@@ -649,7 +766,7 @@
           return function(data) {
             _this.ajaxInProgress = false;
             _this.orig.trigger('ajaxRequestFinished');
-            return console.log(data);
+            return console.log('Error: ', data);
           };
         })(this)
       });
@@ -696,6 +813,13 @@
         this.filter.val(this.selectedItem.title);
       }
       this.el.append(this.filter);
+      this.el.on('click', (function(_this) {
+        return function() {
+          if (_this.options.minChars === 0) {
+            return _this.open();
+          }
+        };
+      })(this));
     }
 
     AutocompleteBox.prototype.handleSelectionChanged = function() {
@@ -772,7 +896,7 @@
       if (e.keyCode === this.KEY.RETURN) {
         return;
       }
-      if (this.filter.val().length > this.options.minChars) {
+      if (this.filter.val().length >= this.options.minChars) {
         if (this.floater == null) {
           this.open();
         }
@@ -863,6 +987,7 @@
       this.options = $.extend({
         emptySelectionText: 'Select an item...',
         emptyText: 'No results.',
+        showArrows: true,
         reformClass: 'reform-autocompletecombobox',
         uiClass: 'reform-autocompletecombobox-ui',
         floaterLabelClass: 'reform-autocomplete-floater-label',
@@ -1019,7 +1144,7 @@
     };
 
     Cache.prototype.load = function(q) {
-      var c, csub, i, self;
+      var c, csub, i;
       if (!this.options.cacheLength || !this.length) {
         return null;
       }
@@ -1031,13 +1156,14 @@
           c = this.data[q.substr(0, i)];
           if (c) {
             csub = [];
-            self = this;
-            $.each(c, function(i, x) {
-              if (self.matchSubset(x.title, q)) {
-                return csub[csub.length] = x;
-              }
-            });
-            return csub;
+            $.each(c, (function(_this) {
+              return function(i, x) {
+                if (_this.matchSubset(x.title, q)) {
+                  return csub[csub.length] = x;
+                }
+              };
+            })(this));
+            csub;
           }
           i--;
         }
@@ -1066,32 +1192,30 @@
     function CheckBox(input, options) {
       this.refresh = __bind(this.refresh, this);
       this.orig = $(input);
-      if (this.orig.is(".reformed")) {
+      if (this.orig.is('.reformed')) {
         return;
       }
-      if (this.orig.is(":radio")) {
+      if (this.orig.is(':radio')) {
         this.siblings = $("[name='" + (this.orig.attr("name")) + "']").not(this.orig);
       }
-      this.fake = $("<label/>");
-      this.fake.attr("class", this.orig.attr("class"));
-      this.orig.hide().attr("class", "reformed");
-      this.fake.removeClass("reform-checkbox").addClass("reform-checkbox-fake");
-      this.fake.addClass('reform');
-      this.fake.addClass('reform-checkbox-ui');
-      if (this.orig.is(":checked")) {
-        this.fake.addClass("checked");
+      this.fake = $('<label/>').addClass(this.orig.attr('class'));
+      this.orig.hide().attr('class', 'reformed');
+      this.fake.removeClass('reform-checkbox').addClass('reform-checkbox-fake');
+      this.fake.addClass('reform reform-checkbox-ui');
+      if (this.orig.is(':checked')) {
+        this.fake.addClass('checked');
       }
-      if (this.orig.is(":disabled")) {
-        this.fake.addClass("disabled");
+      if (this.orig.is(':disabled')) {
+        this.fake.addClass('disabled');
       }
-      if (this.orig.is(":radio")) {
-        this.fake.addClass("radio");
+      if (this.orig.is(':radio')) {
+        this.fake.addClass('radio');
       }
       this.orig.after(this.fake).appendTo(this.fake);
-      this.fake.on("mousedown", function(e) {
+      this.fake.on('mousedown', function(e) {
         return e.preventDefault();
       });
-      this.orig.on("reform.sync change DOMSubtreeModified", (function(_this) {
+      this.orig.on('reform.sync change DOMSubtreeModified', (function(_this) {
         return function() {
           return setTimeout(_this.refresh, 0);
         };
@@ -1100,17 +1224,17 @@
 
     CheckBox.prototype.refresh = function() {
       var _ref;
-      this.fake.toggleClass("disabled", this.orig.is(":disabled"));
-      this.fake.removeClass("checked");
-      if (this.orig.is(":checked")) {
-        this.fake.addClass("checked");
+      this.fake.toggleClass('disabled', this.orig.is(':disabled'));
+      this.fake.removeClass('checked');
+      if (this.orig.is(':checked')) {
+        this.fake.addClass('checked');
       }
       this.fake.trigger('reform-checkbox-attribute-change', this.fake.hasClass('checked'));
       if (!this.orig.is(':checked')) {
         return;
       }
       return (_ref = this.siblings) != null ? _ref.each(function() {
-        return $(this).parent().removeClass("checked");
+        return $(this).parent().removeClass('checked');
       }) : void 0;
     };
 
@@ -1239,7 +1363,7 @@
           _results1 = [];
           for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
             n = _ref1[_i];
-            if (cls === "reform-selectbox" || cls === "reform-multilineselectbox") {
+            if (cls === 'reform-selectbox' || cls === 'reform-multilineselectbox') {
               select = new control(n);
               _results1.push(selectboxList.push(select));
             } else {
@@ -1253,12 +1377,12 @@
     };
 
     Reform.prototype.observe = function() {
-      $(document).on("ready", (function(_this) {
+      $(document).on('ready', (function(_this) {
         return function() {
-          return _this.process("body");
+          return _this.process('body');
         };
       })(this));
-      $(document).on("DOMNodeInserted", (function(_this) {
+      $(document).on('DOMNodeInserted', (function(_this) {
         return function(e) {
           return _this.process(e.target);
         };
@@ -1289,11 +1413,11 @@
   })();
 
   Reform.controls = {
-    "reform-checkbox": CheckBox,
-    "reform-selectbox": SelectBox,
-    "reform-multilineselectbox": MultilineSelectBox,
-    "reform-autocompletebox": AutocompleteBox,
-    "reform-autocompletecombobox": AutocompleteCombobox
+    'reform-checkbox': CheckBox,
+    'reform-selectbox': SelectBox,
+    'reform-multilineselectbox': MultilineSelectBox,
+    'reform-autocompletebox': AutocompleteBox,
+    'reform-autocompletecombobox': AutocompleteCombobox
   };
 
   module.exports = Reform;
@@ -1306,7 +1430,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  SelectBoxAbstract = require('./selectbox_abstract');
+  SelectBoxAbstract = require("./selectbox_abstract");
 
   SelectBox = (function(_super) {
     __extends(SelectBox, _super);
@@ -1321,23 +1445,23 @@
     }
 
     SelectBox.prototype.createItemContent = function($option) {
-      return $option.text();
+      return $('<div/>').text($option.text()).html();
     };
 
     SelectBox.prototype.createClosedItem = function() {
       var plural, selected, title;
-      selected = this.orig.find("option").filter(function() {
-        return this.selected && $(this).data("count-option") !== "no";
+      selected = this.orig.find('option').filter(function() {
+        return this.selected && $(this).data('count-option') !== 'no';
       });
-      plural = this.orig.data("plural");
+      plural = this.orig.data('plural');
       title = (plural != null) && selected.length > 1 ? "" + selected.length + " " + plural : selected.map(function() {
         return $(this).text();
-      }).get().join(", ");
+      }).get().join(', ');
       if (!title) {
-        title = this.orig.attr("title");
+        title = this.orig.attr('title');
       }
       if (title == null) {
-        title = "Select";
+        title = 'Select';
       }
       return title;
     };
@@ -1372,13 +1496,12 @@
       this.options = $.extend({
         fakeClass: 'reform-selectbox-fake'
       }, options);
-      if (this.orig.is(".reformed")) {
+      if (this.orig.is('.reformed')) {
         return;
       }
-      this.body = $("body");
-      this.fake = $("<div/>");
-      this.fake.attr("tabindex", 0);
-      this.fake.addClass("closed");
+      this.body = $('body');
+      this.fake = $('<div/>').addClass('closed');
+      this.fake.attr('tabindex', 0);
       origClass = this.orig.attr('class');
       this.customClass = origClass.replace(this.options.reformClass, '');
       this.customClass = this.customClass.trim();
@@ -1386,13 +1509,12 @@
       if (this.orig.is(':disabled')) {
         this.fake.addClass('disabled');
       }
-      this.orig.hide().attr("class", "reformed");
-      $selectedItem = $('<div></div>');
-      $selectedItem.addClass('selected-item');
+      this.orig.hide().attr('class', 'reformed');
+      $selectedItem = $('<div></div>').addClass('selected-item');
       $selectedItem.appendTo(this.fake);
       this.refresh();
       this.orig.after(this.fake).appendTo(this.fake);
-      this.fake.on("keyup", (function(_this) {
+      this.fake.on('keyup', (function(_this) {
         return function(ev) {
           if (ev.keyCode === 27) {
             ev.preventDefault();
@@ -1400,12 +1522,12 @@
           }
         };
       })(this));
-      this.fake.on("keydown", (function(_this) {
+      this.fake.on('keydown', (function(_this) {
         return function(ev) {
           var $current, $item, $nextItem, done, goDown, goUp, itemDoesNotExist, itemIsDisabled;
           ev.preventDefault();
           ev.stopPropagation();
-          if (_this.orig.is("[multiple]")) {
+          if (_this.orig.is('[multiple]')) {
             return;
           }
           _this.fake.focus();
@@ -1427,13 +1549,13 @@
           } else if (ev.keyCode === 13) {
             $item = $(_this.floater).find('.hover');
             itemDoesNotExist = $item.length === 0;
-            itemIsDisabled = $item.is(".disabled");
+            itemIsDisabled = $item.is('.disabled');
             if (itemDoesNotExist || itemIsDisabled) {
               return;
             }
-            $item.siblings().andSelf().removeClass("selected");
-            $item.addClass("selected");
-            _this.orig.val(_this.value()).trigger("change");
+            $item.siblings().andSelf().removeClass('selected');
+            $item.addClass('selected');
+            _this.orig.val(_this.value()).trigger('change');
             return _this.close();
           } else if (ev.keyCode === 27) {
             if (_this.floater != null) {
@@ -1454,9 +1576,9 @@
         };
       })(this));
       this.floater = null;
-      this.fake.on("click", (function(_this) {
+      this.fake.on('click', (function(_this) {
         return function(e) {
-          if (_this.orig.is(":disabled")) {
+          if (_this.orig.is(':disabled')) {
             return;
           }
           e.stopPropagation();
@@ -1467,11 +1589,11 @@
           }
         };
       })(this));
-      this.fake.on("mousedown", function(e) {
+      this.fake.on('mousedown', function(e) {
         return e.preventDefault();
       });
-      this.orig.on("reform.sync change DOMSubtreeModified", this.refresh);
-      this.body.on("reform.open", (function(_this) {
+      this.orig.on('reform.sync change DOMSubtreeModified', this.refresh);
+      this.body.on('reform.open', (function(_this) {
         return function(e) {
           if (e.target !== _this.select) {
             return _this.close();
@@ -1481,13 +1603,13 @@
     }
 
     SelectBoxAbstract.prototype.hover = function($item) {
-      $item.siblings().andSelf().removeClass("hover");
-      return $item.addClass("hover");
+      $item.siblings().andSelf().removeClass('hover');
+      return $item.addClass('hover');
     };
 
     SelectBoxAbstract.prototype.scrollTo = function($item) {
       var $container, newScrollTop, scrollTop;
-      $container = $item.parent();
+      $container = this.list;
       newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop();
       this.ignoreMouse = true;
       if (newScrollTop > ($container.outerHeight() - $item.outerHeight())) {
@@ -1515,34 +1637,30 @@
       this.floater.empty();
       this.height = $(document).height();
       this.width = $(document).width();
-      this.$list = $("<div/>").appendTo(this.floater);
-      this.$list.attr("class", "reform-floater-list");
-      this.$list.addClass(this.options.uiClass);
-      this.textMultiple = "";
-      $itemMultiple = $("<div/>");
-      $itemMultiple.addClass("reform-floater-item selected");
+      this.$list = $('<div/>').attr('class', 'reform-floater-list').addClass(this.options.uiClass).appendTo(this.floater);
+      this.textMultiple = '';
+      $itemMultiple = $('<div/>').addClass('reform-floater-item selected');
       this.listMultiple = [];
       this.selectBoxTitle = this.orig.data('title');
-      this.orig.find("option").each((function(_this) {
+      this.orig.find('option').each((function(_this) {
         return function(i, option) {
           var $item, $itemSelected, $option;
           $option = $(option);
-          $item = $("<div/>");
-          if ($option.is(":selected")) {
-            $item.addClass("selected");
+          $item = $('<div/>').addClass('reform-floater-item');
+          if ($option.is(':selected')) {
+            $item.addClass('selected');
           }
-          if ($option.is(":disabled")) {
-            $item.addClass("disabled");
+          if ($option.is(':disabled')) {
+            $item.addClass('disabled');
           }
-          $item.addClass("reform-floater-item");
-          $item.attr("title", $option.attr("title"));
-          $item.attr("value", $option.val());
+          $item.attr('title', $option.attr('title'));
+          $item.attr('value', $option.val());
           $item.append(_this.createItemContent($option));
-          if ($option.is(":selected")) {
-            if (_this.orig.is("[multiple]")) {
+          if ($option.is(':selected')) {
+            if (_this.orig.is('[multiple]')) {
               _this.listMultiple.push($option.html());
             } else {
-              $item.addClass("selected");
+              $item.addClass('selected');
               if (_this.selectBoxTitle) {
                 $itemSelected = $item.clone();
                 $itemSelected.addClass(_this.attributeType);
@@ -1551,7 +1669,7 @@
             }
           }
           $item.appendTo(_this.$list);
-          $item.on("mousedown", function(e) {
+          $item.on('mousedown', function(e) {
             return e.preventDefault();
           });
           $item.hover(function() {
@@ -1559,18 +1677,18 @@
               return _this.hover($item);
             }
           });
-          return $item.on("click", function(e) {
+          return $item.on('click', function(e) {
             if ($item.is('.disabled')) {
               return;
             }
-            if (_this.orig.is("[multiple]")) {
-              $item.toggleClass("selected");
+            if (_this.orig.is('[multiple]')) {
+              $item.toggleClass('selected');
               e.stopPropagation();
             } else {
-              $item.siblings().andSelf().removeClass("selected");
-              $item.addClass("selected");
+              $item.siblings().andSelf().removeClass('selected');
+              $item.addClass('selected');
             }
-            return _this.orig.val(_this.value()).trigger("change");
+            return _this.orig.val(_this.value()).trigger('change');
           });
         };
       })(this));
@@ -1588,23 +1706,22 @@
     };
 
     SelectBoxAbstract.prototype.value = function() {
-      return this.$list.find(".reform-floater-item.selected").map(function() {
+      return this.$list.find('.reform-floater-item.selected').map(function() {
         return $(this).val();
       });
     };
 
     SelectBoxAbstract.prototype.open = function() {
-      this.orig.trigger("reform.open");
-      this.floater = $("<div/>");
-      this.floater.css("min-width", this.fake.outerWidth());
-      this.floater.addClass('reform-floater reform reform-floater-ui').addClass(this.customClass).addClass(this.orig.data("floater-class")).addClass(this.options.uiClass).addClass('reform-' + this.options.theme);
+      this.orig.trigger('reform.open');
+      this.floater = $('<div/>');
+      this.floater.css('min-width', this.fake.outerWidth());
+      this.floater.addClass('reform-floater reform reform-floater-ui').addClass(this.customClass).addClass(this.orig.data('floater-class')).addClass(this.options.uiClass).addClass('reform-' + this.options.theme);
       this.body.append(this.floater);
       this.createOptions();
-      this.body.one("click", this.close);
+      this.body.one('click', this.close);
       this.floater.show();
       this.positionFloater();
-      this.fake.addClass("opened");
-      return this.fake.removeClass("closed");
+      return this.fake.addClass('opened').removeClass('closed');
     };
 
     SelectBoxAbstract.prototype.close = function() {
@@ -1613,16 +1730,16 @@
         _ref.remove();
       }
       this.floater = null;
-      this.fake.removeClass("opened");
-      this.fake.addClass("closed");
-      if (!this.orig.is(":disabled")) {
-        return this.fake.removeClass("disabled");
+      this.fake.removeClass('opened');
+      this.fake.addClass('closed');
+      if (!this.orig.is(':disabled')) {
+        return this.fake.removeClass('disabled');
       }
     };
 
     SelectBoxAbstract.prototype.refresh = function() {
       var $selectedItem, $title;
-      this.fake.toggleClass("disabled", this.orig.is(":disabled"));
+      this.fake.toggleClass('disabled', this.orig.is(':disabled'));
       $selectedItem = this.fake.find('.selected-item');
       $selectedItem.empty();
       if (this.orig.data('title')) {

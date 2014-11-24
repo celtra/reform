@@ -16,6 +16,11 @@
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
+.reform .ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .reform.pure {
   font-family: inherit;
 }
@@ -54,10 +59,10 @@
 }
 .reform.pure.reform-checkbox-fake.disabled {
   cursor: default;
-  background-color: #f7f7f7;
+  background-color: #c3c3c3;
 }
 .reform.pure.reform-checkbox-fake.disabled.checked:before {
-  background-color: #dddddd;
+  background-color: #aaaaaa;
 }
 .reform.pure.reform-checkbox-fake:hover {
   -webkit-box-shadow: 0 0 0 1px #cccccc;
@@ -65,24 +70,24 @@
   box-shadow: 0 0 0 1px #cccccc;
 }
 .reform.pure.reform-checkbox-fake.disabled {
-  -webkit-box-shadow: 0 0 0 1px #dddddd;
-  -moz-box-shadow: 0 0 0 1px #dddddd;
-  box-shadow: 0 0 0 1px #dddddd;
+  -webkit-box-shadow: 0 0 0 1px #aaaaaa;
+  -moz-box-shadow: 0 0 0 1px #aaaaaa;
+  box-shadow: 0 0 0 1px #aaaaaa;
 }
 .reform.pure.reform-selectbox-fake {
-  min-height: 30px;
-  padding: 7px 20px 7px 16px;
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  outline: none;
-  font-size: 13px;
-  color: #222222;
+  position: relative;
+  display: inline-block;
+  min-height: 30px;
+  padding: 7px 20px 7px 16px;
   line-height: 16px;
+  font-size: 13px;
   vertical-align: middle;
+  color: #222222;
+  cursor: pointer;
+  outline: none;
   -webkit-box-shadow: 0 0 0 1px #dddddd;
   -moz-box-shadow: 0 0 0 1px #dddddd;
   box-shadow: 0 0 0 1px #dddddd;
@@ -105,9 +110,9 @@
 }
 .reform.pure.reform-selectbox-fake.reform-selectbox-ui.closed:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
@@ -117,9 +122,9 @@
 }
 .reform.pure.reform-selectbox-fake.reform-selectbox-ui.opened:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
@@ -129,19 +134,59 @@
 }
 .reform.pure.reform-selectbox-fake.reform-selectbox-ui.disabled {
   cursor: default;
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-selectbox-fake.reform-selectbox-ui.disabled:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid #dddddd;
+  border-top: 4px solid #aaaaaa;
+}
+.reform.pure .reform-group span {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  margin: 3px 0 0 0;
+  padding: 0 20px;
+  font-size: 14px;
+  line-height: 30px;
+  background-color: #f6f6f6;
+  color: #1f1f1f;
+  cursor: pointer;
+}
+.reform.pure .reform-group span:after {
+  position: absolute;
+  content: "▶";
+  top: -1px;
+  right: 8px;
+  font-size: 10px;
+  font-family: 'Arial', sans-serif;
+  color: #777777;
+}
+.reform.pure .reform-group.opened span:after {
+  content: "▼";
+}
+.reform.pure .reform-group.opened div {
+  display: block;
+}
+.reform.pure .reform-group .reform-floater-item {
+  display: none;
+  margin: 5px;
+  background-color: #ffffff;
+  line-height: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.reform.pure .reform-group .reform-floater-item.hover {
+  color: #1f1f1f;
 }
 .reform.pure.reform-selectbox-fake:hover {
   -webkit-box-shadow: 0 0 0 1px #cccccc;
@@ -149,9 +194,9 @@
   box-shadow: 0 0 0 1px #cccccc;
 }
 .reform.pure.reform-selectbox-fake.disabled {
-  -webkit-box-shadow: 0 0 0 1px #dddddd;
-  -moz-box-shadow: 0 0 0 1px #dddddd;
-  box-shadow: 0 0 0 1px #dddddd;
+  -webkit-box-shadow: 0 0 0 1px #aaaaaa;
+  -moz-box-shadow: 0 0 0 1px #aaaaaa;
+  box-shadow: 0 0 0 1px #aaaaaa;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake {
   min-width: 390px;
@@ -160,9 +205,9 @@
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake.closed:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -3.5px 0 0;
@@ -172,9 +217,9 @@
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake.opened:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -3.5px 0 0;
@@ -184,27 +229,27 @@
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake.disabled span,
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake.disabled p {
-  color: #dddddd !important;
+  color: #aaaaaa !important;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake.disabled:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -3.5px 0 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 7px solid #dddddd;
+  border-top: 7px solid #aaaaaa;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item p,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item p,
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item span,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item span {
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item p,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item p {
@@ -214,30 +259,30 @@
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item span,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item span {
   font-size: 12px;
-  color: #aaa;
+  color: #aaaaaa;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item.disabled span,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item.disabled span,
 .reform.pure.reform-multilineselectbox-ui.reform-selectbox-fake .selected-item.disabled p,
 .reform.pure.reform-multilineselectbox-ui .reform-floater-item.disabled p {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-multilineselectbox-ui.reform-floater .reform-floater-list .reform-floater-item {
   padding: 12px 20px 12px 16px;
 }
 .reform.pure.reform-floater {
-  z-index: 20;
-  display: block;
-  position: absolute;
-  overflow: hidden;
-  max-width: 200px;
-  background: #ffffff;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  position: absolute;
+  z-index: 20;
+  display: block;
+  overflow: hidden;
+  max-width: 200px;
+  line-height: 16px;
+  background: #ffffff;
   font-size: 13px;
   color: #222222;
-  line-height: 16px;
   -webkit-box-shadow: 0 0 0 1px #dddddd;
   -moz-box-shadow: 0 0 0 1px #dddddd;
   box-shadow: 0 0 0 1px #dddddd;
@@ -253,14 +298,14 @@
   overflow-y: auto;
 }
 .reform.pure.reform-floater .reform-floater-list .reform-floater-item {
-  padding: 7px 16px;
-  cursor: pointer;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding: 7px 16px;
+  cursor: pointer;
 }
 .reform.pure.reform-floater .reform-floater-list .reform-floater-item.hover {
   background: #eeeeee;
@@ -272,32 +317,32 @@
 }
 .reform.pure.reform-floater .reform-floater-list .reform-floater-item.disabled {
   cursor: default;
-  color: #dddddd;
+  color: #aaaaaa;
   background: #ffffff;
 }
 .reform.pure.reform-floater .reform-floater-list .reform-floater-item.disabled.hover {
   background: inherit;
 }
 .reform.pure.reform-floater-overlay {
+  position: fixed;
+  z-index: 10;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  position: fixed;
-  z-index: 10;
 }
 .reform.pure.reform-autocomplete-fake {
-  position: relative;
-  display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  cursor: pointer;
   overflow: hidden;
-  font-size: 13px;
-  line-height: 16px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  position: relative;
+  display: inline-block;
+  line-height: 16px;
+  font-size: 13px;
+  cursor: pointer;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -315,9 +360,9 @@
 }
 .reform.pure.reform-autocomplete-fake.arrow-down:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
@@ -327,9 +372,9 @@
 }
 .reform.pure.reform-autocomplete-fake.arrow-up:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
@@ -346,37 +391,37 @@
   background-color: #ffffff;
 }
 .reform.pure.reform-autocomplete-fake.disabled .reform-autocomplete-filter::-webkit-input-placeholder {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-autocomplete-fake.disabled .reform-autocomplete-filter::-moz-placeholder {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-autocomplete-fake.disabled .reform-autocomplete-filter:-ms-input-placeholder {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-autocomplete-fake.disabled .reform-autocomplete-filter:-moz-placeholder {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-autocomplete-fake.disabled.arrow-down:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid #dddddd;
+  border-top: 4px solid #aaaaaa;
 }
 .reform.pure .reform-autocomplete-filter {
+  margin: 0;
   padding: 7px 16px;
   line-height: 16px;
-  margin: 0;
-  outline: none;
   border: none;
   font-family: inherit;
   font-size: 13px;
+  outline: none;
 }
 .reform.pure.reform-autocomplete-fake:hover {
   -webkit-box-shadow: 0 0 0 1px #cccccc;
@@ -384,9 +429,9 @@
   box-shadow: 0 0 0 1px #cccccc;
 }
 .reform.pure.reform-autocomplete-fake.disabled {
-  -webkit-box-shadow: 0 0 0 1px #dddddd;
-  -moz-box-shadow: 0 0 0 1px #dddddd;
-  box-shadow: 0 0 0 1px #dddddd;
+  -webkit-box-shadow: 0 0 0 1px #aaaaaa;
+  -moz-box-shadow: 0 0 0 1px #aaaaaa;
+  box-shadow: 0 0 0 1px #aaaaaa;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-autocomplete-fake {
   padding: 7px 16px;
@@ -395,7 +440,7 @@
   color: #aaaaaa;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-autocomplete-fake.disabled .placeholder {
-  color: #dddddd;
+  color: #aaaaaa;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-autocomplete-fake .selected-item {
   overflow: hidden;
@@ -403,24 +448,23 @@
   text-overflow: ellipsis;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-floater .reform-autocomplete-floater-label {
-  padding: 7px 16px;
-  position: relative;
-  display: block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  cursor: pointer;
-  outline: none;
   white-space: nowrap;
   text-overflow: ellipsis;
-  vertical-align: middle;
+  position: relative;
+  display: block;
+  padding: 7px 16px;
+  cursor: pointer;
+  outline: none;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-floater .reform-autocomplete-floater-label.arrow-up:after {
   position: absolute;
+  content: "";
   top: 50%;
   right: 10px;
-  content: "";
   width: 0;
   height: 0;
   margin: -2px 0 0;
@@ -437,9 +481,9 @@
   outline: none;
 }
 .reform.pure.reform-autocompletecombobox-ui.reform-floater .reform-autocomplete-empty {
-  color: #aaaaaa;
-  padding: 7px 16px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  color: #aaaaaa;
+  padding: 7px 16px;
 }
