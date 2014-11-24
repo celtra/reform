@@ -441,7 +441,7 @@
     };
 
     AutocompleteAbstract.prototype.open = function() {
-      var $body, $overlay, pos, posTopAfterAnimation;
+      var $body, $overlay;
       if ((this.floater != null) || this.el.hasClass(this.options.disabledClass)) {
         return;
       }
@@ -458,14 +458,7 @@
       })(this));
       this.list = this.createEmptyList();
       this.list.appendTo(this.floater);
-      pos = this.getFloaterPosition();
-      this.floater.css(pos);
-      if (this.orig.data('shift')) {
-        posTopAfterAnimation = pos.top + parseInt(this.orig.data('shift'));
-        this.floater.animate({
-          top: posTopAfterAnimation
-        }, 200);
-      }
+      this.floater.css(this.getFloaterPosition());
       $body = $('body');
       $body.append($overlay);
       $body.append(this.floater);
@@ -663,18 +656,15 @@
     };
 
     AutocompleteAbstract.prototype.getDataGroups = function(data) {
-      var dataGroups, item, _i, _len, _ref, _results;
+      var dataGroups, item, _i, _len, _ref;
       dataGroups = [];
-      _results = [];
       for (_i = 0, _len = data.length; _i < _len; _i++) {
         item = data[_i];
         if (_ref = item.group, __indexOf.call(dataGroups, _ref) < 0) {
-          _results.push(dataGroups.push(item.group));
-        } else {
-          _results.push(void 0);
+          dataGroups.push(item.group);
         }
       }
-      return _results;
+      return dataGroups;
     };
 
     AutocompleteAbstract.prototype.getData = function(callback) {
