@@ -1,20 +1,83 @@
 <html>
     <head>
+        <meta charset="utf-8">
         <title>Custom forms with Reform</title>
-        <!-- <link rel="stylesheet" type="text/css" href="../build/reform.css"> -->
+        <link rel="stylesheet" type="text/css" href="assets/demo.css">
+
+        <link rel="stylesheet" type="text/css" href="../build/reform.css">
         <link rel="stylesheet" type="text/css" href="../build/reform-pure.css">
-        <link rel="stylesheet" type="text/css" href="demo.css">
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../build/reform.js"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyCobVik6xLVkJ5r2NQAWX6zcjxppo6fcao"></script>
-        <style type="text/css">
-            h3 {
-                font-family: Arial;
-                font-weight: normal;
-            }
-        </style>
         <script>
+            var groupedInline = [
+                {
+                    "title" : "Ardbeg Shitty Edition",
+                    "value" : 40,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Tullamore Dew",
+                    "value" : 25,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Tullamore Dew Limited Edition",
+                    "value" : 24,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Johnnie Walker",
+                    "value" : 27,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Glenfiddich",
+                    "value" : 42,
+                    "group" : "Single Malt"
+                },
+                {
+                    "title" : "Glenmorangie",
+                    "value" : 45,
+                    "group" : "Single Malt"
+                },
+                {
+                    "title" : "Ardbeg",
+                    "value" : 49,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Lagavulin",
+                    "value" : 42,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Laphroaig",
+                    "value" : 44,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Woodford Reserve",
+                    "value" : 39,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Maker's Mark",
+                    "value" : 37,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Four Roses",
+                    "value" : 32,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Big Peat",
+                    "value" : 44,
+                    "group" : "Peated whisky"
+                }
+            ]
+
             var inlineData = [
                 {
                     "title": "one",
@@ -80,6 +143,7 @@
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+                $('#autocomplete-grouped-results').trigger("reform.fill", [groupedInline]);
             });
         </script>
 
@@ -149,7 +213,7 @@
                 <option value="9">Nine</option>
                 <option value="10">Ten</option>
             </select>
-        
+
             <select class="reform-selectbox reform-pure" multiple data-plural="numbers" title="Second doesn't count">
                 <option value="1">One</option>
                 <option value="2" data-count-option="no">Two</option>
@@ -196,19 +260,27 @@
 
         <h3>Autocomplete Inline</h3>
 
-        <div>
+        <div class="last-block">
         
             <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
 
             <input class="reform-autocompletebox reform-pure" type="text" disabled />
 
-            <h3>Autocomplete (will not work if opened via file://)</h3>
-            <input id="autocompletebox" class="reform-autocompletebox reform-pure" type="text" data-delay="500" data-url="./demo.json" data-show-arrows="true" data-min-chars="2" />
+            <h3>
+                Autocomplete <small>(will not work if opened via file://, try using simple server, for example <code>python -m SimpleHTTPServer</code>)</small>
+            </h3>
+            <input id="autocompletebox" class="reform-autocompletebox reform-pure" type="text" data-delay="500" data-url="assets/demo.json" data-show-arrows="true" data-min-chars="2" />
 
             <h3>Autocomplete Combobox</h3>
             <input id="autocompletecombobox" class="reform-autocompletecombobox reform-pure" />
 
             <input class="reform-autocompletecombobox reform-pure" disabled />
+
+            <h3>Grouped data: from url</h3>
+            <input class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" data-url="assets/demo-grouped.json" />
+
+            <h3>Grouped data: inlined</h3>
+            <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" />
 
         </div>
 

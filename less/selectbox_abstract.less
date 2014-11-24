@@ -1,43 +1,69 @@
 &.reform-selectbox-fake {
-    
-    min-height     : @height;
-    padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
+    .border-box;
     position       : relative;
     display        : inline-block;
-    cursor         : pointer;
-
-    .border-box;
-
-    outline        : none;
-
-    font-size      : @fontSize;
-    color          : @fontColor;
+    min-height     : @height;
+    padding        : @paddingVertical (@paddingHorizontal + 4) @paddingVertical @paddingHorizontal;
     line-height    : @lineHeight;
+    font-size      : @fontSize;
     vertical-align : middle;
+    color          : @fontColor;
+    cursor         : pointer;
+    outline        : none;
 
     .outline(@borderColor);
     .select-disabled;
     .rounded-corners;
 
-    .selected-item {
-        overflow      : hidden;    
-        white-space   : nowrap;
-        text-overflow : ellipsis;
-    }
+    .selected-item { .ellipsis; }
 
-    &.reform-selectbox-ui.closed:after {
-        .arrow-down(@fontColor);
-    }
-    &.reform-selectbox-ui.opened:after {
-        .reform-arrow-up(@hoverBackgroundColor);
-    }
+    &.reform-selectbox-ui.closed:after { .arrow-down(@fontColor); }
+    &.reform-selectbox-ui.opened:after { .reform-arrow-up(@hoverBackgroundColor); }
 
     &.reform-selectbox-ui.disabled {
         cursor : default;
         color  : @disabledFontColor;
 
+        &:after { .arrow-down(@disabledFontColor); }
+    }
+}
+
+.reform-group  {
+    span {
+        .border-box;
+        position         : relative;
+        display          : block;
+        margin           : 3px 0 0 0;
+        padding          : 0 20px;
+        font-size        : 14px;
+        line-height      : 30px;
+        background-color : #f6f6f6;
+        color            : #1f1f1f;
+        cursor           : pointer;
+
         &:after {
-            .arrow-down(@disabledFontColor);
+            position    : absolute;
+            content     : "▶";
+            top         : -1px;
+            right       : 8px;
+            font-size   : 10px;
+            font-family : 'Arial', sans-serif;
+            color       : #777777;
         }
+    }
+
+    &.opened span:after { content: "▼"; }
+    &.opened div        { display: block; }
+
+    // Group item
+    .reform-floater-item {
+        display          : none;
+        margin           : 5px;
+        background-color : #ffffff;
+        line-height      : 12px;
+        font-size        : 10px;
+        text-transform   : uppercase;
+
+        &.hover { color: @hoverFontColor; }
     }
 }

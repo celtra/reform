@@ -1,35 +1,22 @@
 &.reform-autocompletecombobox-ui {
     &.reform-autocomplete-fake {
-        padding     : @paddingVertical @paddingHorizontal;
+        padding: @paddingVertical @paddingHorizontal;
 
-        .placeholder {
-            color: @placeholderColor;
-        }
+        .placeholder            { color: @placeholderColor; }
+        &.disabled .placeholder { color: @disabledPlaceholderColor; }
 
-        &.disabled .placeholder {
-            color: @disabledPlaceholderColor;
-        } 
-
-        .selected-item {
-            overflow      : hidden;    
-            white-space   : nowrap;
-            text-overflow : ellipsis;
-        }
+        .selected-item { .ellipsis; }
     }
 
     &.reform-floater {
         .reform-autocomplete-floater-label {
-            padding        : @paddingVertical @paddingHorizontal;
-            position       : relative;
-            display        : block;
             .border-box;
-            overflow       : hidden;   
-            cursor         : pointer;
-            outline        : none;
-
-            white-space    : nowrap;
-            text-overflow  : ellipsis;
-            vertical-align : middle;
+            .ellipsis;
+            position : relative;
+            display  : block;
+            padding  : @paddingVertical @paddingHorizontal;
+            cursor   : pointer;
+            outline  : none;
 
             &.arrow-up:after {
                 .reform-arrow-up(@fontColor);
@@ -41,15 +28,13 @@
             border-top    : 1px solid @borderColor;
             border-bottom : 1px solid @borderColor;
 
-            &:focus {
-                outline: none;
-            }
+            &:focus { outline: none; }
         }
 
         .reform-autocomplete-empty {
+            .border-box;
             color      : @placeholderColor;
             padding    : @paddingVertical @paddingHorizontal;
-            .border-box;
         }
     }
 }
