@@ -341,7 +341,11 @@ class AutocompleteAbstract
         @list = @createEmptyList()
         @list.appendTo @floater
 
-        @floater.css @getFloaterPosition()
+        pos = @getFloaterPosition()
+        @floater.css pos
+        if @orig.data 'shift'
+            posTopAfterAnimation = pos.top + parseInt @orig.data('shift')
+            @floater.animate { top: posTopAfterAnimation }, 200
 
         $body = $ 'body'
         $body.append $overlay

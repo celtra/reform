@@ -37,19 +37,18 @@
         padding          : 0 20px;
         font-size        : 14px;
         line-height      : 30px;
-        background-color : #eaeaea;
+        background-color : #f6f6f6;
         color            : #1f1f1f;
         cursor           : pointer;
 
         &:after {
-            position         : absolute;
-            content          : "▶";
-            top              : -1px;
-            right            : 8px;
-            font-size        : 8px;
-            font-family      : 'Arial', sans-serif;
-            font-size-adjust : 0.9;
-            color            : rgba(0, 0, 0, .5);
+            position    : absolute;
+            content     : "▶";
+            top         : -1px;
+            right       : 8px;
+            font-size   : 10px;
+            font-family : 'Arial', sans-serif;
+            color       : #777777;
         }
     }
 
@@ -63,9 +62,8 @@
         background-color : #ffffff;
         line-height      : 12px;
         font-size        : 10px;
-        color            : #5e5e5e;
         text-transform   : uppercase;
 
-        &.hover { .rounded-corners(20px); }
+        &.hover { color: @hoverFontColor; }
     }
 }
