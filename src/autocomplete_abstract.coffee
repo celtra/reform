@@ -354,7 +354,7 @@ class AutocompleteAbstract
     close: ->
         return if !@floater
 
-        @floater.siblings('.' + @options.overlayClass).remove()
+        @floater.siblings(".#{@options.overlayClass}").remove()
         @floater.remove()
         @floater = null
         @list = null
@@ -413,21 +413,21 @@ class AutocompleteAbstract
     moveHover: (direction = 'down') ->
         return if !@floater
 
-        $current = @list.find '.' + @options.hoverClass
+        $current = @list.find ".#{@options.hoverClass}"
 
         if $current.length is 0
-            $nextHover = @list.find('.' + @options.itemClass).first()
+            $nextHover = @list.find(".#{@options.itemClass}").first()
         else if direction is 'down'
             $nextHover = $current.next()
 
             if $nextHover.length is 0
-                $nextHover = $current.parent().next('.' + @options.groupClass).children().first()
+                $nextHover = $current.parent().next(".#{@options.groupClass}").children().first()
 
         else if direction is 'up'
             $nextHover = $current.prev()
 
             if $nextHover.length is 0
-                $nextHover = $current.parent().prev('.' + @options.groupClass).children().last()
+                $nextHover = $current.parent().prev(".#{@options.groupClass}").children().last()
 
         if $nextHover.length isnt 0
             @setHover $nextHover
@@ -448,7 +448,7 @@ class AutocompleteAbstract
     setHover: ($item) ->
         return if !@floater
                 
-        @list.find('.' + @options.hoverClass).removeClass @options.hoverClass
+        @list.find(".#{@options.hoverClass}").removeClass @options.hoverClass
         
         $item.addClass @options.hoverClass
 
