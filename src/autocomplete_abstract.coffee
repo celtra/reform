@@ -352,7 +352,6 @@ class AutocompleteAbstract
             @insertList $list
 
     close: ->
-        return
         return if !@floater
 
         @floater.siblings('.' + @options.overlayClass).remove()
