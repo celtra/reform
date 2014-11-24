@@ -341,11 +341,7 @@ class AutocompleteAbstract
         @list = @createEmptyList()
         @list.appendTo @floater
 
-        pos = @getFloaterPosition()
-        @floater.css pos
-        if @orig.data 'shift'
-            posTopAfterAnimation = pos.top + parseInt @orig.data('shift')
-            @floater.animate { top: posTopAfterAnimation }, 200
+        @floater.css @getFloaterPosition()
 
         $body = $ 'body'
         $body.append $overlay
@@ -502,6 +498,8 @@ class AutocompleteAbstract
         dataGroups = []
         for item in data
             dataGroups.push item.group unless item.group in dataGroups
+
+        dataGroups
 
     getData: (callback) ->
         return if !callback
