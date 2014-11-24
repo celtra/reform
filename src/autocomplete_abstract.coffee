@@ -499,8 +499,6 @@ class AutocompleteAbstract
         for item in data
             dataGroups.push item.group unless item.group in dataGroups
 
-        dataGroups.sort()
-
     getData: (callback) ->
         return if !callback
 
