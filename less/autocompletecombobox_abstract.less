@@ -38,8 +38,11 @@
         }
 
         .reform-floater-list .reform-floater-item .multiline-description{
-            color   : @placeholderColor;
-            display : block;
+            color         : @placeholderColor;
+            display       : block;
+            overflow      : hidden;
+            white-space   : nowrap;
+            text-overflow : ellipsis;
 
             &.disabled { color: @disabledPlaceholderColor; }
         }

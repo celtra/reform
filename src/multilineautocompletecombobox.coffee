@@ -14,16 +14,21 @@ class MultilineAutocompleteCombobox extends AutocompleteCombobox
     createItem: (item) ->
         $item = super item
 
-        desc = if item.description then item.description else ""
-        $descItem = $ "<span>#{desc}</span>"
+        description = if typeof(item.description) is 'object' then item.description.label else item.description
+        $descItem = $ "<span>#{description}</span>"
         $descItem.addClass @options.descClass
         $descItem.addClass @options.disabledClass if item.disabled
 
-        position = item.description.toLowerCase().indexOf @filterValue.toLowerCase()
-        if @options.highlightTitles and @filterValue.length and position isnt -1
-            text           = item.description.substring position, position + @filterValue.length # extract text with original casing
-            leadingString  = item.description.substring 0, position
-            trailingString = item.description.substring position + @filterValue.length, item.description.length
+        # prevent highlighting the wrong substring
+        positionOffset = 0
+        if typeof(item.description) is 'object'
+            positionOffset = description.toLowerCase().indexOf item.description.value
+
+        position = description.toLowerCase().indexOf @filterValue.toLowerCase(), positionOffset
+        if @options.highlightTitles and @filterValue.length and position isnt -1 and positionOffset isnt -1
+            text           = description.substring position, position + @filterValue.length # extract text with original casing
+            leadingString  = description.substring 0, position
+            trailingString = description.substring position + @filterValue.length, description.length
 
             highlightedText = "<strong>#{@hyphenate( text )}</strong>"
             $descItem.html @hyphenate(leadingString) + highlightedText + @hyphenate(trailingString)
@@ -41,7 +46,7 @@ class MultilineAutocompleteCombobox extends AutocompleteCombobox
                 # can match all, usefull for custom requests
                 if not @options.exactMatch and @filterValue?
                     title       = item.title
-                    description = item.description
+                    description = if typeof(item.description) is 'object' then item.description.value else item.description
                     filterValue = @filterValue
 
                     if not @options.caseSensitive
