@@ -425,7 +425,7 @@
         this.handleEmptyList();
       }
       if ((_ref = this.list) != null) {
-        _ref.on('mousewheel DOMMouseScroll', function(e) {
+        _ref.one('mousewheel DOMMouseScroll', function(e) {
           var delta, e0;
           e0 = e.originalEvent;
           delta = e0.wheelDelta || -e0.detail;
@@ -1695,7 +1695,7 @@
         $itemMultiple.html(this.listMultiple.join(", "));
         $itemMultiple.prependTo(this.$list);
       }
-      return this.$list.on('mousewheel DOMMouseScroll', function(e) {
+      return this.$list.one('mousewheel DOMMouseScroll', function(e) {
         var delta, e0;
         e0 = e.originalEvent;
         delta = e0.wheelDelta || -e0.detail;
