@@ -207,7 +207,7 @@ class SelectBoxAbstract
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 30
+            @scrollTop += (if delta < 0 then 1 else -1) * 20
             e.preventDefault()
 
     value: ->
