@@ -482,7 +482,7 @@ class AutocompleteAbstract
                 disabled : if item.disabled? then item.disabled else null
             }
 
-        if data[0].group
+        if data[0]?.group
             for group in @getDataGroups data
                 parsed.push { title: group, group: group, isGroup: yes }
 
