@@ -1,11 +1,18 @@
 [
     {
-        "title" : "Ardbeg Shitty Edition",
-        "value" : 40,
-        "group" : "Blended Whiskey"
+        "title"    : "Ardbeg Special Edition",
+        "value"    : 40,
+        "group"    : "Blended Whiskey",
+        "disabled" : true,
+        "tooltip"  : "Ardbeg SE is out stock"
     },
     {
         "title" : "Tullamore Dew",
+        "value" : 25,
+        "group" : "Blended Whiskey"
+    },
+    {
+        "title" : "Tullamore Dew Limited Edition",
         "value" : 25,
         "group" : "Blended Whiskey"
     },
@@ -30,9 +37,11 @@
         "group" : "Peated whisky"
     },
     {
-        "title" : "Lagavulin",
-        "value" : 42,
-        "group" : "Peated whisky"
+        "title"    : "Lagavulin",
+        "value"    : 42,
+        "group"    : "Peated whisky",
+        "disabled" : true,
+        "tooltip"  : "Lagavulin is out stock"
     },
     {
         "title" : "Laphroaig",

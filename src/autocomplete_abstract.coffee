@@ -314,11 +314,11 @@ class AutocompleteAbstract
         if @list.children().length is 0
             @handleEmptyList()
 
-        @list?.on 'mousewheel DOMMouseScroll', (e) ->
+        @list?.one 'mousewheel DOMMouseScroll', (e) ->
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 30
+            @scrollTop += (if delta < 0 then 1 else -1) * 20
             e.preventDefault()
 
         @list
@@ -356,7 +356,7 @@ class AutocompleteAbstract
     close: ->
         return if !@floater
 
-        @floater.siblings('.' + @options.overlayClass).remove()
+        @floater.siblings(".#{@options.overlayClass}").remove()
         @floater.remove()
         @floater = null
         @list = null
@@ -415,14 +415,21 @@ class AutocompleteAbstract
     moveHover: (direction = 'down') ->
         return if !@floater
 
-        $current = @list.find '.' + @options.hoverClass
+        $current = @list.find ".#{@options.hoverClass}"
 
         if $current.length is 0
-            $nextHover = @list.find '.' + @options.itemClass + ':first-child'
+            $nextHover = @list.find(".#{@options.itemClass}").first()
         else if direction is 'down'
             $nextHover = $current.next()
+
+            if $nextHover.length is 0
+                $nextHover = $current.parent().next(".#{@options.groupClass}").children().first()
+
         else if direction is 'up'
             $nextHover = $current.prev()
+
+            if $nextHover.length is 0
+                $nextHover = $current.parent().prev(".#{@options.groupClass}").children().last()
 
         if $nextHover.length isnt 0
             @setHover $nextHover
@@ -443,8 +450,7 @@ class AutocompleteAbstract
     setHover: ($item) ->
         return if !@floater
                 
-        $items = @list.find '.' + @options.itemClass
-        $items.removeClass @options.hoverClass
+        @list.find(".#{@options.hoverClass}").removeClass @options.hoverClass
         
         $item.addClass @options.hoverClass
 
@@ -479,7 +485,7 @@ class AutocompleteAbstract
                 disabled    : if item.disabled?    then item.disabled    else null
             }
 
-        if data[0].group
+        if data[0]?.group
             for group in @getDataGroups data
                 parsed.push { title: group, group: group, isGroup: yes }
 
@@ -496,7 +502,7 @@ class AutocompleteAbstract
         for item in data
             dataGroups.push item.group unless item.group in dataGroups
 
-        dataGroups.sort()
+        dataGroups
 
     getData: (callback) ->
         return if !callback
@@ -513,18 +519,19 @@ class AutocompleteAbstract
         # filter local collection
         for item in @data
             # can match all, usefull for custom requests
-            if not @options.exactMatch and @filterValue?    
+            if item.isGroup
+                filteredData.push item
+            else if not @options.exactMatch and @filterValue?
                 title = item.title
                 filterValue = @filterValue
 
                 if not @options.caseSensitive
                     title = title.toLowerCase()
                     filterValue = filterValue.toLowerCase()
-                
+
                 if title.indexOf(filterValue) isnt -1
                     filteredData.push item
-
-            else 
+            else
                 filteredData.push item
 
         filteredData
@@ -550,7 +557,7 @@ class AutocompleteAbstract
             for key, param in @options.customParams
                 customParams[key] = if typeof param is 'function' then param() else param
 
-            $.extend params, customParams        
+            $.extend params, customParams
 
         fetchDataCallback = () =>
             @fetchData params, (data) =>

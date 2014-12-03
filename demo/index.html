@@ -10,6 +10,74 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="../build/reform.js"></script>
         <script>
+            var groupedInline = [
+                {
+                    "title" : "Ardbeg Shitty Edition",
+                    "value" : 40,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Tullamore Dew",
+                    "value" : 25,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Tullamore Dew Limited Edition",
+                    "value" : 24,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Johnnie Walker",
+                    "value" : 27,
+                    "group" : "Blended Whiskey"
+                },
+                {
+                    "title" : "Glenfiddich",
+                    "value" : 42,
+                    "group" : "Single Malt"
+                },
+                {
+                    "title" : "Glenmorangie",
+                    "value" : 45,
+                    "group" : "Single Malt"
+                },
+                {
+                    "title" : "Ardbeg",
+                    "value" : 49,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Lagavulin",
+                    "value" : 42,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Laphroaig",
+                    "value" : 44,
+                    "group" : "Peated whisky"
+                },
+                {
+                    "title" : "Woodford Reserve",
+                    "value" : 39,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Maker's Mark",
+                    "value" : 37,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Four Roses",
+                    "value" : 32,
+                    "group" : "Bourbon"
+                },
+                {
+                    "title" : "Big Peat",
+                    "value" : 44,
+                    "group" : "Peated whisky"
+                }
+            ]
+
             var inlineData = [
                 {
                     "title": "one",
@@ -148,8 +216,11 @@
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+
                 $('#multilineautocompletecombobox').trigger("reform.fill", [inlineData2]);
                 $('#multilineautocompletecombobox2').trigger("reform.fill", [inlineData3]);
+
+                $('#autocomplete-grouped-results').trigger("reform.fill", [groupedInline]);
             });
         </script>
 
@@ -266,7 +337,7 @@
 
         <h3>Autocomplete Inline</h3>
 
-        <div>
+        <div class="last-block">
         
             <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
 
@@ -288,6 +359,11 @@
             <h3>Autocomplete with grouped options</h3>
             <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-url="assets/demo-grouped.json" data-min-chars="0" />
 
+            <h3>Grouped data: from url</h3>
+            <input class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" data-url="assets/demo-grouped.json" />
+
+            <h3>Grouped data: inlined</h3>
+            <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" />
         </div>
 
     </body>
