@@ -116,7 +116,7 @@ class SelectBoxAbstract
         $item.addClass 'hover'
     
     scrollTo: ($item) ->
-        $container   = $item.parent()
+        $container   = @list
         newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop()
         
         @ignoreMouse = yes
@@ -203,11 +203,11 @@ class SelectBoxAbstract
             $itemMultiple.html @listMultiple.join(", ")
             $itemMultiple.prependTo @$list
 
-        @$list.on 'mousewheel DOMMouseScroll', (e) ->
+        @$list.one 'mousewheel DOMMouseScroll', (e) ->
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 30
+            @scrollTop += (if delta < 0 then 1 else -1) * 20
             e.preventDefault()
 
     value: ->
