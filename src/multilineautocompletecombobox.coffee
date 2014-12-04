@@ -38,30 +38,27 @@ class MultilineAutocompleteCombobox extends AutocompleteCombobox
         $item
 
     filterData: ->
-        if @options.filterDescription
-            filteredData = []
+        return super unless @options.filterDescription
+        filteredData = []
 
-            # filter local collection
-            for item in @data
-                # can match all, usefull for custom requests
-                if not @options.exactMatch and @filterValue?
-                    title       = item.title
-                    description = if typeof(item.description) is 'object' then item.description.value else item.description
-                    filterValue = @filterValue
+        for item in @data
+            # can match all, usefull for custom requests
+            unless @options.exactMatch and @filterValue?
+                title       = item.title
+                description = if typeof(item.description) is 'object' then item.description.value else item.description
+                filterValue = @filterValue
 
-                    if not @options.caseSensitive
-                        title       = title.toLowerCase()
-                        description = description.toLowerCase()
-                        filterValue = filterValue.toLowerCase()
+                unless @options.caseSensitive
+                    title       = title.toLowerCase()
+                    description = description.toLowerCase()
+                    filterValue = filterValue.toLowerCase()
 
-                    if title.indexOf(filterValue) isnt -1 or description.indexOf(filterValue) isnt -1
-                        filteredData.push item
-
-                else
+                if title.indexOf(filterValue) isnt -1 or description.indexOf(filterValue) isnt -1
                     filteredData.push item
 
-            filteredData
-        else
-            super
+            else
+                filteredData.push item
+
+        filteredData
 
 module.exports = MultilineAutocompleteCombobox
