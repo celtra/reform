@@ -295,11 +295,13 @@ class AutocompleteAbstract
 
         if $item.is 'strong'
             $item = $item.closest 'div'
+        else if $item.is 'span'
+            $item = $item.closest 'div'
 
         if @options.highlightSelection
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
-        
+
         @setSelectedItem { value: $item.data('value'), title: $item.data('title') }
         @close()
 
@@ -475,11 +477,12 @@ class AutocompleteAbstract
 
         addItem = (item) =>
             parsed.push {
-                value    : item.value
-                title    : @options.formatResult and @options.formatResult(item) or item.title
-                group    : if item.group?    then item.group    else null
-                tooltip  : if item.tooltip?  then item.tooltip  else null
-                disabled : if item.disabled? then item.disabled else null
+                value       : item.value
+                title       : @options.formatResult and @options.formatResult(item) or item.title
+                description : if item.description? then item.description else null
+                group       : if item.group?       then item.group       else null
+                tooltip     : if item.tooltip?     then item.tooltip     else null
+                disabled    : if item.disabled?    then item.disabled    else null
             }
 
         if data[0]?.group

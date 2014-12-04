@@ -36,5 +36,15 @@
             color      : @placeholderColor;
             padding    : @paddingVertical @paddingHorizontal;
         }
+
+        .reform-floater-list .reform-floater-item .multiline-description{
+            color         : @placeholderColor;
+            display       : block;
+            overflow      : hidden;
+            white-space   : nowrap;
+            text-overflow : ellipsis;
+
+            &.disabled { color: @disabledPlaceholderColor; }
+        }
     }
 }
