@@ -22,6 +22,7 @@ class AutocompleteAbstract
             minChars           : 0
             delay              : 0
             caseSensitive      : no
+            groupedData        : no
             highlightTitles    : yes
             highlightSelection : yes
             hyphenate          : yes       # will break long strings if true
@@ -314,11 +315,11 @@ class AutocompleteAbstract
         if @list.children().length is 0
             @handleEmptyList()
 
-        @list?.one 'mousewheel DOMMouseScroll', (e) ->
+        @list?.on 'mousewheel DOMMouseScroll', (e) ->
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 20
+            @scrollTop += (if delta < 0 then 1 else -1) * 15
             e.preventDefault()
 
         @list

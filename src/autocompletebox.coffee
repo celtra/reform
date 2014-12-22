@@ -54,7 +54,7 @@ class AutocompleteBox extends AutocompleteAbstract
     handleFilterBlur: ->
         @setSelectedItemByCurrentFilterValue()
 
-        @close()
+        @close() unless @options.groupedData
         super
 
     open: ->
