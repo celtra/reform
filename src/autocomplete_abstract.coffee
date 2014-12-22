@@ -22,6 +22,7 @@ class AutocompleteAbstract
             minChars           : 0
             delay              : 0
             caseSensitive      : no
+            groupedData        : no
             highlightTitles    : yes
             highlightSelection : yes
             hyphenate          : yes       # will break long strings if true
@@ -318,7 +319,7 @@ class AutocompleteAbstract
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 17
+            @scrollTop += (if delta < 0 then 1 else -1) * 15
             e.preventDefault()
 
         @list
