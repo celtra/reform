@@ -314,11 +314,11 @@ class AutocompleteAbstract
         if @list.children().length is 0
             @handleEmptyList()
 
-        @list?.one 'mousewheel DOMMouseScroll', (e) ->
+        @list?.on 'mousewheel DOMMouseScroll', (e) ->
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 20
+            @scrollTop += (if delta < 0 then 1 else -1) * 17
             e.preventDefault()
 
         @list
