@@ -140,9 +140,86 @@
                 }
             ];
 
+            var inlineData2 = [
+                {
+                    "title": "one",
+                    "value": "1",
+                    "tooltip": "Tooltip for 1",
+                    "description": "This is one"
+                },
+                {
+                    "title": "two",
+                    "value": "2",
+                    "description": "This is two"
+                },
+                {
+                    "title": "three",
+                    "value": "3",
+                    "description": "This is three"
+                },
+                {
+                    "title": "four",
+                    "value": "4",
+                    "description": "This is four"
+                },
+                {
+                    "title": "Fourty",
+                    "value": "40",
+                    "description": "This is fourty"
+                },
+                {
+                    "title": "fourteen",
+                    "value": "14",
+                    "disabled": true,
+                    "tooltip": "14 is disabled",
+                    "description": "This is fourteen"
+                }
+            ];
+
+            var inlineData3 = [
+                {
+                    "title": "one",
+                    "value": "1",
+                    "tooltip": "Tooltip for 1",
+                    "description": {
+                        "value": "first",
+                        "label": "Not searchable: first"
+                    }
+                },
+                {
+                    "title": "two",
+                    "value": "2",
+                    "disabled": true,
+                    "description": {
+                        "value": "second",
+                        "label": "Not searchable: second"
+                    }
+                },
+                {
+                    "title": "three",
+                    "value": "3",
+                    "description": {
+                        "value": "third",
+                        "label": "Not searchable: third"
+                    }
+                },
+                {
+                    "title": "four and very very very very looooong",
+                    "value": "4",
+                    "description": {
+                        "value": "fourth",
+                        "label": "Not searchable: fourth and very long"
+                    }
+                }
+            ];
+
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
+
+                $('#multilineautocompletecombobox').trigger("reform.fill", [inlineData2]);
+                $('#multilineautocompletecombobox2').trigger("reform.fill", [inlineData3]);
+
                 $('#autocomplete-grouped-results').trigger("reform.fill", [groupedInline]);
             });
         </script>
@@ -276,12 +353,14 @@
 
             <input class="reform-autocompletecombobox reform-pure" disabled />
 
+            <input id="multilineautocompletecombobox" class="reform-multilineautocompletecombobox reform-pure" />
+            <input id="multilineautocompletecombobox2" class="reform-multilineautocompletecombobox reform-pure" />
+
             <h3>Grouped data: from url</h3>
             <input class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" data-url="assets/demo-grouped.json" />
 
             <h3>Grouped data: inlined</h3>
             <input id="autocomplete-grouped-results" class="reform-autocompletebox reform-pure" type="text" data-min-chars="0" />
-
         </div>
 
     </body>

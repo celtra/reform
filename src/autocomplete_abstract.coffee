@@ -22,6 +22,7 @@ class AutocompleteAbstract
             minChars           : 0
             delay              : 0
             caseSensitive      : no
+            groupedData        : no
             highlightTitles    : yes
             highlightSelection : yes
             hyphenate          : yes       # will break long strings if true
@@ -295,11 +296,13 @@ class AutocompleteAbstract
 
         if $item.is 'strong'
             $item = $item.closest 'div'
+        else if $item.is 'span'
+            $item = $item.closest 'div'
 
         if @options.highlightSelection
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
-        
+
         @setSelectedItem { value: $item.data('value'), title: $item.data('title') }
         @close()
 
@@ -312,11 +315,11 @@ class AutocompleteAbstract
         if @list.children().length is 0
             @handleEmptyList()
 
-        @list?.one 'mousewheel DOMMouseScroll', (e) ->
+        @list?.on 'mousewheel DOMMouseScroll', (e) ->
             e0    = e.originalEvent
             delta = e0.wheelDelta || -e0.detail
 
-            @scrollTop += (if delta < 0 then 1 else -1) * 20
+            @scrollTop += (if delta < 0 then 1 else -1) * 15
             e.preventDefault()
 
         @list
@@ -475,11 +478,12 @@ class AutocompleteAbstract
 
         addItem = (item) =>
             parsed.push {
-                value    : item.value
-                title    : @options.formatResult and @options.formatResult(item) or item.title
-                group    : if item.group?    then item.group    else null
-                tooltip  : if item.tooltip?  then item.tooltip  else null
-                disabled : if item.disabled? then item.disabled else null
+                value       : item.value
+                title       : @options.formatResult and @options.formatResult(item) or item.title
+                description : if item.description? then item.description else null
+                group       : if item.group?       then item.group       else null
+                tooltip     : if item.tooltip?     then item.tooltip     else null
+                disabled    : if item.disabled?    then item.disabled    else null
             }
 
         if data[0]?.group
