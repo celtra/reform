@@ -22,7 +22,7 @@ class AutocompleteAbstract
             minChars           : 0
             delay              : 0
             caseSensitive      : no
-            groupedData        : no
+            closeOnBlur        : yes
             highlightTitles    : yes
             highlightSelection : yes
             hyphenate          : yes       # will break long strings if true
