@@ -28,12 +28,9 @@ class AutocompleteBox extends AutocompleteAbstract
         @el.on 'click', => @open() if @options.minChars is 0
 
     handleSelectionChanged: ->
-        if not @selectedItem.value
-            @filter.val @filterValue
-            @el.addClass 'new-item'
-        else
-            @filter.val @selectedItem.title
-            @el.removeClass 'new-item'
+        if @selectedItem.value or @selectedItem.title.length is 0 then @el.removeClass 'new-item' else @el.addClass 'new-item'
+
+        @filter.val @selectedItem.title
 
         super
 
@@ -50,8 +47,8 @@ class AutocompleteBox extends AutocompleteAbstract
         $list = super data
 
         # add item for new record
-        if @filterValue and $.inArray(@filterValue, @data.map (data) -> data.title) is -1
-            $item = @createItem { title: "#{@filterValue} (add new)"}
+        if @el.hasClass('mark-non-existent') and @filterValue and $.inArray(@filterValue, @data.map (data) -> data.title) is -1
+            $item = @createItem { title: "\"#{@filterValue}\" (add new)"}
             $item.appendTo $list
 
         $list

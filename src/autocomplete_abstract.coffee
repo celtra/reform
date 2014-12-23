@@ -302,7 +302,8 @@ class AutocompleteAbstract
             @list.children().removeClass @options.selectedClass
             $item.addClass @options.selectedClass
 
-        @setSelectedItem { value: $item.data('value'), title: $item.data('title') }
+        if $item.data('value')? then title = $item.data('title') else title = @filterValue
+        @setSelectedItem { value: $item.data('value'), title: title }
         @close()
 
     insertList: ($list) ->

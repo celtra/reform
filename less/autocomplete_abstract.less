@@ -12,15 +12,15 @@
     .outline(@borderColor);
     .rounded-corners;
 
-    &.new-item:before {
+    &.mark-non-existent.new-item:before {
         position : absolute;
         content  : "NEW";
         right    : 10px;
         color    : #b2b2b2;
     }
 
-    &.arrow-down.new-item:before { right: 25px; }
-    &.arrow-up.new-item:before { right: 25px; }
+    &.arrow-down.mark-non-existent.new-item:before { right: 25px; }
+    &.arrow-up.mark-non-existent.new-item:before { right: 25px; }
 
     &.arrow-down:after { .arrow-down(@fontColor); }
     &.arrow-up:after   { .reform-arrow-up(@fontColor); }
