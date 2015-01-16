@@ -1,26 +1,18 @@
 &.reform-autocomplete-fake {
-    position      : relative;
-    display       : inline-block;
     .border-box;
-    cursor        : pointer;
-    overflow      : hidden;
-
-    font-size     : @fontSize;
-    line-height   : @lineHeight;
-    white-space   : nowrap;
-    text-overflow : ellipsis;
+    .ellipsis;
+    position    : relative;
+    display     : inline-block;
+    line-height : @lineHeight;
+    font-size   : @fontSize;
+    cursor      : pointer;
 
     .select-disabled;
     .outline(@borderColor);
     .rounded-corners;
 
-    &.arrow-down:after {
-        .arrow-down(@fontColor);
-    }
-
-    &.arrow-up:after {
-        .reform-arrow-up(@fontColor);
-    }
+    &.arrow-down:after { .arrow-down(@fontColor); }
+    &.arrow-up:after   { .reform-arrow-up(@fontColor); }
 
     &.disabled {
         cursor: default;
@@ -37,12 +29,11 @@
 }
 
 .reform-autocomplete-filter {
+    margin      : 0;
     padding     : @paddingVertical @paddingHorizontal;
     line-height : @lineHeight;
-    margin      : 0;
-    outline     : none;
     border      : none;
-    
     font-family : @fontFamily;
     font-size   : @fontSize;
+    outline     : none;
 }

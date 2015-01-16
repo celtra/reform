@@ -1,4 +1,14 @@
-body { margin: 30px; font: 14px Tahoma; }
+body {
+    margin: 30px;
+    font: 14px 'Tahoma', sans-serif;
+}
+
+h3 {
+    font-family: 'Arial', sans-serif;
+    font-weight: normal;
+}
+
+.last-block { margin-bottom: 500px; }
 
 .reform-selectbox-fake, .reform-autocomplete-fake {
     margin-bottom: 5px;

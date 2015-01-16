@@ -1,18 +1,18 @@
 .rounded-corners (@radius: 5px) {
     -webkit-border-radius: @radius;
-    -moz-border-radius: @radius;
-    -ms-border-radius: @radius;
-    -o-border-radius: @radius;
-    border-radius: @radius;
+       -moz-border-radius: @radius;
+        -ms-border-radius: @radius;
+         -o-border-radius: @radius;
+            border-radius: @radius;
 }
 
 .select-disabled {
     -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+         -o-user-select: none;
+            user-select: none;
 }
 
 .border-box {
@@ -25,6 +25,12 @@
     -webkit-box-sizing: content-box;
        -moz-box-sizing: content-box;
             box-sizing: content-box;
+}
+
+.ellipsis {
+    overflow      : hidden;
+    white-space   : nowrap;
+    text-overflow : ellipsis;
 }
 
 .outline (@color: #000) {
@@ -46,17 +52,15 @@
 }
 
 .arrow (@color: #000, @height: 4px, @width: 8px) {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    
-    content: "";
-    width: 0;
-    height: 0;
-    margin: -(@height/2) 0 0;
-
-    border-left: (@width/2) solid transparent;
-    border-right: (@width/2) solid transparent;
+    position     : absolute;
+    content      : "";
+    top          : 50%;
+    right        : 10px;
+    width        : 0;
+    height       : 0;
+    margin       : -(@height/2) 0 0;
+    border-left  : (@width/2) solid transparent;
+    border-right : (@width/2) solid transparent;
 }
 
 .placeholder (@color: inherit) {

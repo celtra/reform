@@ -8,9 +8,9 @@ class AutocompleteBox extends AutocompleteAbstract
     constructor: (@select, options) ->
 
         @options = $.extend {
-            showArrows         : no
-            reformClass        : 'reform-autocompletebox'
-            uiClass            : 'reform-autocompletebox-ui'
+            showArrows  : no
+            reformClass : 'reform-autocompletebox'
+            uiClass     : 'reform-autocompletebox-ui'
         }, options
 
         super @select, @options
@@ -24,6 +24,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
         @el.append @filter
 
+        # If data-min-chars is set to 0, open results immediately
+        @el.on 'click', => @open() if @options.minChars is 0
+
     handleSelectionChanged: ->
         @filter.val @selectedItem.title
 
@@ -31,9 +34,9 @@ class AutocompleteBox extends AutocompleteAbstract
 
     handleDisabledToggle: =>
         super
-        return if !@filter
+        return if not @filter
 
-        if @orig.is( ':disabled' ) and !@filter.is( ':disabled' )
+        if @orig.is(':disabled') and not @filter.is(':disabled')
             @filter.attr 'disabled', 'disabled'
         else 
             @filter.removeAttr 'disabled'
@@ -41,7 +44,7 @@ class AutocompleteBox extends AutocompleteAbstract
     createClosed: ->
         $el = super
 
-        $el.on 'click', () => 
+        $el.on 'click', () =>
             if !@floater and @filter.val().length > @options.minChars
                 @open()
                 @filter.focus()
@@ -51,7 +54,7 @@ class AutocompleteBox extends AutocompleteAbstract
     handleFilterBlur: ->
         @setSelectedItemByCurrentFilterValue()
 
-        @close()
+        @close() if @options.closeOnBlur
         super
 
     open: ->
@@ -85,7 +88,7 @@ class AutocompleteBox extends AutocompleteAbstract
     handleKeyUp: (e) ->
         return if e.keyCode is @KEY.RETURN
 
-        if @filter.val().length > @options.minChars
+        if @filter.val().length >= @options.minChars
             @open() unless @floater?
         else if @floater?
             @close() 
