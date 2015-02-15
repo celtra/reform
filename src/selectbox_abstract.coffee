@@ -108,6 +108,8 @@ class SelectBoxAbstract
         # Replicate changes from the original select box to the fake one
         @orig.on 'reform.sync change DOMSubtreeModified', @refresh
         
+        @body.on 'reform.close', => @close()
+
         # Close any other open options containers
         @body.on 'reform.open', (e) => @close() unless e.target is @select
     
