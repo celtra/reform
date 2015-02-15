@@ -116,7 +116,7 @@ class SelectBoxAbstract
         $item.addClass 'hover'
     
     scrollTo: ($item) ->
-        $container   = @list
+        $container   = @$list
         newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop()
         
         @ignoreMouse = yes
@@ -263,7 +263,7 @@ class SelectBoxAbstract
             $selectedItem.append @orig.data('title')
         else
             $title = @createClosedItem()
-            $selectedItem.append $title    
+            $selectedItem.append $title
         
         @createOptions()
 
