@@ -108,6 +108,8 @@ class SelectBoxAbstract
         # Replicate changes from the original select box to the fake one
         @orig.on 'reform.sync change DOMSubtreeModified', @refresh
         
+        @body.on 'reform.close', => @close()
+
         # Close any other open options containers
         @body.on 'reform.open', (e) => @close() unless e.target is @select
     
@@ -116,7 +118,7 @@ class SelectBoxAbstract
         $item.addClass 'hover'
     
     scrollTo: ($item) ->
-        $container   = @list
+        $container   = @$list
         newScrollTop = $item.offset().top - $container.offset().top + $container.scrollTop()
         
         @ignoreMouse = yes
@@ -263,7 +265,7 @@ class SelectBoxAbstract
             $selectedItem.append @orig.data('title')
         else
             $title = @createClosedItem()
-            $selectedItem.append $title    
+            $selectedItem.append $title
         
         @createOptions()
 
