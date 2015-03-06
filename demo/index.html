@@ -215,6 +215,7 @@
 
             $(document).ready(function() {
                 $('#autocomplete-inline').trigger("reform.fill", [inlineData]);
+                $('#autocomplete-inline-mark-new-item').trigger("reform.fill", [inlineData]);
                 $('#autocompletecombobox').trigger("reform.fill", [inlineData]);
 
                 $('#multilineautocompletecombobox').trigger("reform.fill", [inlineData2]);
@@ -339,7 +340,9 @@
 
         <div class="last-block">
         
-            <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text" />
+            <input id="autocomplete-inline" class="reform-autocompletebox reform-pure" type="text"/>
+
+            <input id="autocomplete-inline-mark-new-item" class="reform-autocompletebox reform-pure mark-non-existent" type="text" data-placeholder="With mark new..."/>
 
             <input class="reform-autocompletebox reform-pure" type="text" disabled />
 

@@ -2,6 +2,7 @@
     .border-box;
     .ellipsis;
     position    : relative;
+    padding     : @paddingVertical @paddingHorizontal;
     display     : inline-block;
     line-height : @lineHeight;
     font-size   : @fontSize;
@@ -10,6 +11,13 @@
     .select-disabled;
     .outline(@borderColor);
     .rounded-corners;
+
+    &.mark-non-existent.new-item:before {
+        position : absolute;
+        content  : "NEW";
+        right    : 10px;
+        color    : #b2b2b2;
+    }
 
     &.arrow-down:after { .arrow-down(@fontColor); }
     &.arrow-up:after   { .reform-arrow-up(@fontColor); }
@@ -30,7 +38,7 @@
 
 .reform-autocomplete-filter {
     margin      : 0;
-    padding     : @paddingVertical @paddingHorizontal;
+    padding     : 0;
     line-height : @lineHeight;
     border      : none;
     font-family : @fontFamily;
