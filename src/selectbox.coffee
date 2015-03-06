@@ -17,7 +17,12 @@ class SelectBox extends SelectBoxAbstract
         # Automatically choose a title
         selected = @orig.find('option').filter(-> @selected and $(@).data('count-option') isnt 'no')
         plural = @orig.data 'plural'
-        title = if plural? and selected.length > 1 then "#{selected.length} #{plural}" else selected.map(-> $(@).text()).get().join ', '
+
+        if plural? and selected.length > 1
+            title = "#{selected.length} #{plural}"
+        else
+            title = selected.map(-> $('<div/>').text($(@).text()).html()).get().join ', '
+        
         title = @orig.attr 'title' unless title
         title = 'Select' unless title?
 
