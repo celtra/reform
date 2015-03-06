@@ -47,7 +47,7 @@ class AutocompleteBox extends AutocompleteAbstract
         $list = super data
 
         # add item for new record
-        if @el.hasClass('mark-non-existent') and @filterValue and $.inArray(@filterValue, @data.map (data) -> data.title) is -1
+        if @el.hasClass('mark-non-existent') and @filterValue and @filterValue.toLowerCase() not in @data.map((data) -> data.title.toLowerCase())
             $item = @createItem { title: "\"#{@filterValue}\" (add new)"}
             $item.appendTo $list
 
