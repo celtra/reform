@@ -11,6 +11,8 @@ class SelectBoxAbstract
             fakeClass : 'reform-selectbox-fake'
         }, options
         
+        $.extend @options, @orig.data()
+
         # Don't do this twice
         return if @orig.is '.reformed'
         
@@ -163,6 +165,16 @@ class SelectBoxAbstract
             $item.addClass 'disabled' if $option.is ':disabled'
             $item.attr 'title', $option.attr 'title'
             $item.attr 'value', $option.val()
+
+            if @options.showcheckbox and @orig.is '[multiple]'
+                checkboxOptions =
+                    type: 'checkbox'
+                    class: 'reform-checkbox'
+
+                checkboxOptions.checked = 'checked'  if $option.is ':selected'
+                checkboxOptions.checked = 'disabled' if $option.is ':disabled'
+
+                $item.append($('<input>', checkboxOptions))
 
             $item.append @createItemContent $option
 
