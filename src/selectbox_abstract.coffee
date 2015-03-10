@@ -10,7 +10,7 @@ class SelectBoxAbstract
         @options = $.extend {
             fakeClass : 'reform-selectbox-fake'
         }, options
-        
+
         $.extend @options, @orig.data()
 
         # Don't do this twice
@@ -168,8 +168,8 @@ class SelectBoxAbstract
 
             if @options.showcheckbox and @orig.is '[multiple]'
                 checkboxOptions =
-                    type: 'checkbox'
-                    class: 'reform-checkbox'
+                    type  : 'checkbox'
+                    class : 'reform-checkbox'
 
                 checkboxOptions.checked = 'checked'  if $option.is ':selected'
                 checkboxOptions.checked = 'disabled' if $option.is ':disabled'
