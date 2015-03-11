@@ -23,7 +23,14 @@
             .ellipsis;
             padding : @paddingVertical @paddingHorizontal;
             cursor  : pointer;
-             
+            
+            .reform-checkbox-fake {
+                @oddFontSize : floor(@fontSize / 2) * 2;
+                height       : @oddFontSize;
+                width        : @oddFontSize;
+                margin-right : @oddFontSize;
+            }
+
             &.hover {
                 background : @hoverBackgroundColor;
                 color      : @hoverFontColor;
