@@ -25,9 +25,10 @@
             cursor  : pointer;
             
             .reform-checkbox-fake {
-                height       : @fontSize;
-                width        : @fontSize;
-                margin-right : @fontSize;
+                @oddFontSize : floor(@fontSize / 2) * 2;
+                height       : @oddFontSize;
+                width        : @oddFontSize;
+                margin-right : @oddFontSize;
             }
 
             &.hover {
