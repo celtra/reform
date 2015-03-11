@@ -171,8 +171,8 @@ class SelectBoxAbstract
                     type  : 'checkbox'
                     class : 'reform-checkbox'
 
-                checkboxOptions.checked = 'checked'  if $option.is ':selected'
-                checkboxOptions.checked = 'disabled' if $option.is ':disabled'
+                checkboxOptions.checked  = 'checked'  if $option.is ':selected'
+                checkboxOptions.disabled = 'disabled' if $option.is ':disabled'
 
                 $item.append($('<input>', checkboxOptions))
 
