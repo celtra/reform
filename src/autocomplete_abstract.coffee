@@ -197,9 +197,7 @@ class AutocompleteAbstract
     handleFilterBlur: ->
 
     createEmptyList: ->
-        notice = if @options.showNoResultsNotice then 'No Results Found…' else ''
-
-        $list = $ '<div>#{notice}</div>'
+        $list = $ '<div></div>'
         $list.addClass @options.listClass
         $list
 
@@ -331,7 +329,7 @@ class AutocompleteAbstract
 
     handleEmptyList: ->
         if @options.showNoResultsNotice
-            noResultNotice = $ '<div class=empty-list>No Result Found…</div>'
+            noResultNotice = $ '<div class=empty-list>No Results Found…</div>'
             noResultNotice.on 'click', (e) => @close()
             @list.append noResultNotice
         else
@@ -359,10 +357,6 @@ class AutocompleteAbstract
         $body = $ 'body'
         $body.append $overlay
         $body.append @floater
-
-        # CSS animation, element only visible when 'animate' is applied
-        if @options.animate
-            setTimeout (=> @floater.addClass('animate') if @floater ), 0
 
         @getData (data) =>
             $list = @createList data
