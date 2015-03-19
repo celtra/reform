@@ -33,36 +33,41 @@
         .border-box;
         position         : relative;
         display          : block;
-        margin           : 3px 0 0 0;
-        padding          : 0 20px;
+        padding          : 0 32px;
         font-size        : 14px;
         line-height      : 30px;
-        background-color : #f6f6f6;
-        color            : #1f1f1f;
+        background-color : #ffffff;
+        border-top       : 1px solid #eaeaea;
+        color            : #222222;
         cursor           : pointer;
+        text-align       : left;
 
-        &:after {
+        &:hover { background-color: #eaeaea; }
+
+        &:before {
             position    : absolute;
             content     : "▶";
-            top         : -1px;
-            right       : 8px;
-            font-size   : 10px;
+            top         : 1px;
+            left        : 15px;
+            font-size   : 8px;
             font-family : 'Arial', sans-serif;
             color       : #777777;
         }
     }
 
-    &.opened span:after { content: "▼"; }
-    &.opened div        { display: block; }
+    &.opened span:before { content: "▼"; }
+    &.opened div         { display: block; }
 
     // Group item
     .reform-floater-item {
         display          : none;
-        margin           : 5px;
+        margin           : 5px 10px;
+        padding-left     : 22px !important;
         background-color : #ffffff;
         line-height      : 12px;
-        font-size        : 10px;
+        font-size        : 11px;
         text-transform   : uppercase;
+        border-radius    : 5px;
 
         &.hover { color: @hoverFontColor; }
     }
