@@ -33,35 +33,40 @@
         .border-box;
         position         : relative;
         display          : block;
-        margin           : 3px 0 0 0;
-        padding          : 0 20px;
-        font-size        : 14px;
+        padding          : 0 32px;
+        border-top       : 1px solid #eaeaea;
         line-height      : 30px;
-        background-color : #f6f6f6;
-        color            : #1f1f1f;
+        font-size        : 14px;
+        background-color : #ffffff;
+        color            : #222222;
+        text-align       : left;
         cursor           : pointer;
 
-        &:after {
+        &:hover { background-color: #eaeaea; }
+
+        &:before {
             position    : absolute;
             content     : "▶";
-            top         : -1px;
-            right       : 8px;
-            font-size   : 10px;
+            top         : 1px;
+            left        : 15px;
+            font-size   : 8px;
             font-family : 'Arial', sans-serif;
             color       : #777777;
         }
     }
 
-    &.opened span:after { content: "▼"; }
-    &.opened div        { display: block; }
+    &.opened span:before { content: "▼"; }
+    &.opened div         { display: block; }
 
     // Group item
     .reform-floater-item {
         display          : none;
-        margin           : 5px;
-        background-color : #ffffff;
+        margin           : 5px 10px;
+        padding-left     : 22px !important;
         line-height      : 12px;
-        font-size        : 10px;
+        border-radius    : 5px;
+        background-color : #ffffff;
+        font-size        : 11px;
         text-transform   : uppercase;
 
         &.hover { color: @hoverFontColor; }

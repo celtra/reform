@@ -16,34 +16,36 @@ class AutocompleteAbstract
     constructor: (@select, options) ->
         # some defaults
         @options = {
-            url                : null      # data url
-            dataType           : 'json'
-            max                : 1000      # max results
-            minChars           : 0
-            delay              : 0
-            caseSensitive      : no
-            closeOnBlur        : yes
-            highlightTitles    : yes
-            highlightSelection : yes
-            hyphenate          : yes       # will break long strings if true
-            exactMatch         : no        # will not filter dropdown data if true
-            title              : null      # preset selected title
-            placeholderText    : 'Type to search...'
-
+            url                 : null      # data url
+            dataType            : 'json'
+            max                 : 1000      # max results
+            minChars            : 0
+            delay               : 0
+            caseSensitive       : no
+            animate             : no
+            showNoResultsNotice : no
+            closeOnBlur         : yes
+            highlightTitles     : yes
+            highlightSelection  : yes
+            hyphenate           : yes       # will break long strings if true
+            exactMatch          : no        # will not filter dropdown data if true
+            title               : null      # preset selected title
+            placeholderText     : 'Type to search...'
+            
             # custom classes
-            fakeClass          : 'reform-autocomplete-fake'
-            filterClass        : 'reform-autocomplete-filter'
-            emptyClass         : 'reform-autocomplete-empty'
-            disabledClass      : 'disabled'
-            arrowDownClass     : 'arrow-down'
-            arrowUpClass       : 'arrow-up'
-            hoverClass         : 'hover'
-            selectedClass      : 'selected'
-            floaterClass       : 'reform-floater'
-            groupClass         : 'reform-group'
-            listClass          : 'reform-floater-list'
-            itemClass          : 'reform-floater-item'
-            overlayClass       : 'reform-floater-overlay'
+            fakeClass           : 'reform-autocomplete-fake'
+            filterClass         : 'reform-autocomplete-filter'
+            emptyClass          : 'reform-autocomplete-empty'
+            disabledClass       : 'disabled'
+            arrowDownClass      : 'arrow-down'
+            arrowUpClass        : 'arrow-up'
+            hoverClass          : 'hover'
+            selectedClass       : 'selected'
+            floaterClass        : 'reform-floater'
+            groupClass          : 'reform-group'
+            listClass           : 'reform-floater-list'
+            itemClass           : 'reform-floater-item'
+            overlayClass        : 'reform-floater-overlay'
         }
         
         @orig = $ @select
@@ -326,7 +328,12 @@ class AutocompleteAbstract
         @list
 
     handleEmptyList: ->
-        @close()
+        if @options.showNoResultsNotice
+            noResultNotice = $ '<div class=empty-list>No Results Found…</div>'
+            noResultNotice.on 'click', (e) => @close()
+            @list.append noResultNotice
+        else
+            @close()
 
     open: ->
         return if @floater? or @el.hasClass @options.disabledClass
