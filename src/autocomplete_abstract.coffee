@@ -22,7 +22,6 @@ class AutocompleteAbstract
             minChars            : 0
             delay               : 0
             caseSensitive       : no
-            animate             : no
             showNoResultsNotice : no
             closeOnBlur         : yes
             highlightTitles     : yes
