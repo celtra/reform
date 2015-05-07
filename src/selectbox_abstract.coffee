@@ -288,7 +288,7 @@ class SelectBoxAbstract
             pos = @fake.offset()
 
             # if over is set floater will open over the input not bellow
-            if not @options.over
+            if not @options.openOverInput
                 if pos.top + @floater.outerHeight() > @height
                     pos.top = pos.top - @floater.outerHeight()
                     if @orig.data 'shift'
