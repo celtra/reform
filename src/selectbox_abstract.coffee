@@ -286,16 +286,19 @@ class SelectBoxAbstract
             
             # Get position of fake
             pos = @fake.offset()
-            if pos.top + @floater.outerHeight() > @height
-                pos.top = pos.top - @floater.outerHeight()
-                if @orig.data 'shift'
-                    posTopAfterAnimation = pos.top - parseInt @orig.data('shift') 
-                    pos.top -= 1
-            else
-                pos.top = pos.top + @fake.outerHeight()
-                if @orig.data 'shift'
-                    posTopAfterAnimation = pos.top + parseInt @orig.data('shift') 
-                    pos.top += 1
+
+            # if over is set floater will open over the input not bellow
+            if not @options.openOverInput
+                if pos.top + @floater.outerHeight() > @height
+                    pos.top = pos.top - @floater.outerHeight()
+                    if @orig.data 'shift'
+                        posTopAfterAnimation = pos.top - parseInt @orig.data('shift') 
+                        pos.top -= 1
+                else
+                    pos.top = pos.top + @fake.outerHeight()
+                    if @orig.data 'shift'
+                        posTopAfterAnimation = pos.top + parseInt @orig.data('shift') 
+                        pos.top += 1
 
             if pos.left + @floater.outerWidth() > @width
                 pos.left = pos.left - @floater.outerWidth() + @fake.outerWidth()
